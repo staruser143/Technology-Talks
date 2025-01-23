@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
     Client[Client Application]
     KS[Kafka Streams App]
@@ -18,7 +19,7 @@ flowchart LR
         KS
         SS
     end
-    
+
     subgraph Historical Layer
         CS
     end
@@ -27,3 +28,4 @@ flowchart LR
     style Kafka fill:#ff9,stroke:#333
     style CS fill:#9f9,stroke:#333
     style QA fill:#69f,stroke:#333
+```
