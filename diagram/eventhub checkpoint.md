@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
     EH[Event Hub] -->|1. Events| Processor
     Processor -->|2. Process Events| App[Application Logic]
@@ -13,3 +14,4 @@ flowchart TD
     style CS fill:#9f9,stroke:#333
     style Processor fill:#f96,stroke:#333
     style NewProcessor fill:#f96,stroke:#333
+```
