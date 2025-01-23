@@ -1,0 +1,8 @@
+1.Kafka to Cloud Storage Archival 
+2.Event Replay using Kafka / Cloud Storage Archival
+KafkaConnect
+     Cloud Storage --> Kafka
+     Event Replay on Kafka
+     
+Spark Job
+     Cloud Storage --> Spark Job
