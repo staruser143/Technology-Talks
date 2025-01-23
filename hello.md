@@ -1581,8 +1581,17 @@ This combined use of **$push** and **$addToSet** allows you to see both the deta
 
 ====
 
+A **compact topic** in Apache Kafka is a type of topic where Kafka retains only the latest value for each unique key. This is achieved through a process called **log compaction**. Unlike regular topics that might retain messages based on time or size, compact topics ensure that the most recent update for each key is always preserved, even if older messages are deleted[1](https://docs.confluent.io/kafka/design/log_compaction.html)[2](https://developer.confluent.io/courses/architecture/compaction/).
 
+### When to Use Compact Topics
 
+1. **State Restoration**: If you need to restore the state of an application after a failure, compact topics can help by ensuring that the latest state for each key is available.
+2. **Caching**: When reloading caches after application restarts, compact topics ensure that only the latest values are loaded, reducing the amount of data that needs to be processed.
+3. **Event Sourcing**: For systems that rely on event sourcing, compact topics ensure that the latest state of each entity is always available.
+4. **Database Change Subscriptions**: When subscribing to changes in a database, compact topics can help maintain the latest state of each record, which is useful for syncing data across different systems.
+5. **GDPR Compliance**: Compact topics can help with data deletion requirements by allowing you to mark records for deletion with a "tombstone" (a record with a null value) which will be removed during compaction[1](https://docs.confluent.io/kafka/design/log_compaction.html)[2](https://developer.confluent.io/courses/architecture/compaction/).
+
+=================
 
 
 What framework to use to implement event sourcing with kafka and mongodb and why?
