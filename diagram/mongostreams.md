@@ -1,6 +1,6 @@
 ```mermaid
 flowchart LR
-    MongoDB[(EventStore\nMongoDB)]
+    MongoDB[(MongoStore)]
     CS[Change Stream]
     PP[Projection Processor]
     RM[(Read Model DB)]
