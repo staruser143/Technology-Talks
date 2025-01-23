@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
     Client[Client Application]
     API[API Layer]
@@ -27,3 +28,4 @@ flowchart LR
     style ReadDB fill:#9ff,stroke:#333
     style API fill:#f96,stroke:#333
     style ReadAPI fill:#69f,stroke:#333
+```
