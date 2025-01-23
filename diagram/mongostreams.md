@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
     MongoDB[(EventStore\nMongoDB)]
     CS[Change Stream]
@@ -13,3 +14,4 @@ flowchart LR
         CS
         PP
     end
+```
