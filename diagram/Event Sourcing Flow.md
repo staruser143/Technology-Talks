@@ -1,9 +1,9 @@
 ```mermaid
 flowchart LR
     Client[Client Application]
-    API[API Layer]
-    Kafka[Kafka Event Bus]
-    MongoDB[(EventStore\nMongoDB)]
+    API[Write API]
+    Kafka[Event Bus]
+    MongoDB[(EventStore)]
     ReadDB[(Read Database)]
     
     subgraph Command Side
