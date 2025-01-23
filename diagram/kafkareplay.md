@@ -1,4 +1,5 @@
-flowchart LR
+```mermaid
+  flowchart LR
     ReplayAPI[Replay API]
     KafkaOld[(Kafka\nOriginal Topics)]
     ReplayConsumer[Replay Consumer]
