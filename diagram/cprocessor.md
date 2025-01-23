@@ -1,3 +1,4 @@
+```mermaid
 classDiagram
     class Command {
         +execute()
@@ -48,3 +49,4 @@ classDiagram
     note for CommandProcessor "Orchestrates command execution\nand cross-cutting concerns"
     note for IPreProcessor "Executed before command"
     note for IPostProcessor "Executed after command"
+```
