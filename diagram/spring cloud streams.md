@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
     Client[Client Application]
     Binding[Spring Cloud\nStream Bindings]
@@ -28,3 +29,4 @@ flowchart LR
     style Binding fill:#ff9,stroke:#333
     style CS fill:#9f9,stroke:#333
     style QA fill:#69f,stroke:#333
+```
