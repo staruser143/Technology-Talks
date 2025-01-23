@@ -5,7 +5,8 @@ flowchart LR
     Processor[Stream Processor]
     CS[(Cloud Storage)]
     QA[Query Service]
-    RDS[Read Model]
+    RDS[(Read Data Store)]
+    
 
     
     Client -->|Events| Binding
