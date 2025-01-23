@@ -1,3 +1,4 @@
+```mermaid
 flowchart LR
     Client[Client Application]
     KS[Kafka Streams App]
@@ -23,3 +24,4 @@ flowchart LR
     style Kafka fill:#ff9,stroke:#333
     style SS fill:#9f9,stroke:#333
     style QA fill:#69f,stroke:#333
+```
