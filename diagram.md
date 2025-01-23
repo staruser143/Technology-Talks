@@ -1,11 +1,11 @@
 ```mermaid
 graph TD
-    Client -->|Sends Command| CommandHandler[Command Handler]
-    CommandHandler -->|Stores Event| Kafka[Kafka (Event Store)]
-    Kafka -->|Publishes Event| EventProcessor[Event Processor]
-    EventProcessor -->|Updates| MongoDB[MongoDB (Read Models)]
+    Client -->|Sends Command| CommandHandler[CommandHandler]
+    CommandHandler -->|Stores Event| Kafka[Kafka (EventStore)]
+    Kafka -->|Publishes Event| EventProcessor[EventProcessor]
+    EventProcessor -->|Updates| MongoDB[MongoDB (ReadModels)]
     EventProcessor -->|Archives| S3[S3 (Archiving)]
-    MongoDB -->|Queries| QueryHandler[Query Handler]
+    MongoDB -->|Queries| QueryHandler[QueryHandler]
     QueryHandler -->|Returns Data| Client[Client]
 ```
 
