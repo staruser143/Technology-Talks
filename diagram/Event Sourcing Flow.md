@@ -1,15 +1,15 @@
 ```mermaid
 flowchart LR
-    Client[Client Application]
+    Client[Web / Mobile App]
     API[Write API]
     Kafka[Event Bus]
-    MongoDB[(EventStore)]
-    ReadDB[(Read Database)]
+    MongoDB[(Service Data store)]
+    ReadDB[(Read Data Store)]
     
     subgraph Command Side
         direction TB
         API --> |Commands| Kafka
-        Kafka --> |Events| MongoDB
+        Kafka --> |Entity State| MongoDB
         MongoDB --> |Project Events| ReadDB
     end
     
