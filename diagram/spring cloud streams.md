@@ -1,24 +1,23 @@
 ```mermaid
 flowchart LR
     Client[Client Application]
-    Binding[Spring Cloud\nStream Bindings]
+    Binding[Spring Cloud Stream Bindings]
     Processor[Stream Processor]
-    SS[(State Store)]
     CS[(Cloud Storage)]
     QA[Query Service]
+    RDS[Read Model]
+
     
     Client -->|Events| Binding
     Binding -->|Abstract Channel| Processor
-    Processor -->|Current State| SS
     Processor -->|Archive Events| CS
     Client -->|Query Request| QA
-    QA -->|Recent Data| SS
-    QA -->|Historical Data| CS
+    QA -->|Query Request| RDS
+
     
     subgraph Message Processing Layer
         Binding
         Processor
-        SS
     end
     
     subgraph Historical Layer
