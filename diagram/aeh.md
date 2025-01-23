@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
     Client[Client Application]
     EH[Azure Event Hubs]
@@ -30,3 +31,4 @@ flowchart TD
     style EH fill:#ff9,stroke:#333
     style SS fill:#9f9,stroke:#333
     style ADLS fill:#69f,stroke:#333
+```
