@@ -1,3 +1,4 @@
+```mermaid
 graph TD
     src[src/]
     commands[commands/]
@@ -42,3 +43,4 @@ graph TD
 
     post_processors --> logging_processor[logging_processor.py]
     post_processors --> audit[audit_processor.py]
+```
