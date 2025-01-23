@@ -1,5 +1,5 @@
 ```mermaid
-graph TD
+graph TD;
     Client -->|Sends Command| CommandHandler[CommandHandler]
     CommandHandler -->|Stores Event| Kafka[Kafka (EventStore)]
     Kafka -->|Publishes Event| EventProcessor[EventProcessor]
