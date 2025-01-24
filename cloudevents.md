@@ -1,4 +1,3 @@
-What is the CloudEvents specification and how could I see it with my event sourcing system.
 
 ### CloudEvents Specification
 
