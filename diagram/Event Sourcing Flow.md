@@ -2,21 +2,23 @@
 flowchart LR
     Client[Web / Mobile App]
     API[Write API]
-    Kafka[Event Bus]
-    MongoDB[(Service Data store)]
-    ReadDB[(Read Data Store)]
+    Kafka[Event Store]
+    MongoDB[(Domain Data store)]
+    ReadDB[(Read Model Data Store)]
     
     subgraph Command Side
         direction TB
         API --> |Commands| Kafka
         Kafka --> |Entity State| MongoDB
         MongoDB --> |Project Events| ReadDB
+        API --> |Request Processed| Client
     end
     
     subgraph Query Side
         direction TB
         ReadAPI[Read API]
         ReadDB --> |Query Results| ReadAPI
+        ReadAPI -->|Query Resolved| Client
     end
     
     Client --> |Write Operations| API
