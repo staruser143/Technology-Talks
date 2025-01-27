@@ -1,3 +1,4 @@
+```mermaid
 flowchart TD
     subgraph Producers
         P1[Producer 1]
@@ -48,3 +49,4 @@ flowchart TD
     class K1,K2,K3 kafka
     class B1,B2,B3 storage
     class AS,TM,BP,QS,RS,ER service
+```
