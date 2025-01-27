@@ -228,3 +228,195 @@ public class UserController {
         commandDispatcher.dispatch(command);
     }
 }
+
+public class UpdateUserCommand {
+    private final String userId;
+    private final String newUsername;
+
+    public UpdateUserCommand(String userId, String newUsername) {
+        this.userId = userId;
+        this.newUsername = newUsername;
+    }
+
+    // Getters
+}
+
+public class UpdateUserCommandHandler implements CommandHandler<UpdateUserCommand> {
+    private final EventBus eventBus;
+
+    public UpdateUserCommandHandler(EventBus eventBus) {
+        this.eventBus = eventBus;
+    }
+
+    @Override
+    public void handle(UpdateUserCommand command) {
+        // Business logic for updating a user
+        // Publish UserUpdatedEvent
+        UserUpdatedEvent event = new UserUpdatedEvent(command.getUserId(), command.getNewUsername());
+        eventBus.publish(event);
+    }
+}
+
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    public EventBus eventBus() {
+        return new EventBus();
+    }
+
+    @Bean
+    public CommandDispatcher commandDispatcher(EventBus eventBus) {
+        CommandDispatcher dispatcher = new CommandDispatcher();
+
+        // Register CreateUserCommandHandler
+        List<Validator<CreateUserCommand>> createUserValidators = List.of(new CreateUserCommandValidator());
+        List<CommandInterceptor<CreateUserCommand>> createUserInterceptors = List.of(new LoggingInterceptor<>());
+        CommandSerializer createUserSerializer = new CommandSerializer();
+        CreateUserCommandHandler createUserHandler = new CreateUserCommandHandler(eventBus);
+        CommandHandlerPipeline<CreateUserCommand> createUserPipeline =
+            new CommandHandlerPipeline<>(createUserValidators, createUserInterceptors, createUserHandler, createUserSerializer);
+        dispatcher.registerHandler(CreateUserCommand.class, createUserPipeline);
+
+        // Register UpdateUserCommandHandler
+        List<Validator<UpdateUserCommand>> updateUserValidators = List.of(new UpdateUserCommandValidator());
+        List<CommandInterceptor<UpdateUserCommand>> updateUserInterceptors = List.of(new LoggingInterceptor<>());
+        CommandSerializer updateUserSerializer = new CommandSerializer();
+        UpdateUserCommandHandler updateUserHandler = new UpdateUserCommandHandler(eventBus);
+        CommandHandlerPipeline<UpdateUserCommand> updateUserPipeline =
+            new CommandHandlerPipeline<>(updateUserValidators, updateUserInterceptors, updateUserHandler, updateUserSerializer);
+        dispatcher.registerHandler(UpdateUserCommand.class, updateUserPipeline);
+
+        return dispatcher;
+    }
+}
+
+public class CommandHandlerPipeline {
+    private final Map<Class<?>, List<Validator<?>>> validators = new HashMap<>();
+    private final Map<Class<?>, List<CommandInterceptor<?>>> interceptors = new HashMap<>();
+    private final Map<Class<?>, CommandHandler<?>> handlers = new HashMap<>();
+    private final CommandSerializer serializer = new CommandSerializer();
+
+    public <T> void registerPipeline(Class<T> type, List<Validator<T>> validators, List<CommandInterceptor<T>> interceptors, CommandHandler<T> handler) {
+        this.validators.put(type, (List<Validator<?>>) validators);
+        this.interceptors.put(type, (List<CommandInterceptor<?>>) interceptors);
+        this.handlers.put(type, handler);
+    }
+
+    @SuppressWarnings("unchecked")
+    public <T> void handle(T command) {
+        Class<?> type = command.getClass();
+
+        // Validation
+        for (Validator<T> validator : (List<Validator<T>>) validators.get(type)) {
+            validator.validate(command);
+        }
+        
+        // Logging
+        for (CommandInterceptor<T> interceptor : (List<CommandInterceptor<T>>) interceptors.get(type)) {
+            interceptor.intercept(command);
+        }
+
+        // Serialization
+        String serializedCommand = serializer.serialize(command);
+        System.out.println("Serialized command: " + serializedCommand);
+
+        // Command Handling
+        CommandHandler<T> handler = (CommandHandler<T>) handlers.get(type);
+        handler.handle(command);
+    }
+}
++--------------------------+
+| Presentation Layer       |
+| - Controllers            |
+| - Views                  |
++--------------------------+
+          |
+          v
++--------------------------+
+| Business Logic Layer     |
+| - Services               |
+| - Command Handlers       |
++--------------------------+
+          |
+          v
++--------------------------+
+| Data Access Layer        |
+| - Repositories           |
+| - Data Mappers           |
++--------------------------+
+
+    public interface EventBus {
+    void publish(Object event);
+    void register(Object subscriber);
+}
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class InMemoryEventBus implements EventBus {
+    private final List<Object> subscribers = new ArrayList<>();
+
+    @Override
+    public void publish(Object event) {
+        for (Object subscriber : subscribers) {
+            // Use reflection or a library like Guava EventBus to call the appropriate method on the subscriber
+        }
+    }
+
+    @Override
+    public void register(Object subscriber) {
+        subscribers.add(subscriber);
+    }
+}
+import org.springframework.kafka.core.KafkaTemplate;
+
+public class KafkaEventBus implements EventBus {
+    private final KafkaTemplate<String, Object> kafkaTemplate;
+
+    public KafkaEventBus(KafkaTemplate<String, Object> kafkaTemplate) {
+        this.kafkaTemplate = kafkaTemplate;
+    }
+
+    @Override
+    public void publish(Object event) {
+        kafkaTemplate.send("your-topic", event);
+    }
+
+    @Override
+    public void register(Object subscriber) {
+        // Registration may not be needed for Kafka as it typically uses consumers
+    }
+}
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+import org.springframework.kafka.core.KafkaTemplate;
+
+@Configuration
+public class AppConfig {
+
+    @Bean
+    @Profile("dev")
+    public EventBus inMemoryEventBus() {
+        return new InMemoryEventBus();
+    }
+
+    @Bean
+    @Profile("prod")
+    public EventBus kafkaEventBus(KafkaTemplate<String, Object> kafkaTemplate) {
+        return new KafkaEventBus(kafkaTemplate);
+    }
+
+    @Bean
+    public CommandDispatcher commandDispatcher(EventBus eventBus) {
+        CommandDispatcher dispatcher = new CommandDispatcher();
+        
+        // Register command handlers with the dispatcher, as previously explained
+        // ...
+
+        return dispatcher;
+    }
+}
