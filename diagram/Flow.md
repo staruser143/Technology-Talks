@@ -1,3 +1,5 @@
+
+```mermaid
 sequenceDiagram
     participant User as Front-End App
     participant API as Read/Write API
@@ -21,3 +23,4 @@ sequenceDiagram
     P->>Q: Return Read Model
     Q->>API: Return Query Result
     API->>Client: Send Query Response
+```
