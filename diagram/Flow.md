@@ -2,7 +2,8 @@
 ```mermaid
 sequenceDiagram
     participant User as Front-End App
-    participant API as Read/Write API
+    participant WriteAPI as Write API
+    participant ReadAPI as Read API
     participant CB as Command Bus
     participant CH as Command Handler
     participant ES as Event Store (Kafka)
@@ -11,16 +12,18 @@ sequenceDiagram
     participant Q as Query Handler
     participant Client as Client
 
-    User->>API: Send Command
-    API->>CB: Dispatch Command
+    User->>WriteAPI: Send Command
+    WriteAPI->>CB: Dispatch Command
     CB->>CH: Handle Command
     CH->>ES: Store Event
     ES->>EC: Consume Event
     EC->>P: Update Projection
-    Client->>API: Query Data
-    API->>Q: Handle Query
+
+    Client->>ReadAPI: Query Data
+    ReadAPI->>Q: Handle Query
     Q->>P: Fetch Read Model
     P->>Q: Return Read Model
-    Q->>API: Return Query Result
-    API->>Client: Send Query Response
-```
+    Q->>ReadAPI: Return Query Result
+    ReadAPI->>Client: Send Query Response
+
+``
