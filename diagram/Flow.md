@@ -5,23 +5,28 @@ sequenceDiagram
     participant ReadAPI as Read API
     participant CB as Command Bus
     participant CH as Command Handler
+    participant CV as Command Validator
     participant ES as Event Store (Kafka)
     participant EC as Event Consumers
     participant P as Projections (MongoDB)
     participant Q as Query Handler
-    participant Client as Client
+  
 
     User->>WriteAPI: Send Command
     WriteAPI->>CB: Dispatch Command
     CB->>CH: Handle Command
+    CH->>CV: Validate Command
+    CV-->CH: Validation Successfull
     CH->>ES: Store Event
     ES->>EC: Consume Event
     EC->>P: Update Projection
+    WriteAPI->>User: Command Completed
 
-    Client->>ReadAPI: Query Data
+    User->>ReadAPI: Query Data
     ReadAPI->>Q: Handle Query
     Q->>P: Fetch Read Model
     P->>Q: Return Read Model
     Q->>ReadAPI: Return Query Result
-    ReadAPI->>Client: Send Query Response
+    ReadAPI->>User: Send Query Response
+
 ```
