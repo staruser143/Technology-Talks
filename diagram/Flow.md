@@ -1,32 +1,31 @@
 ```mermaid
 sequenceDiagram
-    participant User as Front-End App
-    participant WriteAPI as Write API
-    participant ReadAPI as Read API
-    participant CB as Command Bus
-    participant CH as Command Handler
-    participant CV as Command Validator
-    participant ES as Event Store (Kafka)
-    participant EC as Event Consumers
-    participant P as Projections (MongoDB)
-    participant Q as Query Handler
-  
+    participant Client
+    participant WriteAPI
+    participant EventHub
+    participant EventProcessor
+    participant Middleware
+    participant CommandHandler
+    participant AggregateRoot
+    participant EventStore
+    participant ChangeFeedProcessor
+    participant ReadModelUpdater
+    participant EventHubConsumer
 
-    User->>WriteAPI: Send Command
-    WriteAPI->>CB: Dispatch Command
-    CB->>CH: Handle Command
-    CH->>CV: Validate Command
-    CV-->CH: Validation Successfull
-    CH->>ES: Store Event
-    ES->>EC: Consume Event
-    EC->>P: Update Projection
-    WriteAPI->>User: Command Completed
+    Client ->> WriteAPI: Send "SaveQuoteCommand"
+    WriteAPI ->> EventHub: Publish command to Event Hubs
+    EventHub ->> EventProcessor: Consume command from Event Hubs
+    EventProcessor ->> CommandHandler: Process command
+    CommandHandler ->> AggregateRoot: Interact with Aggregate Root
+    AggregateRoot ->> CommandHandler: Return generated event
 
-    User->>ReadAPI: Query Data
-    ReadAPI->>Q: Handle Query
-    Q->>P: Fetch Read Model
-    P->>Q: Return Read Model
-    Q->>ReadAPI: Return Query Result
-    ReadAPI->>User: Send Query Response
+    Note right of EventProcessor: Use Middleware for coordinated event publication
+    EventProcessor ->> Middleware: Handle event publication
+    Middleware ->> EventStore: Publish event to Event Store (Cosmos DB)
+    Middleware ->> EventHub: Publish event to Event Hubs
+
+    EventStore ->> ChangeFeedProcessor: Detect new event (Change Feed)
+    ChangeFeedProcessor ->> ReadModelUpdater: Update Read Models
+    EventHub ->> EventHubConsumer: Other consumers process event
 
 ```
