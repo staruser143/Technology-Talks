@@ -1,4 +1,4 @@
-Can we apply a interceptor at the handler level when implementing a command handler to execute a command object received in NestJS
+**Can we apply a interceptor at the handler level when implementing a command handler to execute a command object received in NestJS**
 
 Yes, you can apply an interceptor at the handler level when implementing a command handler in NestJS. Interceptors are a powerful feature in NestJS, allowing you to transform and extend the behavior of method invocations.
 
@@ -45,11 +45,7 @@ export class MyCommandHandler implements ICommandHandler<MyCommand> {
 
 In this example, the `LoggingInterceptor` logs messages before and after handling the command. You can extend the interceptor to include more sophisticated logic, such as error handling, validation, or transformations.
 
-
-
-=============
-
-How does this differ from apply interceptor at Global,Controller and Route Level
+**How does this differ from apply interceptor at Global,Controller and Route Level**
 
 Applying interceptors at different levels in NestJS affects the scope and granularity of the interception. Here's a breakdown of how they differ:
 
@@ -144,9 +140,8 @@ export class MyCommandHandler implements ICommandHandler<MyCommand> {
 
 This flexibility allows you to choose the most appropriate level based on your application's requirements. 
 
-================
 
-In the example for applying at Global level, is it at module level or across all modules? Also what is the APP_INTERCEPTOR referred here used for?
+**In the example for applying at Global level, is it at module level or across all modules? Also what is the APP_INTERCEPTOR referred here used for?**
 
 When you apply an interceptor at the global level, it affects all routes across all modules in the entire application. This ensures that the interceptor's behavior is consistent throughout the app, regardless of the module or controller handling the request.
 
@@ -178,9 +173,8 @@ Using `APP_INTERCEPTOR` for global interceptors is beneficial for:
 - **Reduced Boilerplate**: Avoid redundant use of `@UseInterceptors` at controller and route levels.
 
 
-======================
 
-Can we apply interceptors at module level for one or few modules alone
+**Can we apply interceptors at module level for one or few modules alone**
 
 NestJS does not provide a direct way to apply interceptors at the module level by default. However, you can achieve this by manually applying interceptors to all controllers within a module or by using a custom decorator. Here are two approaches:
 
@@ -248,9 +242,7 @@ In this example, the `ModuleInterceptors` custom decorator can be applied to any
 
 While there's no out-of-the-box support for applying interceptors at the module level, these approaches help you achieve similar functionality with some customization.
 
-===========
-
-Does NestJS provide default or built-in interceptors
+**Does NestJS provide default or built-in interceptors**
 
 NestJS does not provide default or built-in interceptors out of the box. However, it offers a flexible and extensible framework that allows you to create custom interceptors tailored to your application's needs.
 
@@ -289,9 +281,8 @@ You can then apply this interceptor globally, at the controller level, route lev
 
 While NestJS doesn't have built-in interceptors, its architecture makes it easy to create and apply interceptors for various purposes.
 
-==========
 
-When should we use Observable in a interceptor
+**When should we use Observable in a interceptor**
 
 Using `Observable` in an interceptor is essential when you need to handle asynchronous operations, streaming data, or any process that requires observability, such as monitoring for side effects or transforming data streams.
 
@@ -387,11 +378,7 @@ export class TimingInterceptor implements NestInterceptor {
 - **Use `Observable` in interceptors for asynchronous operations, data transformations, error handling, and performance monitoring.**
 - **Observables help manage and manipulate data streams efficiently.**
 
-
-
-===============
-
-Can't we do transformations of the response without using Observable in a interceptor.
+**Can't we do transformations of the response without using Observable in a interceptor.**
 
 In a NestJS interceptor, if the response transformation involves asynchronous operations or needs to handle streams, using `Observable` is the recommended approach. However, if your transformation is synchronous, you can perform the transformation directly within the interceptor without using `Observable`.
 
@@ -426,11 +413,9 @@ In this example, the interceptor synchronously transforms the response body by w
 - **Simplicity**: Use synchronous transformations for straightforward modifications that don't require asynchronous operations.
 - **Scalability**: For more complex scenarios, especially those involving async operations or data streaming, using `Observable` provides better flexibility and scalability.
 
-===================
+**Can you provide an example scenario to understand using Data Streams along with interceptors**
 
-Can you provide an example scenario to understand using Data Streams along with interceptors
-
-Certainly! Let's consider an example scenario where we are streaming data from an external API, transforming the data stream, and then returning the transformed data to the client. We'll use an interceptor to handle the data stream and apply the necessary transformations.
+Let's consider an example scenario where we are streaming data from an external API, transforming the data stream, and then returning the transformed data to the client. We'll use an interceptor to handle the data stream and apply the necessary transformations.
 
 ### Scenario: Streaming Data from an External API
 
@@ -500,8 +485,8 @@ export class DataController {
 
 In this example, the interceptor is responsible for managing the data stream from an external API, transforming the stream, and returning the transformed data to the client. This approach allows you to handle data streams efficiently and apply necessary transformations within the interceptor.
 
-====
-Does that mean we use this when we have a huge volume of data being returned from a service and to overcome memory limiations we process it in chunks using streams.
+
+**Does that mean we use this when we have a huge volume of data being returned from a service and to overcome memory limiations we process it in chunks using streams.**
 
 Yes, exactly! Using data streams is particularly beneficial when dealing with large volumes of data, as it allows you to process the data in chunks rather than loading the entire dataset into memory at once. This approach helps overcome memory limitations and improves the efficiency of your application.
 
@@ -559,9 +544,8 @@ In this example, the `CsvStreamInterceptor` streams a large CSV file from an ext
 
 Using data streams in combination with interceptors is a powerful way to manage and process large volumes of data efficiently. 
 
-=================
 
-Is there a way know that the output from a service can be huge and switch to chunk processing otherwise use the default processing one
+**Is there a way know that the output from a service can be huge and switch to chunk processing otherwise use the default processing one**
 
 Yes, you can implement logic to determine if the output from a service is large and switch to chunk processing accordingly. One way to achieve this is by inspecting the `Content-Length` header of the HTTP response. If the `Content-Length` exceeds a certain threshold, you can switch to chunk processing; otherwise, you can use default processing.
 
@@ -643,9 +627,7 @@ export class DataController {
 This approach ensures that you handle large datasets efficiently while using default processing for smaller datasets.
 
 
-=================
-
-Even though the data is processed in chunks, I feel we may have to combine the data together when rendering it to the client. How is this done
+**Even though the data is processed in chunks, I feel we may have to combine the data together when rendering it to the client. How is this done**
 
 When processing data in chunks, you can accumulate the chunks and combine them into a single response before sending it to the client. This approach ensures that the client receives a complete and cohesive response. Here's how you can achieve this in NestJS using an interceptor:
 
