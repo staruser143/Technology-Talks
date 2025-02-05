@@ -1,3 +1,112 @@
+
+# In a CQRS (Command Query Responsibility Segregation) setup using NestJS, it is indeed possible to apply interceptors at the command handler level. NestJS interceptors can be used to add additional behavior to the execution of your commands, such as logging, validation, or error handling.
+
+### Applying Interceptors to Command Handlers
+
+To apply interceptors to command handlers in NestJS, you can use the `@UseInterceptors` decorator on the command handler class or method. Here’s a step-by-step guide on how to do this:
+
+#### 1. Create a Command
+
+First, define a command class. This class represents the data structure for the command.
+
+```typescript
+// create-account.command.ts
+export class CreateAccountCommand {
+  constructor(
+    public readonly accountId: string,
+    public readonly ownerName: string,
+    public readonly initialBalance: number
+  ) {}
+}
+```
+
+#### 2. Implement a Command Handler
+
+Next, implement the command handler for the command. This handler will execute the logic associated with the command.
+
+```typescript
+// create-account.handler.ts
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CreateAccountCommand } from './create-account.command';
+
+@CommandHandler(CreateAccountCommand)
+export class CreateAccountHandler implements ICommandHandler<CreateAccountCommand> {
+  async execute(command: CreateAccountCommand): Promise<void> {
+    const { accountId, ownerName, initialBalance } = command;
+    // Business logic to create an account
+    console.log(`Account created: ${accountId}, Owner: ${ownerName}, Balance: ${initialBalance}`);
+  }
+}
+```
+
+#### 3. Create an Interceptor
+
+Create an interceptor to add additional behavior to the command handling process. For example, a logging interceptor:
+
+```typescript
+// logging.interceptor.ts
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    console.log('Before handling command...');
+
+    const now = Date.now();
+    return next
+      .handle()
+      .pipe(
+        tap(() => console.log(`After handling command... ${Date.now() - now}ms`))
+      );
+  }
+}
+```
+
+#### 4. Apply the Interceptor to the Command Handler
+
+Use the `@UseInterceptors` decorator to apply the interceptor to the command handler.
+
+```typescript
+// create-account.handler.ts
+import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
+import { CreateAccountCommand } from './create-account.command';
+import { UseInterceptors } from '@nestjs/common';
+import { LoggingInterceptor } from './logging.interceptor';
+
+@CommandHandler(CreateAccountCommand)
+@UseInterceptors(LoggingInterceptor) // Apply interceptor to the command handler
+export class CreateAccountHandler implements ICommandHandler<CreateAccountCommand> {
+  async execute(command: CreateAccountCommand): Promise<void> {
+    const { accountId, ownerName, initialBalance } = command;
+    // Business logic to create an account
+    console.log(`Account created: ${accountId}, Owner: ${ownerName}, Balance: ${initialBalance}`);
+  }
+}
+```
+
+#### 5. Register the Command Handler and Interceptor
+
+Finally, ensure that the command handler and interceptor are registered in your module.
+
+```typescript
+// app.module.ts
+import { Module } from '@nestjs/common';
+import { CqrsModule } from '@nestjs/cqrs';
+import { CreateAccountHandler } from './create-account.handler';
+import { LoggingInterceptor } from './logging.interceptor';
+
+@Module({
+  imports: [CqrsModule],
+  providers: [CreateAccountHandler, LoggingInterceptor],
+})
+export class AppModule {}
+```
+
+### Summary
+
+By using the `@UseInterceptors` decorator, you can apply interceptors to command handlers in a CQRS setup with NestJS. This allows you to add additional behavior such as logging, validation, or error handling to the command execution process. This approach ensures that cross-cutting concerns are handled consistently and efficiently.
 # Using Middleware/Interceptors to handle saving to Event Store
 Using middleware or interceptors to handle the saving of events to an event store can be a practical approach to separate concerns and centralize the logic for appending events. This allows your command handlers to focus solely on business logic without worrying about the persistence layer. Here's how you can implement this approach:
 
