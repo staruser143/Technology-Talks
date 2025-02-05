@@ -94,10 +94,9 @@ query {
 
 You should see the response: `"Hello, world!"`
 
-And that's it! You've successfully set up a basic GraphQL API with NestJS. From here, you can expand your schema, add more resolvers, and build out your application further. If you have any questions or need more detailed guidance, feel free to ask!
 
 **What are feature flags in NestJS**
-Absolutely, you can use feature flags, guards, interceptors, and middleware with GraphQL in NestJS. Each of these concepts is supported by NestJS and can be integrated seamlessly into your GraphQL application. Here's a brief overview of how you can use each of them:
+We can use feature flags, guards, interceptors, and middleware with GraphQL in NestJS. Each of these concepts is supported by NestJS and can be integrated seamlessly into your GraphQL application. Here's a brief overview of how you can use each of them:
 
 ### Feature Flags
 Feature flags allow you to enable or disable features in your application without deploying new code. You can create a custom decorator to implement feature flags.
@@ -194,8 +193,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-By combining these powerful features, you can create a robust and flexible GraphQL API with NestJS. If you need more details or have any specific scenarios in mind, feel free to ask!
-
+By combining these powerful features, you can create a robust and flexible GraphQL API with NestJS. 
 
 **Can we have a unified schema for both Comos DB and Graph/ql**
 
@@ -247,8 +245,6 @@ Your application can now interact with the unified GraphQL API, which in turn co
 By following these steps, you can create a unified schema that works seamlessly with both your GraphQL API and Azure Cosmos DB. This approach simplifies data management and ensures consistency across your application.
 
 
-
-**Ah, I see where you're coming from. Let's break it down a bit further.**
 
 ### Collections in Azure Cosmos DB (MongoDB API)
 When working with Azure Cosmos DB for MongoDB API, you typically define collections that store documents. Each document in a collection can have a different structure, but it's a good practice to follow a consistent schema.
@@ -487,8 +483,6 @@ export class TodoResolver {
 - **Type Safety**: Leverage TypeScript’s type system to ensure your schema is consistent across your application.
 
 By using the code-first approach, you can efficiently manage your schema and ensure consistency across your GraphQL API and database.
-
-If you have any specific scenarios or further questions, let me know!
 
 **I still don't get it. I see we now have only one file for both graphql schema and also the db schema. But, when are the graphQL and db schemas actuallly crated**
 
