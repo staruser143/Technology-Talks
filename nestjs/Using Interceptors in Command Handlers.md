@@ -1,5 +1,6 @@
 
-# In a CQRS (Command Query Responsibility Segregation) setup using NestJS, it is indeed possible to apply interceptors at the command handler level. NestJS interceptors can be used to add additional behavior to the execution of your commands, such as logging, validation, or error handling.
+# When using CQRS, we use Command Handlers which execute commands. The command bus forwards requests to command handlers from Controller. I want to know if it is possible to apply interceptors at the Command Handler level.
+In a CQRS (Command Query Responsibility Segregation) setup using NestJS, it is indeed possible to apply interceptors at the command handler level. NestJS interceptors can be used to add additional behavior to the execution of your commands, such as logging, validation, or error handling.
 
 ### Applying Interceptors to Command Handlers
 
