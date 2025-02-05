@@ -453,7 +453,7 @@ export class AccountController {
 
 Using pipes for validation in NestJS is a powerful way to ensure data integrity and enforce validation rules before processing requests. The built-in `ValidationPipe` is convenient for standard validation scenarios, while custom pipes offer flexibility for more complex validation logic. By leveraging these features, you can maintain a clean and maintainable codebase with robust validation.
 
-#Not sure if we need to use ValidationPipe with @UsePipes as in the first example. We can do the validation by using decorators on the fields in the DTOs using the class-validator class-transformer modules. Only for the second example, where there is custom validation logic it makes sense to use @UsePipes(CustomValidationPipe). Is that correct?
+# Not sure if we need to use ValidationPipe with @UsePipes as in the first example. We can do the validation by using decorators on the fields in the DTOs using the class-validator class-transformer modules. Only for the second example, where there is custom validation logic it makes sense to use @UsePipes(CustomValidationPipe). Is that correct?
 
 Actually, the usage of `@UsePipes` with `ValidationPipe` is essential when you want NestJS to automatically validate the DTOs using the decorators from `class-validator`. Here's why:
 
