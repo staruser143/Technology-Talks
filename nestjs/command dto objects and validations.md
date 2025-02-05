@@ -1,4 +1,4 @@
-#When using CQRS, what is the best way to create Command Object based on the request received when using NestJS
+# When using CQRS, what is the best way to create Command Object based on the request received when using NestJS
 
 When using CQRS (Command Query Responsibility Segregation) in a NestJS application, creating command objects based on incoming requests is a common pattern. This involves mapping the data from the request to a command object which will be processed by a command handler. Here’s how you can efficiently create command objects from requests in NestJS:
 
@@ -97,7 +97,7 @@ export class CreateAccountHandler implements ICommandHandler<CreateAccountComman
 
 This setup provides a clean and maintainable way to create and handle command objects in a NestJS application using CQRS.
 
-#Do we need seperate DTOs and Command Object. Can't we just use one?
+# Do we need seperate DTOs and Command Object. Can't we just use one?
 While it is technically possible to use a single class for both DTOs (Data Transfer Objects) and command objects, it is generally recommended to keep them separate. Here are the reasons why separating DTOs and command objects is beneficial, along with an example to illustrate the concept:
 
 ### Reasons to Separate DTOs and Command Objects
@@ -195,7 +195,7 @@ export class CreateAccountHandler implements ICommandHandler<CreateAccountComman
 While it is possible to use a single class for both DTOs and command objects, separating them provides better separation of concerns, validation flexibility, decoupling, and maintainability. This approach aligns with best practices in software design, ensuring that each class has a single, well-defined responsibility.
 
 
-#In the DTO class, how do we do custom validations or validations across one or more fields received from request.
+# In the DTO class, how do we do custom validations or validations across one or more fields received from request.
 In a NestJS application, you can perform custom validations or validations across multiple fields in a DTO (Data Transfer Object) by using the `class-validator` library. This library provides decorators for common validation rules, and it also allows you to create custom validation decorators.
 
 ### Steps to Implement Custom Validations in a DTO
@@ -559,7 +559,7 @@ export class AccountController {
 
 Using `@UsePipes(new ValidationPipe())` ensures that all your DTO validations are enforced automatically, maintaining a clean and centralized validation mechanism.
 
-#I remember in earlier conversation about validation of fields in DTO without using pipes, there was no mention about using @UsePipes. So just want to confirm on that.
+# I remember in earlier conversation about validation of fields in DTO without using pipes, there was no mention about using @UsePipes. So just want to confirm on that.
 In NestJS, when you want to validate incoming request data using `class-validator` decorators within DTOs, you do need to use the `ValidationPipe`. This pipe tells NestJS to apply the validation rules defined in your DTOs. While you don't always need to explicitly use `@UsePipes` in your controllers, it's important to ensure that the `ValidationPipe` is applied either globally or at the controller/method level.
 
 ### Applying Validation Globally (Recommended)
