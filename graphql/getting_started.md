@@ -622,6 +622,133 @@ export class TodoResolver {
 
 By using this unified approach, you streamline your development process and maintain a consistent schema across your application.
 
+# Can we use interceptors and also the ValidationPipe when using GraphQL with NestJS
+Yes, you can definitely use both interceptors and the `ValidationPipe` when working with GraphQL in a NestJS application. NestJS provides robust support for integrating interceptors and validation pipes with GraphQL resolvers, similar to how you would use them with REST controllers.
+
+### Using Interceptors with GraphQL
+
+Interceptors in NestJS can be used to transform the data, handle errors, log information, and more. You can apply interceptors to GraphQL resolvers at different levels: globally, at the resolver level, or at the individual method level.
+
+#### Example: Applying an Interceptor to a GraphQL Resolver
+
+```typescript
+// logging.interceptor.ts
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs/operators';
+
+@Injectable()
+export class LoggingInterceptor implements NestInterceptor {
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    console.log('Before...');
+    const now = Date.now();
+
+    return next.handle().pipe(
+      tap(() => console.log(`After... ${Date.now() - now}ms`)),
+    );
+  }
+}
+```
+
+Apply the interceptor to a GraphQL resolver:
+
+```typescript
+// cats.resolver.ts
+import { Resolver, Query } from '@nestjs/graphql';
+import { UseInterceptors } from '@nestjs/common';
+import { LoggingInterceptor } from './logging.interceptor';
+
+@Resolver('Cats')
+@UseInterceptors(LoggingInterceptor)  // Apply interceptor at the resolver level
+export class CatsResolver {
+  @Query(() => String)
+  async getCats() {
+    return 'This action returns all cats';
+  }
+}
+```
+
+### Using ValidationPipe with GraphQL
+
+To use `ValidationPipe` with GraphQL, you need to apply it to the input types used in your resolvers. NestJS allows you to apply pipes at different levels of your application.
+
+#### Example: Applying ValidationPipe to GraphQL Input Types
+
+First, define an input type with validation decorators:
+
+```typescript
+// create-cat.input.ts
+import { InputType, Field } from '@nestjs/graphql';
+import { IsString, MinLength } from 'class-validator';
+
+@InputType()
+export class CreateCatInput {
+  @Field()
+  @IsString()
+  @MinLength(3)
+  name: string;
+
+  @Field()
+  @IsString()
+  @MinLength(3)
+  breed: string;
+}
+```
+
+Apply the `ValidationPipe` in the resolver:
+
+```typescript
+// cats.resolver.ts
+import { Resolver, Mutation, Args } from '@nestjs/graphql';
+import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { CreateCatInput } from './create-cat.input';
+import { CatsService } from './cats.service';
+
+@Resolver('Cats')
+export class CatsResolver {
+  constructor(private readonly catsService: CatsService) {}
+
+  @Mutation(() => String)
+  @UsePipes(new ValidationPipe())  // Apply ValidationPipe at the method level
+  async createCat(@Args('createCatInput') createCatInput: CreateCatInput) {
+    return this.catsService.create(createCatInput);
+  }
+}
+```
+
+### Applying Interceptors and ValidationPipe Globally
+
+You can also apply interceptors and validation pipes globally in your application. This ensures that they are applied to all resolvers and methods.
+
+#### Example: Applying Globally in main.ts
+
+```typescript
+// main.ts
+import { ValidationPipe } from '@nestjs/common';
+import { NestFactory } from '@nestjs/core';
+import { AppModule } from './app.module';
+import { LoggingInterceptor } from './logging.interceptor';
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+
+  // Apply ValidationPipe globally
+  app.useGlobalPipes(new ValidationPipe());
+
+  // Apply LoggingInterceptor globally
+  app.useGlobalInterceptors(new LoggingInterceptor());
+
+  await app.listen(3000);
+}
+bootstrap();
+```
+
+### Summary
+
+- **Interceptors**: Can be applied at the resolver level, method level, or globally to handle cross-cutting concerns like logging, error handling, etc.
+- **ValidationPipe**: Can be applied to validate GraphQL input types using `class-validator` decorators, ensuring data integrity before processing.
+
+By combining interceptors and validation pipes, you can create a robust and maintainable GraphQL API in NestJS that handles validation and cross-cutting concerns effectively.
 
 **What about the Queries and Input Types in GraphQL. Don't we need it at all?**
 
