@@ -96,6 +96,7 @@ You should see the response: `"Hello, world!"`
 
 And that's it! You've successfully set up a basic GraphQL API with NestJS. From here, you can expand your schema, add more resolvers, and build out your application further. If you have any questions or need more detailed guidance, feel free to ask!
 
+**What are feature flags in NestJS**
 Absolutely, you can use feature flags, guards, interceptors, and middleware with GraphQL in NestJS. Each of these concepts is supported by NestJS and can be integrated seamlessly into your GraphQL application. Here's a brief overview of how you can use each of them:
 
 ### Feature Flags
@@ -196,6 +197,7 @@ bootstrap();
 By combining these powerful features, you can create a robust and flexible GraphQL API with NestJS. If you need more details or have any specific scenarios in mind, feel free to ask!
 
 
+**Can we have a unified schema for both Comos DB and Graph/ql**
 
 Yes, you can have a unified schema for both Azure Cosmos DB (MongoDB API) and GraphQL. Here's how you can achieve this:
 
@@ -244,12 +246,9 @@ Your application can now interact with the unified GraphQL API, which in turn co
 
 By following these steps, you can create a unified schema that works seamlessly with both your GraphQL API and Azure Cosmos DB. This approach simplifies data management and ensures consistency across your application.
 
-Would you like more details on any specific step?
 
 
-=====
-
-Ah, I see where you're coming from. Let's break it down a bit further.
+**Ah, I see where you're coming from. Let's break it down a bit further.**
 
 ### Collections in Azure Cosmos DB (MongoDB API)
 When working with Azure Cosmos DB for MongoDB API, you typically define collections that store documents. Each document in a collection can have a different structure, but it's a good practice to follow a consistent schema.
@@ -322,11 +321,11 @@ In this example:
 ### Summary
 While the GraphQL schema defines the structure of the API, you still need to create and manage collections in Cosmos DB manually. The GraphQL resolvers handle the interaction between the API and the database, ensuring that the data follows the defined schema.
 
-If you have specific scenarios or further questions, let me know! I'm here to help.
 
-====
 
-Yes, you are correct. Ensuring that your GraphQL schema and your database schema are in sync is crucial to maintaining consistency across your application. Here’s how you can manage this:
+**How to keep GraphQL Schema in sync with database Schema?**
+
+Ensuring that your GraphQL schema and your database schema are in sync is crucial to maintaining consistency across your application. Here’s how you can manage this:
 
 ### Keeping Schemas in Sync
 1. **Schema Definition**: Define your schema centrally. You can use a schema definition language (SDL) or code-first approach to ensure that the schema is consistent across both GraphQL and the database.
@@ -414,10 +413,8 @@ By following this approach, you ensure that:
 - Changes to the schema in one place are reflected in the other, reducing the risk of discrepancies.
 - Maintenance is easier since you have a single source of truth for your schema.
 
-Would you like more details on any of these steps?
-================
 
-There are 2 different files. One for GraphQL schema and the other for the DB Entity. We would end up changing both whenever there is a change isn't it or am I missing something here?
+**There are 2 different files. One for GraphQL schema and the other for the DB Entity. We would end up changing both whenever there is a change isn't it or am I missing something here?**
 
 You're correct, the approach I described does involve maintaining two separate files—one for the GraphQL schema and one for the database entity. This can lead to extra work whenever you need to make changes. However, there are ways to streamline this process.
 
@@ -493,10 +490,7 @@ By using the code-first approach, you can efficiently manage your schema and ens
 
 If you have any specific scenarios or further questions, let me know!
 
-
-============
-
-I still don't get it. I see we now have only one file for both graphql schema and also the db schema. But, when are the graphQL and db schemas actuallly crated
+**I still don't get it. I see we now have only one file for both graphql schema and also the db schema. But, when are the graphQL and db schemas actuallly crated**
 
 Let's break it down a bit more, focusing on when and how the schemas are created for both GraphQL and the database in the code-first approach.
 
@@ -557,14 +551,11 @@ When you start your application, you will see logs indicating that the schemas a
 - **GraphQL Schema**: Created automatically when NestJS starts, based on your TypeScript classes with `@ObjectType` and `@Field`.
 - **Database Schema**: Created or synchronized by TypeORM when the application starts, based on your TypeScript classes with `@Entity`, `@PrimaryGeneratedColumn`, and `@Column`.
 
-I hope this clarifies when and how the schemas are created. If you have any more questions or need further details, feel free to ask!
 
 
-=====================
+**Does that mean in GraphQL resolver methods, we would be referring to the unified 'TodoItem' class for both accessing GraphQL features as well as for DB persistence too and there is no need to write a GraphQL schema file , with types and inputs defined in it.\**
 
-Does that mean in GraphQL resolver methods, we would be referring to the unified 'TodoItem' class for both accessing GraphQL features as well as for DB persistence too and there is no need to write a GraphQL schema file , with types and inputs defined in it.\
-
-Yes, you're exactly right! With the code-first approach in NestJS, you define a single `TodoItem` class, which serves as the unified schema for both GraphQL and your database.
+With the code-first approach in NestJS, you define a single `TodoItem` class, which serves as the unified schema for both GraphQL and your database.
 
 ### Key Points:
 1. **Unified Class**: The `TodoItem` class with TypeScript decorators handles both GraphQL schema and database entity definitions.
@@ -637,13 +628,10 @@ export class TodoResolver {
 
 By using this unified approach, you streamline your development process and maintain a consistent schema across your application.
 
-If you have more questions or need further clarification, feel free to ask!
 
-===================
+**What about the Queries and Input Types in GraphQL. Don't we need it at all?**
 
-What about the Queries and Input Types in GraphQL. Don't we need it at all?
-
-You're right! We still need to define queries and input types to fully utilize GraphQL features. In the code-first approach, we can define these directly in our TypeScript code using decorators. Let me show you how this works.
+We still need to define queries and input types to fully utilize GraphQL features. In the code-first approach, we can define these directly in our TypeScript code using decorators. Let me show you how this works.
 
 ### Defining Input Types
 Input types are used to define the structure of the data that can be passed to your GraphQL mutations and queries. Here's how you can define input types:
@@ -722,14 +710,12 @@ export class TodoResolver {
 
 By defining input types and resolver methods in your TypeScript code, you maintain a consistent schema and ensure that your GraphQL API is fully functional.
 
-This approach allows you to take advantage of all GraphQL features while keeping your schema definitions in sync with your database entities. If you have any more questions or need further clarification, feel free to ask!
+This approach allows you to take advantage of all GraphQL features while keeping your schema definitions in sync with your database entities. 
 
 
-=====
+**Does that mean we can only have a unified schema for both GraphQL and data store schema. But, we still need GraphQL queries and input types to be defined. how about mutations and subscriptions , would we have any need for them here.**
 
-Does that mean we can only have a unified schema for both GraphQL and data store schema. But, we still need GraphQL queries and input types to be defined. how about mutations and subscriptions , would we have any need for them here.
-
-Yes, you’re right. The unified schema approach primarily allows you to define a single class for both the GraphQL and database schemas. However, you still need to define GraphQL queries, input types, mutations, and subscriptions to fully utilize GraphQL's capabilities.
+The unified schema approach primarily allows you to define a single class for both the GraphQL and database schemas. However, you still need to define GraphQL queries, input types, mutations, and subscriptions to fully utilize GraphQL's capabilities.
 
 ### Summary of Key Points:
 1. **Unified Schema**: A single TypeScript class can serve as both the GraphQL schema and the database entity.
@@ -827,12 +813,9 @@ export class TodoResolver {
 
 By defining your GraphQL queries, input types, mutations, and subscriptions using TypeScript decorators and classes, you can build a robust and consistent API that leverages both the unified schema and the powerful features of GraphQL.
 
-If you have any more questions or need further details, feel free to ask!
-===========
+**Do you mean we don't need to define the mutation types and subscription types which we had to add in graphQL schema files separately.**
 
-Do you mean we don't need to define the mutation types and subscription types which we had to add in graphQL schema files separately.
-
-Exactly! With the code-first approach in NestJS, you don't need to manually define mutation types and subscription types in a separate GraphQL schema file. Instead, you define them directly in your TypeScript code using decorators and classes.
+With the code-first approach in NestJS, you don't need to manually define mutation types and subscription types in a separate GraphQL schema file. Instead, you define them directly in your TypeScript code using decorators and classes.
 
 Here’s a breakdown of how it works:
 
@@ -948,7 +931,4 @@ export class TodoResolver {
 - **Automatic Schema Generation**: The GraphQL schema is automatically generated from your TypeScript code when you start the NestJS application.
 - **Consistency**: Ensure that your API and database schemas remain consistent without manual synchronization.
 
-This approach simplifies your development process and ensures that all parts of your GraphQL API are defined in a single, unified way. If you have more questions or need further clarification, feel free to ask!
-
-
-==================
+This approach simplifies your development process and ensures that all parts of your GraphQL API are defined in a single, unified way. 
