@@ -1,6 +1,6 @@
-6# Should I use NestJS with fastify or with default expressJS engine.
+# Fastify vs default ExpressJS Engine for NestJS.
 
-It depends on your project requirements and performance goals. Here's a comparison to help you decide:
+It depends on the project requirements and performance goals. Here's a comparison to help us decide:
 
 **Use NestJS with Fastify if:**
 - **Performance is critical**: Fastify is faster and more performant than Express due to its highly optimized architecture.
@@ -16,9 +16,9 @@ It depends on your project requirements and performance goals. Here's a comparis
 
 - **Ease of use and compatibility**: Express has a larger ecosystem, and many NestJS plugins are designed for Express.
 
-- **Legacy compatibility**: If you're migrating an existing Express-based project.
+- **Legacy compatibility**: If we're migrating an existing Express-based project.
 
-- **Faster setup**: You get built-in compatibility without needing additional tweaks.
+- **Faster setup**: We get built-in compatibility without needing additional tweaks.
 
 - **Middleware compatibility**: Most third-party middleware is designed for Express.
 
@@ -31,7 +31,7 @@ If performance is a strong concern, Fastify is often the better choice. However,
 
 # Can we use both , say for some parts we use fastify and for others we use default expressJS
 
-No, you cannot use both Fastify and Express simultaneously within the same NestJS application. NestJS is designed to work with a single HTTP platform adapter at a time, either Fastify or Express, but not both together.
+No, we cannot use both Fastify and Express simultaneously within the same NestJS application. NestJS is designed to work with a single HTTP platform adapter at a time, either Fastify or Express, but not both together.
 
 **Why Not Both?**
 
@@ -42,14 +42,14 @@ Adapters like Fastify and Express have distinct request/response lifecycle imple
 
 **Possible Workarounds**
 
-If you really need to mix them, you could consider the following approaches:
+If we really need to mix them, we could consider the following approaches:
 
 1. **Microservices Architecture**:
-Split your application into multiple services, where one service uses Fastify and another uses Express, communicating via APIs or a message broker.
+Split the application into multiple services, where one service uses Fastify and another uses Express, communicating via APIs or a message broker.
 
 
 2. **Gateway Pattern:**
-Use a gateway (like API Gateway) in front of your services, each built using different engines (Fastify for high-performance APIs and Express for compatibility-heavy endpoints).
+Use a gateway (like API Gateway) in front of the services, each built using different engines (Fastify for high-performance APIs and Express for compatibility-heavy endpoints).
 
 
 3. **Proxying Requests:**
@@ -59,7 +59,7 @@ Create a primary NestJS app with one adapter (say Fastify) and proxy specific re
 
 # How do we benchmark performance of fastify with expressJS
 
-To benchmark the performance of Fastify vs. ExpressJS, you can follow these steps:
+To benchmark the performance of Fastify vs. ExpressJS, we can follow these steps:
 
 1. **Setup Applications**
 Create two separate NestJS applications:
@@ -355,7 +355,7 @@ const request: FastifyRequest = context.switchToHttp().getRequest();
 
 1. **GraphQL Fastify Adapter**
 
-You need to install the @nestjs/graphql package along with apollo-server-fastify instead of apollo-server-express.
+We need to install the @nestjs/graphql package along with apollo-server-fastify instead of apollo-server-express.
 
 ```
 npm install @nestjs/graphql apollo-server-fastify graphql
@@ -396,10 +396,10 @@ bootstrap();
 **Additional Considerations**
 
 **Middleware Changes**:
-- You may need to handle body parsing manually for Fastify, although Apollo Fastify generally manages this for you.
+- We may need to handle body parsing manually for Fastify, although Apollo Fastify generally manages this for us.
 
 **Subscription Support:**
-- Fastify WebSocket support (@nestjs/websockets) is required if you use GraphQL subscriptions.
+- Fastify WebSocket support (@nestjs/websockets) is required if we use GraphQL subscriptions.
 
 Performance Gains:
 Expect better performance with Fastify when handling high-concurrency GraphQL requests.
@@ -497,17 +497,13 @@ export class AppResolver {
   }
 }
 ```
-
-
 **Step 6: Run the Application**
 ```
 npm run start
 ```
-
 **Step 7: Test the GraphQL Endpoint**
 
 Visit http://localhost:3000/graphql and run the following query:
-
 ```
 query {
   hello
