@@ -524,7 +524,15 @@ query {
 ```
 
 
+Project Directory Structure
 
+fastify-graphql-app/
+├── src/
+│   ├── app.module.ts
+│   ├── app.resolver.ts
+│   └── main.ts
+├── package.json
+└── tsconfig.json
 
 
 
