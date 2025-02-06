@@ -1,6 +1,6 @@
 # When using CQRS, what is the best way to create Command Object based on the request received when using NestJS
 
-When using CQRS (Command Query Responsibility Segregation) in a NestJS application, creating command objects based on incoming requests is a common pattern. This involves mapping the data from the request to a command object which will be processed by a command handler. Here’s how you can efficiently create command objects from requests in NestJS:
+When using CQRS (Command Query Responsibility Segregation) in a NestJS application, creating command objects based on incoming requests is a common pattern. This involves mapping the data from the request to a command object which will be processed by a command handler. Here’s how we can efficiently create command objects from requests in NestJS:
 
 ### Steps to Create Command Objects in NestJS
 
@@ -97,7 +97,8 @@ export class CreateAccountHandler implements ICommandHandler<CreateAccountComman
 
 This setup provides a clean and maintainable way to create and handle command objects in a NestJS application using CQRS.
 
-# Do we need seperate DTOs and Command Object. Can't we just use one?
+# DTOs vs Command Object. Can we use just one?
+
 While it is technically possible to use a single class for both DTOs (Data Transfer Objects) and command objects, it is generally recommended to keep them separate. Here are the reasons why separating DTOs and command objects is beneficial, along with an example to illustrate the concept:
 
 ### Reasons to Separate DTOs and Command Objects
@@ -195,8 +196,8 @@ export class CreateAccountHandler implements ICommandHandler<CreateAccountComman
 While it is possible to use a single class for both DTOs and command objects, separating them provides better separation of concerns, validation flexibility, decoupling, and maintainability. This approach aligns with best practices in software design, ensuring that each class has a single, well-defined responsibility.
 
 
-# In the DTO class, how do we do custom validations or validations across one or more fields received from request.
-In a NestJS application, you can perform custom validations or validations across multiple fields in a DTO (Data Transfer Object) by using the `class-validator` library. This library provides decorators for common validation rules, and it also allows you to create custom validation decorators.
+# Custom validations or Validations across one or more fields received from request.
+In a NestJS application, we can perform custom validations or validations across multiple fields in a DTO (Data Transfer Object) by using the `class-validator` library. This library provides decorators for common validation rules, and it also allows us to create custom validation decorators.
 
 ### Steps to Implement Custom Validations in a DTO
 
@@ -209,7 +210,7 @@ In a NestJS application, you can perform custom validations or validations acros
 
 #### 1. Install Dependencies
 
-Make sure you have `class-validator` and `class-transformer` installed:
+Make sure we have `class-validator` and `class-transformer` installed:
 
 ```bash
 npm install class-validator class-transformer
@@ -314,7 +315,7 @@ export class AccountController {
 
 This approach allows you to perform complex validations, including cross-field validations, in a clean and maintainable way.
 
-# NestJS has concept of pipes too. When should I use it for validation?
+# Using Pipes for Transforming and Validating Data
 In NestJS, pipes are a powerful feature used for transforming and validating data. They can be applied at various levels (method, controller, or globally) to handle incoming data before it reaches the request handler. Here's an overview of when and how to use pipes for validation:
 
 ### When to Use Pipes for Validation
@@ -335,13 +336,13 @@ In NestJS, pipes are a powerful feature used for transforming and validating dat
    - NestJS provides a built-in `ValidationPipe` that integrates with the `class-validator` library to perform validation.
 
 2. **Custom Pipes**:
-   - You can create custom pipes to handle specific validation scenarios or complex validation logic.
+   - We can create custom pipes to handle specific validation scenarios or complex validation logic.
 
 ### Example Implementation
 
 #### 1. Install Dependencies
 
-Ensure you have the necessary libraries installed:
+Ensure we have the necessary libraries installed:
 
 ```bash
 npm install class-validator class-transformer
@@ -405,7 +406,7 @@ export class AccountController {
 
 ### Custom Validation Pipe Example
 
-You can also create custom validation pipes for more specific validation logic:
+We can also create custom validation pipes for more specific validation logic:
 
 ```typescript
 // custom-validation.pipe.ts
@@ -453,11 +454,11 @@ export class AccountController {
 
 Using pipes for validation in NestJS is a powerful way to ensure data integrity and enforce validation rules before processing requests. The built-in `ValidationPipe` is convenient for standard validation scenarios, while custom pipes offer flexibility for more complex validation logic. By leveraging these features, you can maintain a clean and maintainable codebase with robust validation.
 
-# Not sure if we need to use ValidationPipe with @UsePipes as in the first example. We can do the validation by using decorators on the fields in the DTOs using the class-validator class-transformer modules. Only for the second example, where there is custom validation logic it makes sense to use @UsePipes(CustomValidationPipe). Is that correct?
+# Is it mandatory to use @UsePipes with ValidationPipe?
 
-Actually, the usage of `@UsePipes` with `ValidationPipe` is essential when you want NestJS to automatically validate the DTOs using the decorators from `class-validator`. Here's why:
+Actually, the usage of `@UsePipes` with `ValidationPipe` is essential when we want NestJS to automatically validate the DTOs using the decorators from `class-validator`. Here's why:
 
-1. **Automatic Validation**: By using `@UsePipes(new ValidationPipe())`, you enable automatic validation of incoming requests based on the decorators in your DTO. Without this, the validation decorators on the DTO fields won't be executed.
+1. **Automatic Validation**: By using `@UsePipes(new ValidationPipe())`, we enable automatic validation of incoming requests based on the decorators in your DTO. Without this, the validation decorators on the DTO fields won't be executed.
 
 2. **Centralized Validation Logic**: `ValidationPipe` ensures that all incoming data is validated according to the DTO's rules, providing a centralized and consistent way to handle validation.
 
@@ -557,14 +558,14 @@ export class AccountController {
 - **ValidationPipe with @UsePipes**: Necessary for automatic validation of DTOs using `class-validator` decorators.
 - **Custom Validation Pipe**: Useful for implementing specific validation logic that goes beyond what `class-validator` provides.
 
-Using `@UsePipes(new ValidationPipe())` ensures that all your DTO validations are enforced automatically, maintaining a clean and centralized validation mechanism.
+Using `@UsePipes(new ValidationPipe())` ensures that all our DTO validations are enforced automatically, maintaining a clean and centralized validation mechanism.
 
-# I remember in earlier conversation about validation of fields in DTO without using pipes, there was no mention about using @UsePipes. So just want to confirm on that.
-In NestJS, when you want to validate incoming request data using `class-validator` decorators within DTOs, you do need to use the `ValidationPipe`. This pipe tells NestJS to apply the validation rules defined in your DTOs. While you don't always need to explicitly use `@UsePipes` in your controllers, it's important to ensure that the `ValidationPipe` is applied either globally or at the controller/method level.
+# Applying ValidationPipe @ Global/Controller/Method Level
+In NestJS, when we want to validate incoming request data using `class-validator` decorators within DTOs, you do need to use the `ValidationPipe`. This pipe tells NestJS to apply the validation rules defined in your DTOs. While you don't always need to explicitly use `@UsePipes` in your controllers, it's important to ensure that the `ValidationPipe` is applied either globally or at the controller/method level.
 
 ### Applying Validation Globally (Recommended)
 
-You can apply the `ValidationPipe` globally in your main application file. This ensures that all incoming requests are validated according to the DTOs' rules.
+We can apply the `ValidationPipe` globally in main application file. This ensures that all incoming requests are validated according to the DTOs' rules.
 
 #### main.ts
 
@@ -583,7 +584,7 @@ bootstrap();
 
 ### Applying Validation at the Controller/Method Level
 
-If you prefer to apply validation at a more granular level, you can use the `@UsePipes` decorator in your controllers or methods.
+If we prefer to apply validation at a more granular level, we can use the `@UsePipes` decorator in your controllers or methods.
 
 #### Controller Level
 
