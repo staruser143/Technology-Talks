@@ -1,4 +1,4 @@
-# Should I use NestJS with fastify or with default expressJS engine.
+6# Should I use NestJS with fastify or with default expressJS engine.
 
 It depends on your project requirements and performance goals. Here's a comparison to help you decide:
 
@@ -523,7 +523,6 @@ query {
 }
 ```
 
-___
 Project Directory Structure
 
 fastify-graphql-app/
@@ -534,7 +533,6 @@ fastify-graphql-app/
 ├── package.json
 └── tsconfig.json
 
-___
 
 
 
