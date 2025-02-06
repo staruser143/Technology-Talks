@@ -1,3 +1,5 @@
+# CQRS with GraphQL in NestJS
+
 To use CQRS in a GraphQL NestJS application, follow these steps:
 
 ### Step 1: Integrate GraphQL with NestJS
@@ -72,9 +74,3 @@ To use CQRS in a GraphQL NestJS application, follow these steps:
      description: string;
    }
    ```
-
-### Follow-Up Steps
-1. Test the GraphQL endpoints to ensure they work correctly with CQRS.
-2. Add more advanced CQRS features if needed.
-
-These steps will help you integrate CQRS into your GraphQL NestJS application.
