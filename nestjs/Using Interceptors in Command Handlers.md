@@ -1,5 +1,4 @@
-
-# When using CQRS, we use Command Handlers which execute commands. The command bus forwards requests to command handlers from Controller. I want to know if it is possible to apply interceptors at the Command Handler level.
+# Apply Interceptors at Command Handler Level
 In a CQRS (Command Query Responsibility Segregation) setup using NestJS, it is indeed possible to apply interceptors at the command handler level. NestJS interceptors can be used to add additional behavior to the execution of your commands, such as logging, validation, or error handling.
 
 ### Applying Interceptors to Command Handlers
@@ -108,6 +107,7 @@ export class AppModule {}
 ### Summary
 
 By using the `@UseInterceptors` decorator, you can apply interceptors to command handlers in a CQRS setup with NestJS. This allows you to add additional behavior such as logging, validation, or error handling to the command execution process. This approach ensures that cross-cutting concerns are handled consistently and efficiently.
+
 # Using Middleware/Interceptors to handle saving to Event Store
 Using middleware or interceptors to handle the saving of events to an event store can be a practical approach to separate concerns and centralize the logic for appending events. This allows your command handlers to focus solely on business logic without worrying about the persistence layer. Here's how you can implement this approach:
 
@@ -243,13 +243,13 @@ export class AppModule {
 
 ### Summary
 
-By using middleware or interceptors to handle the saving of events to an event store, you can achieve a clean separation of concerns, making your codebase more modular and maintainable. The command handlers focus on business logic, while middleware/interceptors handle cross-cutting concerns such as event persistence. This approach can be particularly useful in larger applications where consistent handling of events is crucial.
+By using middleware or interceptors to handle the saving of events to an event store, we can achieve a clean separation of concerns, making our codebase more modular and maintainable. The command handlers focus on business logic, while middleware/interceptors handle cross-cutting concerns such as event persistence. This approach can be particularly useful in larger applications where consistent handling of events is crucial.
 
 
 # Choosing between Interceptor and Middleware
-You are correct that you can achieve the same goal using either middleware or interceptors, and in many cases, you may not need both. The choice between middleware and interceptors depends on the specific requirements and the framework you are using. 
+The choice between middleware and interceptors depends on the specific requirements and the framework we are using. 
 
-Here's a summary to help you decide which to use:
+Here's a summary to help us decide which to use:
 
 ### Middleware
 - **Scope**: Middleware typically handles cross-cutting concerns that apply to the entire application or specific routes. 
@@ -262,7 +262,7 @@ Here's a summary to help you decide which to use:
 - **Execution Order**: Interceptors can execute before and after the method call, allowing for more granular control over the flow of execution.
 
 ### Choosing One
-For the task of saving events to an event store in a CQRS setup, you can use either middleware or interceptors effectively. Here is how you can implement the solution using only one of them:
+For the task of saving events to an event store in a CQRS setup, we can use either middleware or interceptors effectively. Here is how we can implement the solution using only one of them:
 
 ### Using Middleware Only
 
@@ -367,14 +367,14 @@ export class AppModule {}
 
 ### Summary
 
-You don't need to use both middleware and interceptors for this task. You can choose either middleware or interceptors based on your preference and specific needs. Both approaches can handle the saving of events to the event store effectively.
+We don't need to use both middleware and interceptors for this task. We can choose either middleware or interceptors based on our preference and specific needs. Both approaches can handle the saving of events to the event store effectively.
 
 
 # Using Interceptor to Load the Aggregate from Event Store
 
-Yes, you can use an interceptor to load the aggregate from the event store before handling the command. This approach centralizes the logic for loading the aggregate, ensuring that your command handler only focuses on business logic.
+We can use an interceptor to load the aggregate from the event store before handling the command. This approach centralizes the logic for loading the aggregate, ensuring that the command handler only focuses on business logic.
 
-Here's how you can achieve this using an interceptor in a NestJS application:
+Here's how we can achieve this using an interceptor in a NestJS application:
 
 ### Steps to Implement Loading Aggregate from Event Store Using an Interceptor
 
@@ -516,7 +516,7 @@ export class AppModule {}
 
 ### Summary
 
-By using an interceptor to load the aggregate from the event store, you centralize the logic for loading the aggregate and keep your command handler focused on business logic. The interceptor ensures that the aggregate is loaded from the event store and passed to the command handler, and also handles saving uncommitted events back to the event store after the command is processed. This approach maintains a clean separation of concerns and promotes reusability.
+By using an interceptor to load the aggregate from the event store, we centralize the logic for loading the aggregate and keep the command handler focused on business logic. The interceptor ensures that the aggregate is loaded from the event store and passed to the command handler, and also handles saving uncommitted events back to the event store after the command is processed. This approach maintains a clean separation of concerns and promotes reusability.
 
 # Interceptor for Publishing Event to Message Broker like Kafka
 
@@ -530,7 +530,7 @@ Broadcasting events to a message broker like Kafka in addition to storing them i
 
 ### Example Implementation
 
-Here's how you can implement this in a NestJS application:
+Here's how we can implement this in a NestJS application:
 
 #### 1. Define the Event Store
 
@@ -709,4 +709,4 @@ export class AppModule {
 
 ### Summary
 
-Using an interceptor to handle the loading of aggregates from the event store and broadcasting events to Kafka separates these concerns from the command handler. This approach keeps your command handler focused on business logic while ensuring that events are consistently saved and published.
+Using an interceptor to handle the loading of aggregates from the event store and broadcasting events to Kafka separates these concerns from the command handler. This approach keeps the command handler focused on business logic while ensuring that events are consistently saved and published.
