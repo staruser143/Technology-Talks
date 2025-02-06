@@ -1,4 +1,4 @@
-To use logging in NestJS, follow these steps:
+8To use logging in NestJS, follow these steps:
 
 1. **Install the required package**:
    ```sh
@@ -85,3 +85,52 @@ To use logging in NestJS, follow these steps:
    ```
 
 These steps will help you integrate logging into your NestJS application.
+
+To use the `WinstonLogger` class in a controller, you need to do the following:
+
+1. **Register the Custom Logger as a Provider**:
+   - Register the `WinstonLogger` class as a provider in a module.
+
+2. **Inject the Logger into the Controller**:
+   - Use dependency injection to inject the `WinstonLogger` into the controller.
+
+Here is an example:
+
+1. **Register the Custom Logger in a Module**:
+   ```typescript
+   import { Module } from '@nestjs/common';
+   import { AppController } from './app.controller';
+   import { AppService } from './app.service';
+   import { WinstonLogger } from './winston.logger';
+
+   @Module({
+     controllers: [AppController],
+     providers: [AppService, WinstonLogger],
+   })
+   export class AppModule {}
+   ```
+
+2. **Inject the Logger into the Controller**:
+   ```typescript
+   import { Controller, Get } from '@nestjs/common';
+   import { AppService } from './app.service';
+   import { WinstonLogger } from './winston.logger';
+
+   @Controller()
+   export class AppController {
+     constructor(
+       private readonly appService: AppService,
+       private readonly logger: WinstonLogger,
+     ) {
+       this.logger.log('AppController initialized');
+     }
+
+     @Get()
+     getHello(): string {
+       this.logger.log('Handling getHello request');
+       return this.appService.getHello();
+     }
+   }
+   ```
+
+With these steps, the `WinstonLogger` is injected into the controller and can be used for logging within the controller's methods.
