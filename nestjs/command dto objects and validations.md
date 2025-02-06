@@ -1,4 +1,4 @@
-# When using CQRS, what is the best way to create Command Object based on the request received when using NestJS
+# Using Command Objects with CQRS in NestJS
 
 When using CQRS (Command Query Responsibility Segregation) in a NestJS application, creating command objects based on incoming requests is a common pattern. This involves mapping the data from the request to a command object which will be processed by a command handler. Here’s how we can efficiently create command objects from requests in NestJS:
 
