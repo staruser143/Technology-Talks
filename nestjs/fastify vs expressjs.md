@@ -433,15 +433,15 @@ export class AppResolver {
 Here’s a step-by-step guide and a working sample for integrating Fastify and GraphQL with NestJS.
 
 **Step 1: Create the NestJS Project**
----
+```
 nest new fastify-graphql-app
 cd fastify-graphql-app
----
+```
 
 **Step 2: Install Dependencies**
----
+```
 npm install @nestjs/graphql apollo-server-fastify graphql @nestjs/platform-fastify
----
+```
 
 **Step 3: Set Up Fastify in main.ts**
 
@@ -458,7 +458,7 @@ async function bootstrap() {
   console.log(`Application is running on: http://localhost:3000/graphql`);
 }
 bootstrap();
-```typescript
+```
 
 **Step 4: Configure GraphQL Module**
 
