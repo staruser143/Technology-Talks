@@ -1,4 +1,4 @@
-8To use logging in NestJS, follow these steps:
+# NestJS Logging
 
 1. **Install the required package**:
    ```sh
@@ -7,7 +7,7 @@
 
 2. **Use the built-in Logger**:
    - Import the `Logger` from `@nestjs/common`.
-   - Use it in your services, controllers, or other parts of the application.
+   - Use it in our services, controllers, or other parts of the application.
 
    **Example**:
    ```typescript
@@ -25,7 +25,7 @@
    ```
 
 3. **Customizing Logger**:
-   - You can create a custom logger by extending the `Logger` class.
+   - We can create a custom logger by extending the `Logger` class.
    - Override methods to customize the logging behavior.
 
    **Example**:
@@ -41,7 +41,7 @@
    ```
 
 4. **Using third-party logging libraries**:
-   - You can integrate third-party logging libraries like `winston` or `pino`.
+   - We can integrate third-party logging libraries like `winston` or `pino`.
    - Use the `LoggerService` interface to create a custom logger.
 
    **Example with `winston`**:
@@ -84,9 +84,9 @@
    }
    ```
 
-These steps will help you integrate logging into your NestJS application.
+These steps will help us integrate logging into our NestJS application.
 
-To use the `WinstonLogger` class in a controller, you need to do the following:
+To use the `WinstonLogger` class in a controller, we need to do the following:
 
 1. **Register the Custom Logger as a Provider**:
    - Register the `WinstonLogger` class as a provider in a module.
