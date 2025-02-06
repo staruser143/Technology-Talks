@@ -1,4 +1,4 @@
-To handle cross-cutting concerns like request logging, authentication and authorization, and validation in your GraphQL NestJS application with CQRS, follow these steps:
+# Handling cross-cutting concerns like request logging, authentication and authorization, and validation in GraphQL NestJS application with CQRS
 
 ### Step 1: Explore Cross-cutting Concerns in NestJS Documentation
 1. **Request Logging**:
