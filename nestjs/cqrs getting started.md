@@ -1,3 +1,4 @@
+# CQRS with NestJS
 To get started with using CQRS (Command Query Responsibility Segregation) in NestJS, follow these steps:
 
 1. **Install Required Packages**:
@@ -91,4 +92,4 @@ To get started with using CQRS (Command Query Responsibility Segregation) in Nes
    }
    ```
 
-These steps will help you get started with using CQRS in your NestJS application.
+These steps will help us get started with using CQRS in the NestJS application.
