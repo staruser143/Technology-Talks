@@ -523,10 +523,9 @@ query {
 }
 ```
 
----
 
 Project Directory Structure
-
+---
 fastify-graphql-app/
 ├── src/
 │   ├── app.module.ts
@@ -534,8 +533,7 @@ fastify-graphql-app/
 │   └── main.ts
 ├── package.json
 └── tsconfig.json
-
-
+---
 
 
 
