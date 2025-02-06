@@ -28,31 +28,7 @@ Performance Consideration
 
 If performance is a strong concern, Fastify is often the better choice. However, for many typical applications where ease of development and ecosystem compatibility are more important, sticking with Express might be simpler.
 
-# Can we use both , say for some parts we use fastify and for others we use default expressJS
-
-No, you cannot use both Fastify and Express simultaneously within the same NestJS application. NestJS is designed to work with a single HTTP platform adapter at a time, either Fastify or Express, but not both together.
-
-Why Not Both?
-
-The core of NestJS relies on a unified HTTP adapter interface, so switching between Fastify and Express isn't natively supported within the same app instance.
-
-Adapters like Fastify and Express have distinct request/response lifecycle implementations that would conflict if mixed.
-
-
-Possible Workarounds
-
-If you really need to mix them, you could consider the following approaches:
-
-1. Microservices Architecture:
-Split your application into multiple services, where one service uses Fastify and another uses Express, communicating via APIs or a message broker.
-
-
-2. Gateway Pattern:
-Use a gateway (like API Gateway) in front of your services, each built using different engines (Fastify for high-performance APIs and Express for compatibility-heavy endpoints).
-
-
-3. Proxying Requests:
-Create a primary NestJS app with one adapter (say Fastify) and proxy specific requests to a secondary NestJS app using Express.
+# 
 
 
 # Can we use both , say for some parts we use fastify and for others we use default expressJS
