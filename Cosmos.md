@@ -1,8 +1,11 @@
+
+**Single Event Store for all Domains vs Event Store Per Domain**
+
 The decision between using separate event stores or a single event store with specific collections for each domain in Azure Cosmos DB for MongoDB depends on several factors, including scalability, manageability, and domain boundaries.
 
-Option 1: Separate Event Stores (Separate Cosmos DB Databases)
+**Option 1: Separate Event Stores (Separate Cosmos DB Databases)**
 
-Pros:
+**Pros**:
 
 Clear domain isolation: Better separation of concerns between domains (Quote, Enrollment, etc.).
 
@@ -13,7 +16,7 @@ Security: Easier to enforce domain-specific access controls.
 Fault isolation: Issues in one database won't affect another.
 
 
-Cons:
+**Cons**:
 
 Management overhead: Requires separate configuration, backups, and monitoring for each event store.
 
@@ -23,9 +26,9 @@ Higher cost: Potentially higher cost due to managing multiple instances.
 
 ---
 
-Option 2: Single Event Store with Separate Collections for Each Domain
+**Option 2: Single Event Store with Separate Collections for Each Domain**
 
-Pros:
+**Pros**:
 
 Simpler management: One Cosmos DB instance to manage.
 
@@ -36,7 +39,7 @@ Easier querying: Can correlate events across different domains if needed.
 Efficient resource usage: Better utilization when event load is uneven across domains.
 
 
-Cons:
+**Cons**:
 
 Complexity in scaling: Collections within a single database may not scale as independently as separate databases.
 
@@ -48,7 +51,7 @@ Access control complexity: Need finer-grained access controls within the same da
 
 ---
 
-Recommendation
+**Recommendation**
 
 If the Quote, Enrollment, and other domains have clear boundaries and are expected to evolve independently, separate event stores are preferable for better isolation and scalability. However, if you are prioritizing centralized management and cost-efficiency, a single event store with separate collections per domain is a practical choice.
 
@@ -56,22 +59,21 @@ Given the dynamic and event-driven nature of the insurance domain, I would lean 
 
 /===
 
-Yes, Azure Cosmos DB for MongoDB API supports partitioning using the concept of sharded collections, similar to how MongoDB handles partitioning in its native form.
-
-How Partitioning Works in Cosmos DB for MongoDB API
+Partitioning in Azure Cosmos DB for MongoDB API
 
 When creating a collection, you can define a shard key, which acts as the partition key for distributing data across logical partitions.
 
-Partitioning by Segment
+**Partitioning by Segment**
 
 If you want to partition by "segment" (such as product type or customer category), you can select a specific field in your documents to act as the partition key.
 
-Steps to Partition Data by Segment
+**Steps to Partition Data by Segment**
 
-1. Define the Schema: Ensure each document has a field representing the "segment" (e.g., segment: "quote", segment: "enrollment").
+1. **Define the Schema**: Ensure each document has a field representing the "segment" (e.g., segment: "quote", segment: "enrollment").
 
 
-2. Create a Sharded Collection:
+2. **Create a Sharded Collection**:
+   
 Use the following command in the MongoDB shell or your application:
 
 db.createCollection("yourCollectionName", {
@@ -79,11 +81,11 @@ db.createCollection("yourCollectionName", {
 })
 
 
-3. Insert Data: Documents will be automatically distributed based on the segment field.
+3.** Insert Data**: Documents will be automatically distributed based on the segment field.
 
 
 
-Best Practices for Partitioning by Segment
+**Best Practices for Partitioning by Segment**
 
 Choose a high-cardinality partition key: Ensure that your segment field has enough diversity to avoid hot partitions.
 
