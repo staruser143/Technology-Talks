@@ -1,4 +1,5 @@
 Let's illustrate the sequence flow of Azure Event Grid working with JavaScript apps:
+```mermaid
 sequenceDiagram
     participant JavaScript App (Publisher)
     participant Event Grid Topic
@@ -16,7 +17,7 @@ sequenceDiagram
     deactivate Event Grid Subscription
     deactivate Event Grid Topic
     JavaScript App (Subscriber/Webhook)-->>JavaScript App (Publisher): (Optional) Sends Response/Acknowledgement
-
+```
 Step-by-step breakdown:
  * JavaScript App (Publisher) Publishes Event: A JavaScript application (acting as a publisher) wants to notify about something that happened. It creates an event (typically a JSON object) describing the event.  It then sends this event to an Event Grid Topic using an HTTP POST request.  This request includes the event data, the topic's endpoint, and authentication information (e.g., a key or SAS token).
  * Event Grid Topic Receives Event: The Event Grid Topic receives the event.  The Topic acts as a central point for receiving events.
