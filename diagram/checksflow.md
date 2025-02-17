@@ -1,6 +1,6 @@
 graph LR
     subgraph "Event Store"
-        A["Append Event Request<br>(streamId, eventData)"] --> B{Check for Existing Event<br>(streamId, version)}
+        A["Append Event Request<br>(streamId, eventData)"] --> B([Check for Existing Event<br>(streamId, version)])
         B -- Exists --> C["Conflict: Event Exists<br>- Return Error"]
         B -- "Doesn't Exist" --> D["Generate Next Version"]
         D --> E["Conditional Insert<br>(streamId, eventData, version)"]
@@ -12,7 +12,7 @@ graph LR
     F --> H["Change Feed Picks Up Event"]
 
     subgraph "Change Feed Processor"
-        H --> I{Check if Event Already Processed<br>(eventId)}
+        H --> I([Check if Event Already Processed<br>(eventId)])
         I -- Processed --> J["Skip Event"]
         I -- "Not Processed" --> K["Update Domain Data"]
         K --> L["Read Current Domain Version"]
