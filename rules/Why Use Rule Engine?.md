@@ -48,7 +48,7 @@ A rule engine:
 
 ---
 
-## 5. Rule Engine Options for Ourr Framework
+## 5. Rule Engine Options
 
 For  Spring Boot and NestJS, here are some rule engine options:
 
