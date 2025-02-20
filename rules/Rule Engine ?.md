@@ -82,7 +82,7 @@ For  Spring Boot and NestJS, here are some rule engine options:
 ## Scenario: Matching a Handler Based on Request Attributes
 
 ## Using JSON-Based Matching (Without Rule Engine)
-
+```
 {
   "rules": [
     {
@@ -94,6 +94,7 @@ For  Spring Boot and NestJS, here are some rule engine options:
     }
   ]
 }
+```
 
 * Manually written condition-checking code
 
@@ -107,22 +108,20 @@ For  Spring Boot and NestJS, here are some rule engine options:
 
 # sing a Rule Engine (Drools Example)
 
+```
 rule "High Value Policy"
 when
     $request: Request( user.role == "broker", policyDetails.premiumAmount > 10000 )
 then
     assignHandler("HighValuePolicyHandler");
+```
 
-The rule engine executes this automatically
-
-Supports prioritization, weighting, and chaining
-
-
+* The rule engine executes this automatically
+* Supports prioritization, weighting, and chaining
 
 ---
 
 ## 7. Conclusion: Should You Move to a Rule Engine Now?
-
 * For now, JSON-based matching is sufficient.
 * However, if we anticipate more complex rules, frequent updates, or performance concerns, integrating a rule engine early will save significant effort later.
 
