@@ -1,0 +1,14 @@
+{
+  "requestType": "policyCreation",
+  "requestSource": "portal",
+  "user": {
+    "id": "12345",
+    "role": "broker",
+    "region": "US"
+  },
+  "policyDetails": {
+    "policyId": "P-56789",
+    "coverageType": "auto",
+    "premiumAmount": 1200
+  }
+}
