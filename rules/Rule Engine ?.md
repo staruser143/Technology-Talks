@@ -5,7 +5,7 @@ A rule engine would make things better by automating complex decision-making, en
 
 ---
 
-## 1. Why Would You Need a Rule Engine?
+## 1. Why Would we Need a Rule Engine?
 
 As the system evolves, we might face challenges like:
 * Growing complexity of rules – More conditions, nested rules, dependencies
@@ -32,12 +32,12 @@ A rule engine:
 
 ## 3. How is a Rule Engine Better than JSON Matching?
 ###  Key Takeaway
-* JSON Matching is good for simple use cases where you only need static if-else style rule evaluation.
+* JSON Matching is good for simple use cases where we only need static if-else style rule evaluation.
 * A Rule Engine is ideal for complex logic, frequent updates, and scenarios where performance matters.
 
 ---
 
-## 4. When Should You Move to a Rule Engine?
+## 4. When Should we Move to a Rule Engine?
 
 ## Move to a rule engine if:
 * We have hundreds or thousands of rules.
@@ -48,7 +48,7 @@ A rule engine:
 
 ---
 
-## 5. Rule Engine Options for Your Framework
+## 5. Rule Engine Options for Ourr Framework
 
 For  Spring Boot and NestJS, here are some rule engine options:
 
@@ -117,7 +117,7 @@ then
 
 ---
 
-## 7. Conclusion: Should You Move to a Rule Engine Now?
+## 7. Conclusion: Should We Move to a Rule Engine Now?
 * For now, JSON-based matching is sufficient.
 * However, if we anticipate more complex rules, frequent updates, or performance concerns, integrating a rule engine early will save significant effort later.
 
