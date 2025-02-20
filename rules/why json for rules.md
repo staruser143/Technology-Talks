@@ -111,7 +111,7 @@ Instead of using a YAML file, rules are defined in JSON and stored in a file, da
 
 ---
 
-Final Recommendation
+## Final Recommendation
 
 Since you're considering a rule engine in the future, I strongly recommend the JSON-based approach. It provides better flexibility and future extensibility without requiring a full rules engine immediately.
 
