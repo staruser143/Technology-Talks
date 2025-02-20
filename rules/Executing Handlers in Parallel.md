@@ -1,19 +1,23 @@
-Yes, we can run multiple handlers in parallel by leveraging asynchronous execution in NestJS. The best approach depends on whether the handlers are CPU-bound or I/O-bound:
+## Executing Multiple Command Handlers in Parallel
 
-I/O-bound tasks (e.g., database queries, API calls) → Use Promise.all() for concurrent execution.
+* We can run multiple handlers in parallel by leveraging asynchronous execution in NestJS.
+* The best approach depends on whether the handlers are CPU-bound or I/O-bound:
 
-CPU-bound tasks (e.g., complex calculations) → Use worker_threads or BullMQ for parallel processing.
+### I/O-bound tasks (e.g., database queries, API calls) → Use Promise.all() for concurrent execution.
+
+### CPU-bound tasks (e.g., complex calculations)        → Use worker_threads or BullMQ for parallel processing.
 
 
-Solution: Run Multiple Handlers Concurrently Using Promise.all()
-
-Since most handlers in a CQRS system deal with I/O operations (e.g., persisting data, notifying external systems), we can execute them concurrently using JavaScript's Promise.all().
+#### Solution: 
+* Run Multiple Handlers Concurrently Using Promise.all()
+* Since most handlers in a CQRS system deal with I/O operations (e.g., persisting data, notifying external systems), we can execute them concurrently using JavaScript's Promise.all().
 
 
 ---
 
-1. Modify CommandDispatcher to Run Handlers in Parallel
+## 1. Modify CommandDispatcher to Run Handlers in Parallel
 
+```
 import { Injectable, Inject } from '@nestjs/common';
 import { CommandRouter } from './command-router.service';
 import { CreatePolicyHandler } from '../handlers/create-policy.handler';
@@ -50,16 +54,16 @@ export class CommandDispatcher {
     await Promise.all(handlerNames.map(handlerName => this.handlers[handlerName].handle(requestAttributes)));
   }
 }
-
+```
 
 ---
 
-2. Modify Handlers to Be Async
+## 2. Modify Handlers to Be Async
 
 Now, we update our handlers to be async functions so they can be executed in parallel.
 
-Example 1: CreatePolicyHandler.ts
-
+### Example 1: CreatePolicyHandler.ts
+```
 import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '../interfaces/command-handler.interface';
 
@@ -71,9 +75,9 @@ export class CreatePolicyHandler implements CommandHandler {
     console.log(`CreatePolicy completed`);
   }
 }
-
-Example 2: NotifyUnderwriterHandler.ts
-
+```
+### Example 2: NotifyUnderwriterHandler.ts
+```
 import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '../interfaces/command-handler.interface';
 
@@ -85,9 +89,10 @@ export class NotifyUnderwriterHandler implements CommandHandler {
     console.log(`Underwriter notified`);
   }
 }
+```
 
-Example 3: DefaultCreatePolicyHandler.ts
-
+### Example 3: DefaultCreatePolicyHandler.ts
+```
 import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '../interfaces/command-handler.interface';
 
@@ -99,20 +104,21 @@ export class DefaultCreatePolicyHandler implements CommandHandler {
     console.log(`DefaultCreatePolicyHandler completed`);
   }
 }
-
+```
 
 ---
 
-3. Testing Parallel Execution
+### 3. Testing Parallel Execution
 
 Run the API with the following request:
-
+```
 curl -X POST "http://localhost:3000/commands/execute" \
      -H "Content-Type: application/json" \
      -d '{"requestType": "CreatePolicy", "productType": "HighRisk"}'
+```
 
-Expected Output (Executed in Parallel)
-
+#### Expected Output (Executed in Parallel)
+```
 Executing handlers: NotifyUnderwriterHandler, DefaultCreatePolicyHandler
 Notifying underwriter for HighRisk policy...
 Processing default CreatePolicy handler...
@@ -120,27 +126,23 @@ DefaultCreatePolicyHandler completed  ✅ (after 1s)
 Underwriter notified  ✅ (after 3s)
 
 Total execution time: ~3 seconds instead of 4 (1s + 3s sequentially)
-
+```
 
 ---
 
-Alternative: Offload Execution to a Background Queue
+## Alternative: Offload Execution to a Background Queue
 
-For long-running tasks, use BullMQ (Redis-based job queue) to execute handlers in parallel outside the request lifecycle.
+### For long-running tasks, use BullMQ (Redis-based job queue) to execute handlers in parallel outside the request lifecycle.
 
-Steps to Use BullMQ
+#### Steps to Use BullMQ
 
-1. Install BullMQ
+## 1. Install BullMQ
 
+```
 npm install bullmq
+```
 
+## 2. Create a Worker for Handlers
+## 3. Dispatch Jobs to the Queue Instead of Executing Directly
 
-2. Create a Worker for Handlers
-
-
-3. Dispatch Jobs to the Queue Instead of Executing Directly
-
-
-
-Would you like a full example using BullMQ? Let me know!
 
