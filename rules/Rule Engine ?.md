@@ -31,7 +31,7 @@ A rule engine:
 ---
 
 ## 3. How is a Rule Engine Better than JSON Matching?
-## Key Takeaway
+###  Key Takeaway
 * JSON Matching is good for simple use cases where you only need static if-else style rule evaluation.
 * A Rule Engine is ideal for complex logic, frequent updates, and scenarios where performance matters.
 
@@ -52,36 +52,36 @@ A rule engine:
 
 For  Spring Boot and NestJS, here are some rule engine options:
 
-## For Java (Spring Boot)
-## 1. Drools – Industry-standard rule engine for Java
+### For Java (Spring Boot)
+#### 1. Drools – Industry-standard rule engine for Java
 * Uses DRL (Drools Rule Language)
 * Supports complex rule evaluation, prioritization, and chaining
 * Can be integrated with Spring Boot
 
 
 
-## 2. Easy Rules – Lightweight Java rule engine
+#### 2. Easy Rules – Lightweight Java rule engine
 * Simple Java-based rules
 * Good for microservices
 
-## For TypeScript (NestJS)
-## 1. JSON Rule Engines (Node.js)
+### For TypeScript (NestJS)
+#### 1. JSON Rule Engines (Node.js)
 * json-rules-engine (JavaScript/TypeScript)
 * Open Policy Agent (OPA) (REST-based rule evaluation)
 * Nools (JavaScript-based Drools alternative)
 
 
 
-## 2. Custom Rule Evaluation in NestJS
+#### 2. Custom Rule Evaluation in NestJS
 * Store rules in JSON and process them dynamically
 * Use a microservice or a dedicated rules server for processing
 ---
 
 ## 6. Example: Rule Engine vs JSON-Based Matching
 
-## Scenario: Matching a Handler Based on Request Attributes
+### Scenario: Matching a Handler Based on Request Attributes
 
-## Using JSON-Based Matching (Without Rule Engine)
+#### Using JSON-Based Matching (Without Rule Engine)
 ```
 {
   "rules": [
@@ -97,16 +97,12 @@ For  Spring Boot and NestJS, here are some rule engine options:
 ```
 
 * Manually written condition-checking code
-
 * No priority handling
-
 * No chained execution
-
-
 
 ---
 
-# sing a Rule Engine (Drools Example)
+## Using a Rule Engine (Drools Example)
 
 ```
 rule "High Value Policy"
