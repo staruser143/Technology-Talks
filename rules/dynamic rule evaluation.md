@@ -1,6 +1,7 @@
 # What is Dynamic Rule Evaluation?
 
 Dynamic Rule Evaluation is the ability to determine logic at runtime based on configurable rules, rather than hardcoded conditions. In your case, it means the framework should dynamically evaluate which handler(s) to invoke based on rules stored externally (e.g., JSON, database, or a rules engine) instead of being fixed in code.
+
 ---
 
 # How JSON-Based Rule Evaluation Works
