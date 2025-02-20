@@ -1,36 +1,32 @@
-Yes, it is logically possible and quite common in real-world scenarios. A request might require multiple command handlers if:
+## Handling Request With Multiple Command Handlers
+It is logically possible and quite common in real-world scenarios. A request might require multiple command handlers if:
 
-1. Chained Execution: One command handler processes the request, and another follows based on the modified state.
-
-
-2. Parallel Execution: Two or more handlers are needed simultaneously.
-
-
-3. Event-Driven Flow: A request triggers multiple business processes that run independently.
+* 1. Chained Execution: One command handler processes the request, and another follows based on the modified state.
+* 2. Parallel Execution: Two or more handlers are needed simultaneously.
+* 3. Event-Driven Flow: A request triggers multiple business processes that run independently.
 
 
+### How to Handle Multiple Handlers in the Framework?
 
-How to Handle Multiple Handlers in the Framework?
-
-1. Modify the Configuration to Support Multiple Handlers
+#### 1. Modify the Configuration to Support Multiple Handlers
 
 Instead of returning a single handler, return a list of matching handlers.
 
-2. Adjust CommandRouter to Select Multiple Handlers
+#### 2. Adjust CommandRouter to Select Multiple Handlers
 
 Modify CommandRouter to return all matching handlers instead of just one.
 
-3. Modify CommandDispatcher to Execute All Matching Handlers
+### 3. Modify CommandDispatcher to Execute All Matching Handlers
 
 Update CommandDispatcher to loop through the list of handlers and execute them.
 
 
 ---
 
-Implementation Steps
+### Implementation Steps
 
-1. Modify config.yml to Support Multiple Handlers
-
+#### 1. Modify config.yml to Support Multiple Handlers
+```
 handlers:
   - name: CreatePolicyHandler
     priority: 2
@@ -48,19 +44,19 @@ handlers:
     priority: 1
     conditions:
       requestType: "CreatePolicy"
+```
 
-CreatePolicyHandler handles CreatePolicy requests from Portal/Mobile.
-
-NotifyUnderwriterHandler is needed for high-risk products.
-
-DefaultCreatePolicyHandler is a fallback.
+* CreatePolicyHandler handles CreatePolicy requests from Portal/Mobile.
+* NotifyUnderwriterHandler is needed for high-risk products.
+* DefaultCreatePolicyHandler is a fallback.
 
 
 
 ---
 
-2. Modify CommandRouter to Return Multiple Handlers
+### 2. Modify CommandRouter to Return Multiple Handlers
 
+```
 import { Injectable } from '@nestjs/common';
 import * as fs from 'fs';
 import * as yaml from 'yaml';
@@ -100,12 +96,13 @@ export class CommandRouter {
     });
   }
 }
-
+```
 
 ---
 
-3. Modify CommandDispatcher to Execute Multiple Handlers
+### 3. Modify CommandDispatcher to Execute Multiple Handlers
 
+```
 import { Injectable, Inject } from '@nestjs/common';
 import { CommandRouter } from './command-router.service';
 import { CreatePolicyHandler } from '../handlers/create-policy.handler';
@@ -142,14 +139,14 @@ export class CommandDispatcher {
     }
   }
 }
-
+```
 
 ---
 
-4. Example Handlers
+### 4. Example Handlers
 
-CreatePolicyHandler.ts
-
+#### CreatePolicyHandler.ts
+```
 import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '../interfaces/command-handler.interface';
 
@@ -159,9 +156,10 @@ export class CreatePolicyHandler implements CommandHandler {
     console.log('Processing CreatePolicy for source:', requestAttributes.source);
   }
 }
+```
 
-NotifyUnderwriterHandler.ts
-
+#### NotifyUnderwriterHandler.ts
+```
 import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '../interfaces/command-handler.interface';
 
@@ -171,8 +169,10 @@ export class NotifyUnderwriterHandler implements CommandHandler {
     console.log('Notifying underwriter for HighRisk policy');
   }
 }
+```
 
-DefaultCreatePolicyHandler.ts
+#### DefaultCreatePolicyHandler.ts
+```
 
 import { Injectable } from '@nestjs/common';
 import { CommandHandler } from '../interfaces/command-handler.interface';
@@ -183,65 +183,51 @@ export class DefaultCreatePolicyHandler implements CommandHandler {
     console.log('Processing default CreatePolicy handler');
   }
 }
-
+```
 
 ---
 
-5. Test the API
+## 5. Test the API
 
-Scenario 1: CreatePolicy from Portal
+### Scenario 1: CreatePolicy from Portal
 
-Request
+#### Request
 
+```
 curl -X POST "http://localhost:3000/commands/execute" \
      -H "Content-Type: application/json" \
      -d '{"requestType": "CreatePolicy", "source": "Portal"}'
+```
 
+```
 Console Output
 
 Executing handler: CreatePolicyHandler
 Processing CreatePolicy for source: Portal
+```
 
-Scenario 2: CreatePolicy for High-Risk Product
+### Scenario 2: CreatePolicy for High-Risk Product
 
-Request
+#### Request
 
+```
 curl -X POST "http://localhost:3000/commands/execute" \
      -H "Content-Type: application/json" \
      -d '{"requestType": "CreatePolicy", "productType": "HighRisk"}'
+```
 
 Console Output
-
+```
 Executing handler: NotifyUnderwriterHandler
 Notifying underwriter for HighRisk policy
 Executing handler: DefaultCreatePolicyHandler
 Processing default CreatePolicy handler
-
-
+```
 ---
 
 Key Takeaways
-
-✅ Multiple Handlers can now be executed based on the request context.
-✅ Handlers are executed in priority order (higher priority first).
-✅ Easy to extend – just add new handlers in config.yml without changing code.
-
+* ✅ Multiple Handlers can now be executed based on the request context.
+* ✅ Handlers are executed in priority order (higher priority first).
+* ✅ Easy to extend – just add new handlers in config.yml without changing code.
 
 ---
-
-Next Steps
-
-Would you like to:
-
-1. Run handlers in parallel using async processing?
-
-
-2. Integrate an event queue (e.g., RabbitMQ or Kafka) for better scalability?
-
-
-3. Log executed handlers to a database for traceability?
-
-
-
-Let me know how you’d like to enhance this!
-
