@@ -10,6 +10,7 @@ How JSON-Based Rule Evaluation Works
 Instead of hardcoding conditions in TypeScript (or Java in Spring Boot), we define a JSON-based rules configuration that determines which handlers match a request.
 
 Example JSON Rules Configuration
+```
 
 {
   "rules": [
@@ -36,7 +37,7 @@ Example JSON Rules Configuration
     }
   ]
 }
-
+```
 This JSON defines:
 
 Each rule has a handler (e.g., CreatePolicyHandler)
@@ -70,6 +71,7 @@ Step 1: Load JSON Rules
 
 You can store rules in a JSON file or fetch them dynamically from a database.
 
+```
 import * as fs from 'fs';
 
 @Injectable()
@@ -89,13 +91,12 @@ export class RuleLoader {
     return this.rules.rules;
   }
 }
-
-
----
+```
 
 Step 2: Evaluate Rules Dynamically
 
 Create a RuleEvaluator service that matches incoming requests against the JSON rules.
+```
 
 import { Injectable } from '@nestjs/common';
 
@@ -131,14 +132,15 @@ export class RuleEvaluator {
     return path.split('.').reduce((o, key) => (o ? o[key] : undefined), obj);
   }
 }
+```
 
 
----
 
 Step 3: Use Rule Evaluation in Command Dispatcher
 
 Now integrate this dynamic evaluation in the CommandDispatcher.
 
+```
 @Injectable()
 export class CommandDispatcher {
   constructor(private readonly ruleEvaluator: RuleEvaluator) {}
@@ -173,9 +175,8 @@ export class CommandDispatcher {
     // Instantiate handlers dynamically or use NestJS DI
   }
 }
+```
 
-
----
 
 Final Outcome
 
@@ -184,8 +185,8 @@ Final Outcome
 
 Why Use JSON-Based Dynamic Rules?
 
-✅ Configuration-driven – No need to change code to add/remove handlers
-✅ Supports complex conditions – Can handle multiple attributes, operators, and nested fields
-✅ Decouples logic from code – Handlers are selected at runtime based on external configuration
-✅ Easier to maintain & update – Change JSON file or database without modifying the app
+* ✅ Configuration-driven – No need to change code to add/remove handlers
+* ✅ Supports complex conditions – Can handle multiple attributes, operators, and nested fields-
+* ✅ Decouples logic from code – Handlers are selected at runtime based on external configuration
+* ✅ Easier to maintain & update – Change JSON file or database without modifying the app
 
