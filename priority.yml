@@ -1,0 +1,11 @@
+handlers:
+  - name: CreatePolicyHandler
+    priority: 2
+    conditions:
+      requestType: "CreatePolicy"
+      source: ["Portal", "Mobile"]
+
+  - name: DefaultCreatePolicyHandler
+    priority: 1
+    conditions:
+      requestType: "CreatePolicy"
