@@ -1,11 +1,9 @@
-What is Dynamic Rule Evaluation?
+# What is Dynamic Rule Evaluation?
 
 Dynamic Rule Evaluation is the ability to determine logic at runtime based on configurable rules, rather than hardcoded conditions. In your case, it means the framework should dynamically evaluate which handler(s) to invoke based on rules stored externally (e.g., JSON, database, or a rules engine) instead of being fixed in code.
-
-
 ---
 
-How JSON-Based Rule Evaluation Works
+# How JSON-Based Rule Evaluation Works
 
 Instead of hardcoding conditions in TypeScript (or Java in Spring Boot), we define a JSON-based rules configuration that determines which handlers match a request.
 
@@ -40,34 +38,20 @@ Example JSON Rules Configuration
 ```
 This JSON defines:
 
-Each rule has a handler (e.g., CreatePolicyHandler)
-
-Each rule has conditions (e.g., requestType == "policyCreation")
-
-Supports nested attributes (e.g., user.role, policyDetails.coverageType)
-
-Supports operators (e.g., "gt" for greater than)
-
-
-
+* Each rule has a handler (e.g., CreatePolicyHandler)
+* Each rule has conditions (e.g., requestType == "policyCreation")
+* Supports nested attributes (e.g., user.role, policyDetails.coverageType)
+* Supports operators (e.g., "gt" for greater than)
 ---
 
-How to Evaluate JSON Rules in NestJS
+# How to Evaluate JSON Rules in NestJS
 
 1. Load JSON rules dynamically (from a file, database, or API)
-
-
 2. Parse JSON conditions and match against incoming request attributes
-
-
 3. Support complex evaluations like numeric comparisons (>, <, !=)
-
-
 4. Select all matching handlers and invoke them
 
-
-
-Step 1: Load JSON Rules
+## Step 1: Load JSON Rules
 
 You can store rules in a JSON file or fetch them dynamically from a database.
 
@@ -93,7 +77,7 @@ export class RuleLoader {
 }
 ```
 
-Step 2: Evaluate Rules Dynamically
+## Step 2: Evaluate Rules Dynamically
 
 Create a RuleEvaluator service that matches incoming requests against the JSON rules.
 ```
@@ -136,7 +120,7 @@ export class RuleEvaluator {
 
 
 
-Step 3: Use Rule Evaluation in Command Dispatcher
+## Step 3: Use Rule Evaluation in Command Dispatcher
 
 Now integrate this dynamic evaluation in the CommandDispatcher.
 
@@ -177,12 +161,8 @@ export class CommandDispatcher {
 }
 ```
 
-
 Final Outcome
-
-
 ---
-
 Why Use JSON-Based Dynamic Rules?
 
 * ✅ Configuration-driven – No need to change code to add/remove handlers
