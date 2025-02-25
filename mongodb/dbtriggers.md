@@ -75,7 +75,7 @@ module.exports = async function(context, documents) {
 5. **Versioning**: Plan for how to handle schema changes that affect both collections
 
 ======
-# Azure Cosmos DB For MongoDB API suuport for triggers
+# Azure Cosmos DB For MongoDB API support for triggers
 Azure Cosmos DB for MongoDB API does support server-side execution of triggers, but there are some important differences compared to MongoDB Atlas:
 
 ### Azure Cosmos DB Server-Side Execution
