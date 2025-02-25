@@ -74,4 +74,71 @@ module.exports = async function(context, documents) {
 4. **Monitoring**: Set up alerting for trigger failures
 5. **Versioning**: Plan for how to handle schema changes that affect both collections
 
-Would you like more information on specific trigger implementations or transformation strategies for your read collections?
+======
+# Azure Cosmos DB For MongoDB API suuport for triggers
+Azure Cosmos DB for MongoDB API does support server-side execution of triggers, but there are some important differences compared to MongoDB Atlas:
+
+### Azure Cosmos DB Server-Side Execution
+
+In Cosmos DB, triggers can run server-side through:
+
+1. **Azure Functions with Cosmos DB Trigger**: These don't run directly on the database server but are tightly integrated with Cosmos DB's change feed. The Azure Functions runtime handles the execution separately from the database server.
+
+2. **Stored Procedures, Triggers, and UDFs**: Cosmos DB supports JavaScript-based server-side programming, but these are native to Cosmos DB's SQL API and not directly part of the MongoDB API compatibility layer.
+
+The key difference from MongoDB Atlas is:
+
+- **MongoDB Atlas triggers** run directly within the MongoDB environment using the Atlas App Services (formerly Realm) infrastructure
+- **Cosmos DB triggers** typically run in Azure Functions, which are separate services that respond to Cosmos DB change feed events
+
+### Practical Implementation for Cosmos DB
+
+For MongoDB API in Cosmos DB, the most common approach is:
+
+```javascript
+// Azure Function with Cosmos DB trigger
+module.exports = async function(context, documents) {
+    // This runs in Azure Functions, not directly on the database server
+    if (!documents || !documents.length) {
+        context.log('No documents to process');
+        return;
+    }
+    
+    // Get the MongoDB API connection
+    const mongoClient = new MongoClient(process.env.COSMOSDB_CONNECTION_STRING);
+    await mongoClient.connect();
+    
+    const readCollection = mongoClient.db("mydb").collection("readCollection");
+    
+    try {
+        for (const doc of documents) {
+            // Process based on operation type (inferred from change feed)
+            if (!doc._ts) {
+                // New document
+                await readCollection.insertOne(transformForReading(doc));
+            } else if (doc._deleted) {
+                // Deleted document
+                await readCollection.deleteOne({ _id: doc._id });
+            } else {
+                // Updated document
+                await readCollection.updateOne(
+                    { _id: doc._id },
+                    { $set: transformForReading(doc) }
+                );
+            }
+        }
+    } finally {
+        await mongoClient.close();
+    }
+};
+```
+
+### Key Differences from Atlas
+
+1. **Execution environment**: Azure Functions vs. directly in MongoDB Atlas
+2. **Latency**: Potentially higher latency as changes go through the change feed to Azure Functions
+3. **Operational model**: Managed as separate Azure services rather than database features
+4. **Scalability**: Azure Functions scale independently from the database
+5. **Pricing**: Separate billing for Azure Functions executions
+
+For production use, you should consider these factors when designing your CQRS implementation with Cosmos DB's MongoDB API. The approach works well but operates under a different model than MongoDB Atlas triggers.
