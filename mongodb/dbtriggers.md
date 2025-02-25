@@ -1,3 +1,4 @@
+# MongoDB Based systems like Atlas MongoDB and Azure Cosmos DB For MongoDB
 Using database triggers is an excellent approach for implementing this read/write separation pattern in MongoDB-based systems. Triggers provide a native, server-side solution that can be more efficient and reliable than client-side change stream consumers.
 
 ### MongoDB Triggers (Atlas)
