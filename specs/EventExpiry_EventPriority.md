@@ -206,4 +206,4 @@ In the insurance domain, the **`eventExpiry`** and **`eventPriority`** fields ca
 3. **Combined Use**:
    - Together, these fields ensure that the system processes events efficiently and meets business requirements (e.g., timely quotes, fast enrollments).
 
-By using `eventExpiry` and `eventPriority`, you can build a robust and efficient event-driven system for managing insurance quotes and enrollments.
+By using `eventExpiry` and `eventPriority`, we can build a robust and efficient event-driven system for managing insurance quotes and enrollments.
