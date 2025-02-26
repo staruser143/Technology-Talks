@@ -58,16 +58,12 @@ Designing an ideal command specification for sending requests in a CQRS pattern 
 5. **Metadata:** Provides additional context about the command, including who initiated it and the source system.
 6. **Validation Rules:** Specifies the rules to validate the command's payload, ensuring all required fields are present and correctly formatted.
 
-### Key Considerations
-
-- **Idempotency:** Ensure that commands are idempotent, meaning they produce the same result if executed multiple times.
-- **Validation:** Implement robust validation to prevent invalid data from being processed.
-- **Error Handling:** Define how errors will be handled and communicated back to the caller.
-- **Security:** Secure sensitive information and ensure that only authorized users can execute certain commands.
 
 # CorrelationId
 
-Including a `correlationId` in the command specification can be highly beneficial. The `correlationId` helps to track and correlate multiple related requests and responses across different systems, services, or components. This is especially useful in distributed systems where a single business process might span multiple microservices or components.
+Including a `correlationId` in the command specification can be highly beneficial.
+* The `correlationId` helps to track and correlate multiple related requests and responses across different systems, services, or components. 
+* This is especially useful in distributed systems where a single business process might span multiple microservices or components.
 
 ### Benefits of Including `correlationId`
 
@@ -210,36 +206,11 @@ To send multiple commands as part of a single request, we can design a **partner
 }
 ```
 
-### Explanation of the Structure
-
-1. **Partner Command Name:** Indicates the purpose of the partner command (`OrderProcessingCommands`).
-2. **Partner Command Id:** Unique identifier for the partner command (`789e4567-e89b-12d3-a456-426614174789`).
-3. **Timestamp:** When the partner command was issued (`2025-02-25T19:00:00Z`).
-4. **Correlation Id:** Unique identifier to correlate related requests (`123e4567-e89b-12d3-a456-426614174123`).
-5. **Commands:** An array of individual command specifications, each containing its own unique structure. In this example, it includes `CreateOrderCommand` and `UpdateInventoryCommand`.
-6. **Metadata:** Additional context about the partner command.
-
-### Key Considerations
-
-- **Idempotency:** Ensure that each command within the partner command maintains idempotency.
-- **Validation:** Validate each individual command as well as the overall partner command to ensure data integrity.
-- **Error Handling:** Define how errors in individual commands will be handled. For example, if one command fails, decide whether to rollback the entire batch or handle partial failures.
-- **Logging and Monitoring:** Implement logging and monitoring for both individual commands and the partner command to track and debug the entire process.
-
-This approach allows us to manage complex business processes that involve multiple related commands, ensuring consistency and traceability across the entire operation.
-
-
-
 # Domain or Namespace
 
-Including the domain or namespace in the  command specification can be very useful. It helps to organize and categorize commands, especially in large, complex systems where commands may span multiple domains or bounded contexts. This approach enhances clarity, maintainability, and traceability.
-
-### Benefits of Including Domain/Namespace
-
-1. **Organization:** Clearly categorizes commands by their respective domains or bounded contexts.
-2. **Clarity:** Makes it easier to understand the scope and purpose of a command.
-3. **Maintainability:** Simplifies the management and evolution of commands as the system grows.
-4. **Traceability:** Enhances logging and monitoring by associating commands with specific domains.
+Including the domain or namespace in the  command specification can be very useful. 
+It helps to organize and categorize commands, especially in large, complex systems where commands may span multiple domains or bounded contexts.
+This approach enhances clarity, maintainability, and traceability.
 
 ### Updated Command Specification Example
 
@@ -313,24 +284,14 @@ Here’s how we can include the domain or namespace in the command specification
 ### Explanation
 
 1. **Domain:** The `domain` field specifies the domain or bounded context to which the commands belong (`OrderManagement` in this case).
-2. **Partner Command Name:** Indicates the purpose of the partner command.
-3. **Partner Command Id:** Unique identifier for the partner command.
-4. **Timestamp:** When the partner command was issued.
-5. **Correlation Id:** Unique identifier to correlate related requests.
-6. **Commands:** An array of individual command specifications.
-7. **Metadata:** Additional context about the partner command.
-
-### Key Considerations
-
-- **Consistency:** Ensure that the domain names are consistent and meaningful across the  system.
-- **Namespace:** We can use namespace conventions (e.g., `OrderManagement.CreateOrderCommand`) to further organize and categorize commands.
-- **Documentation:** Document the domains and namespaces to provide clear guidance for developers and maintainers.
 
 By including the domain or namespace in the command specification, we can improve the overall structure and manageability of the system. 
 
 # Command Response Specification
 
-Designing a command response specification is equally important to ensure clarity, consistency, and meaningful feedback. Here’s an example structure for a command response specification:
+Designing a command response specification is equally important to ensure clarity, consistency, and meaningful feedback.
+
+Here’s an example structure for a command response specification:
 
 ### Command Response Specification Structure
 
@@ -458,12 +419,6 @@ When dealing with multiple commands sent within a single request, it's important
    - **UpdateInventoryCommand:** Status is `failure`, with an error message indicating that the item is out of stock.
 7. **Metadata:** Additional information about the overall response, such as the service that processed the partner command and the total processing time.
 
-### Key Considerations
-
-- **Overall Status:** Provides a high-level summary of the partner command execution. Possible values could be `success`, `partial_success`, `failure`, etc.
-- **Individual Command Responses:** Each individual command's response should include its status, payload, errors (if any), and metadata.
-- **Error Handling:** Clearly indicates any errors encountered during the execution of individual commands.
-- **Metadata:** Adds context to the response, such as processing times and the service that handled the commands.
 
 By following this structure, we can ensure that each command's response is clearly documented and easy to trace, while also providing an overall summary of the partner command execution.
 
@@ -666,7 +621,8 @@ Here's an example of the final response sent to the callback URL once the comman
 - **Initial Response:** The initial response is sent immediately to confirm that the command has been received and is being processed, with a status of "pending."
 - **Callback Response:** The final response is sent to the callback URL once the command is fully processed, with the final status and results.
 
-By including these fields, we can clearly indicate the asynchronous nature of the command and ensure that the request and response specifications provide all the necessary details for handling asynchronous processing. This approach enhances the reliability and clarity of the system's communication.
+By including these fields, we can clearly indicate the asynchronous nature of the command and ensure that the request and response specifications provide all the necessary details for handling asynchronous processing. 
+This approach enhances the reliability and clarity of the system's communication.
 
 
 
