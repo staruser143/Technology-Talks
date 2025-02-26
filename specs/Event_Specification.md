@@ -6,6 +6,9 @@
 | **eventSource** |  Indicates the specific component, service, or module that directly generated the event (Used to identify the origin of the event within the system) |
 | **eventStatus** |  The status of the event |
 | **eventVersion** |  A version identifier for the event itself  |
+| **eventPriorty** |  A Priority Flag for the event to process immediately.Eg: HIGH,LOW or MEDIUM  |
+| **eventContext** | Identifies the enviroment in which is triggered. could be PRODUCTION,TESTING or STAGING or something similar |
+| **eventExpiry** | The time after which the event is considered stale or no longer relevant.  |
 | **traceId** |Matches the traceId from the command to tie the event back to the original request. |
 | **spanId** | Unique Identifier for current event within the trace, representing an individual step in the chain |
 | **parentSpanId** | SpanId of the immediate predecessor event that triggered this event|
