@@ -28,7 +28,8 @@ By following these best practices, we can design a robust and efficient schema f
 : [MongoDB Schema Design Best Practices](https://www.mongodb.com/developer/products/mongodb/mongodb-schema-design-best-practices/)
 
 
-Designing the WRITE model for a Quoting domain in a CQRS-based system requires careful consideration to ensure it handles multiple commands efficiently. Here’s a potential structure for the schema in MongoDB, which can accommodate various commands like `savePersonalInfo`, `saveContactDetails`, `saveDependentInfo`, `saveEmploymentInfo`, `saveQuote`, `updateQuote`, `addDependentToQuote`, and `addProductToQuote`.
+* Designing the WRITE model for a Quoting domain in a CQRS-based system requires careful consideration to ensure it handles multiple commands efficiently.
+* Here’s a potential structure for the schema in MongoDB, which can accommodate various commands like `savePersonalInfo`, `saveContactDetails`, `saveDependentInfo`, `saveEmploymentInfo`, `saveQuote`, `updateQuote`, `addDependentToQuote`, and `addProductToQuote`.
 
 ### MongoDB Schema Design for Quote 
 
