@@ -6,7 +6,10 @@
 | **eventSource** |  Indicates the specific component, service, or module that directly generated the event (Used to identify the origin of the event within the system) |
 | **eventStatus** |  The status of the event |
 | **eventVersion** |  A version identifier for the event itself  |
-| **correlationId** |Matches the correlation Id from the command to tie the event back to the original request. |
+| **traceId** |Matches the traceId from the command to tie the event back to the original request. |
+| **spanId** | Unique Identifier for current event within the trace, representing an individual step in the chain |
+| **parentSpanId** | SpanId of the immediate predecessor event that triggered this event|
+| **causationId** | eventID of the event that caused the current event to be triggered|
 | **commandId** | The identifier of the command that this event is related to. |
 | **tags** | Categorizes the event (["order", "creation,"ecommerice"]), Enables filtering and searching of events in logs, databases, and monitoring systems. |
 | **retryCount** | Tracks the number of times the event has been retried  |
