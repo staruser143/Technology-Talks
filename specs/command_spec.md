@@ -1,4 +1,4 @@
-8
+
 # Design of Command Specification
 
 Designing an ideal command specification for sending requests in a CQRS pattern is crucial for ensuring clarity, consistency, and maintainability. Here’s a suggested structure for the  command specification:
@@ -129,23 +129,23 @@ Including a `correlationId` can greatly enhance the observability and manageabil
 # Multiple Commands 
 
 
-To send multiple commands as part of a single request, we can design a **partner command specification** that encapsulates multiple individual commands. This approach allows us to batch multiple commands together and send them in a single payload. Here's how we can structure it:
+To send multiple commands as part of a single request, we can design a **Batch Command specification** that encapsulates multiple individual commands. This approach allows us to batch multiple commands together and send them in a single payload. Here's how we can structure it:
 
 ### Partner Command Specification Structure
 
-1. **Partner Command Name:** A descriptive name for the partner command, indicating the batch of commands to be executed.
+1. **Batch Command Name:** A descriptive name for the Batch command, indicating the batch of commands to be executed.
 2. **Unique Identifier:** A unique identifier (UUID) for the partner command.
 3. **Timestamp:** The timestamp when the partner command was created or sent.
 4. **Commands:** An array of individual command specifications, each containing its own unique structure.
 5. **Correlation Id:** A unique identifier to correlate related requests.
 6. **Metadata:** Additional information about the partner command, such as the user who initiated it, the source system, etc.
 
-### Example Partner Command Specification
+### Example Batch Command Specification
 
 ```json
 {
-  "partnerCommandName": "OrderProcessingCommands",
-  "partnerCommandId": "789e4567-e89b-12d3-a456-426614174789",
+  "batchCommandName": "OrderProcessingCommands",
+  "batchCommandId": "789e4567-e89b-12d3-a456-426614174789",
   "timestamp": "2025-02-25T19:00:00Z",
   "correlationId": "123e4567-e89b-12d3-a456-426614174123",
   "commands": [
@@ -218,8 +218,8 @@ Here’s how we can include the domain or namespace in the command specification
 
 ```json
 {
-  "partnerCommandName": "OrderProcessingCommands",
-  "partnerCommandId": "789e4567-e89b-12d3-a456-426614174789",
+  "batchCommandName": "OrderProcessingCommands",
+  "batchCommandId": "789e4567-e89b-12d3-a456-426614174789",
   "timestamp": "2025-02-25T19:00:00Z",
   "correlationId": "123e4567-e89b-12d3-a456-426614174123",
   "domain": "OrderManagement",
@@ -349,11 +349,11 @@ Including these elements in the command response specification will help ensure 
 
 When dealing with multiple commands sent within a single request, it's important to provide a response that clearly indicates the status and results of each individual command. Here’s a suggested structure for a partner command response specification:
 
-### Partner Command Response Specification Structure
+### Batch Command Response Specification Structure
 
 1. **Response Id:** A unique identifier for the overall partner command response.
 2. **Correlation Id:** Matches the correlation Id from the request to tie the response back to the original request.
-3. **Partner Command Id:** The identifier of the partner command that this response is for.
+3. **Batch Command Id:** The identifier of the partner command that this response is for.
 4. **Timestamp:** When the response was generated.
 5. **Overall Status:** The overall status of the partner command execution (e.g., success, partial success, failure).
 6. **Individual Command Responses:** An array of responses for each individual command within the partner command.
@@ -365,7 +365,7 @@ When dealing with multiple commands sent within a single request, it's important
 {
   "responseId": "f3d9f4c5-1a2e-4b8d-8e9b-3e6d4f7b5d8a",
   "correlationId": "123e4567-e89b-12d3-a456-426614174123",
-  "partnerCommandId": "789e4567-e89b-12d3-a456-426614174789",
+  "BatchCommandId": "789e4567-e89b-12d3-a456-426614174789",
   "timestamp": "2025-02-25T19:10:00Z",
   "overallStatus": "partial_success",
   "individualCommandResponses": [
@@ -411,7 +411,7 @@ When dealing with multiple commands sent within a single request, it's important
 
 1. **Response Id:** Unique identifier for the overall partner command response (`f3d9f4c5-1a2e-4b8d-8e9b-3e6d4f7b5d8a`).
 2. **Correlation Id:** Matches the correlation Id from the request to tie the response back to the original request (`123e4567-e89b-12d3-a456-426614174123`).
-3. **Partner Command Id:** The identifier of the partner command that this response is for (`789e4567-e89b-12d3-a456-426614174789`).
+3. **Batch Command Id:** The identifier of the partner command that this response is for (`789e4567-e89b-12d3-a456-426614174789`).
 4. **Timestamp:** When the response was generated (`2025-02-25T19:10:00Z`).
 5. **Overall Status:** Indicates the overall status of the partner command execution (`partial_success` in this case).
 6. **Individual Command Responses:** An array containing the response for each individual command:
