@@ -1,4 +1,4 @@
-
+8
 # Design of Command Specification
 
 Designing an ideal command specification for sending requests in a CQRS pattern is crucial for ensuring clarity, consistency, and maintainability. Here’s a suggested structure for the  command specification:
@@ -623,6 +623,129 @@ Here's an example of the final response sent to the callback URL once the comman
 
 By including these fields, we can clearly indicate the asynchronous nature of the command and ensure that the request and response specifications provide all the necessary details for handling asynchronous processing. 
 This approach enhances the reliability and clarity of the system's communication.
+
+
+# Combine Sync and Async Commands
+
+ Combining multiple command responses into a single response object can provide a more organized and concise way to handle the results of multiple commands. 
+This way, we can have a single response object that encapsulates the responses of all commands, making it easier to track and manage the overall process.
+
+### Example Combined Response Specification
+
+Here's how you can structure a single response object that includes multiple command responses:
+
+```json
+{
+  "responseId": "combinedResponse123",
+  "correlationId": "xyz456",
+  "timestamp": "2025-02-25T19:05:00Z",
+  "status": "partial_success",
+  "commandResponses": [
+    {
+      "commandName": "CheckInventoryCommand",
+      "commandId": "abc123",
+      "status": "success",
+      "timestamp": "2025-02-25T19:00:01Z",
+      "payload": {
+        "itemId": "ITEM001",
+        "availableQuantity": 10,
+        "message": "Item is available"
+      },
+      "errors": [],
+      "metadata": {
+        "processedBy": "InventoryService",
+        "processingTime": "1s"
+      }
+    },
+    {
+      "commandName": "ProcessPaymentCommand",
+      "commandId": "def456",
+      "status": "pending",
+      "timestamp": "2025-02-25T19:00:02Z",
+      "message": "Payment processing started",
+      "metadata": {
+        "processedBy": "PaymentService"
+      }
+    }
+  ],
+  "metadata": {
+    "overallProcessingTime": "5 minutes",
+    "initiatedBy": "user123"
+  }
+}
+```
+
+### Explanation
+
+1. **responseId:** Unique identifier for the combined response.
+2. **correlationId:** Matches the correlation Id from the request to tie the combined response back to the original request.
+3. **timestamp:** When the combined response was generated.
+4. **status:** Overall status of the command execution (e.g., partial_success if not all commands succeeded).
+5. **commandResponses:** An array containing individual responses for each command.
+   - **commandName:** The name of the command.
+   - **commandId:** Unique identifier for the command.
+   - **status:** The status of the command execution (e.g., success, pending).
+   - **timestamp:** When the individual command response was generated.
+   - **payload:** The result or data returned by the command execution.
+   - **errors:** Any errors encountered during the command execution.
+   - **metadata:** Additional information about the command execution.
+6. **metadata:** Additional information about the combined response, such as overall processing time and the entity that initiated the request.
+
+### Handling Asynchronous Callbacks
+
+For asynchronous commands, you can update the `commandResponses` array with the final results once the processing is complete:
+
+```json
+{
+  "responseId": "combinedResponse123",
+  "correlationId": "xyz456",
+  "timestamp": "2025-02-25T19:05:00Z",
+  "status": "complete_success",
+  "commandResponses": [
+    {
+      "commandName": "CheckInventoryCommand",
+      "commandId": "abc123",
+      "status": "success",
+      "timestamp": "2025-02-25T19:00:01Z",
+      "payload": {
+        "itemId": "ITEM001",
+        "availableQuantity": 10,
+        "message": "Item is available"
+      },
+      "errors": [],
+      "metadata": {
+        "processedBy": "InventoryService",
+        "processingTime": "1s"
+      }
+    },
+    {
+      "commandName": "ProcessPaymentCommand",
+      "commandId": "def456",
+      "status": "success",
+      "timestamp": "2025-02-25T19:05:00Z",
+      "payload": {
+        "orderId": "ORD12345",
+        "transactionId": "TRANS67890",
+        "message": "Payment processed successfully"
+      },
+      "errors": [],
+      "metadata": {
+        "processedBy": "PaymentService",
+        "processingTime": "5 minutes"
+      }
+    }
+  ],
+  "metadata": {
+    "overallProcessingTime": "5 minutes",
+    "initiatedBy": "user123"
+  }
+}
+```
+
+### Summary
+
+By using a single response object that includes multiple command responses, you can provide a clear and organized view of the overall process. This approach makes it easier to track and manage the results of multiple commands, whether they are synchronous or asynchronous.
+
 
 
 
