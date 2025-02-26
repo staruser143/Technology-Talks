@@ -107,7 +107,7 @@ Here’s how we can include the version in the event specification:
   "correlationId": "123e4567-e89b-12d3-a456-426614174123",
   "commandId": "123e4567-e89b-12d3-a456-426614174000",
   "timestamp": "2025-02-25T19:05:00Z",
-  "version": "1.0",
+  "version": "1.0", // e.g., The Initial Version
   "payload": {
     "orderId": "ORD12345",
     "customerId": "CUST67890",
@@ -169,7 +169,7 @@ Here’s how we can include a reference to the schema in the event specification
   "commandId": "123e4567-e89b-12d3-a456-426614174000",
   "timestamp": "2025-02-25T19:05:00Z",
   "version": "1.0",
-  "schemaRef": {
+  "schemaRef": { // Reference to SchemaID, Version and URI of the Schema
     "id": "orderCreatedSchema",
     "version": "1.0",
     "uri": "https://schema-registry.example.com/schemas/orderCreatedSchema/1.0"
