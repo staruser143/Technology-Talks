@@ -1,4 +1,7 @@
-Designing an ideal command specification for sending requests in a CQRS pattern is crucial for ensuring clarity, consistency, and maintainability. Here’s a suggested structure for your command specification:
+
+# Design of Command Specification
+
+Designing an ideal command specification for sending requests in a CQRS pattern is crucial for ensuring clarity, consistency, and maintainability. Here’s a suggested structure for the  command specification:
 
 ### Command Specification Structure
 
@@ -64,7 +67,7 @@ Designing an ideal command specification for sending requests in a CQRS pattern 
 
 # CorrelationId
 
-Yes, including a `correlationId` in your command specification can be highly beneficial. The `correlationId` helps to track and correlate multiple related requests and responses across different systems, services, or components. This is especially useful in distributed systems where a single business process might span multiple microservices or components.
+Including a `correlationId` in your command specification can be highly beneficial. The `correlationId` helps to track and correlate multiple related requests and responses across different systems, services, or components. This is especially useful in distributed systems where a single business process might span multiple microservices or components.
 
 ### Benefits of Including `correlationId`
 
@@ -123,14 +126,14 @@ Here’s an example of a command specification with the inclusion of a `correlat
 6. **Metadata:** Additional context about the command.
 7. **Validation Rules:** Rules to validate the command's payload.
 
-Including a `correlationId` can greatly enhance the observability and manageability of your system. It’s a best practice in distributed system design.
+Including a `correlationId` can greatly enhance the observability and manageability of the  system. It’s a best practice in distributed system design.
 
 
 
 # Multiple Commands 
 
 
-To send multiple commands as part of a single request, you can design a **partner command specification** that encapsulates multiple individual commands. This approach allows you to batch multiple commands together and send them in a single payload. Here's how you can structure it:
+To send multiple commands as part of a single request, we can design a **partner command specification** that encapsulates multiple individual commands. This approach allows us to batch multiple commands together and send them in a single payload. Here's how we can structure it:
 
 ### Partner Command Specification Structure
 
@@ -227,9 +230,9 @@ This approach allows you to manage complex business processes that involve multi
 
 
 
-# domain or Namespace
+# Domain or Namespace
 
-Including the domain or namespace in your command specification can be very useful. It helps to organize and categorize commands, especially in large, complex systems where commands may span multiple domains or bounded contexts. This approach enhances clarity, maintainability, and traceability.
+Including the domain or namespace in the  command specification can be very useful. It helps to organize and categorize commands, especially in large, complex systems where commands may span multiple domains or bounded contexts. This approach enhances clarity, maintainability, and traceability.
 
 ### Benefits of Including Domain/Namespace
 
@@ -319,8 +322,8 @@ Here’s how we can include the domain or namespace in your command specificatio
 
 ### Key Considerations
 
-- **Consistency:** Ensure that the domain names are consistent and meaningful across your system.
-- **Namespace:** You can use namespace conventions (e.g., `OrderManagement.CreateOrderCommand`) to further organize and categorize commands.
+- **Consistency:** Ensure that the domain names are consistent and meaningful across the  system.
+- **Namespace:** We can use namespace conventions (e.g., `OrderManagement.CreateOrderCommand`) to further organize and categorize commands.
 - **Documentation:** Document the domains and namespaces to provide clear guidance for developers and maintainers.
 
 By including the domain or namespace in the command specification, we can improve the overall structure and manageability of the system. 
@@ -465,7 +468,7 @@ When dealing with multiple commands sent within a single request, it's important
 By following this structure, we can ensure that each command's response is clearly documented and easy to trace, while also providing an overall summary of the partner command execution.
 
 
-# Content-Type is Response
+# Content-Type in Response
 
 including the `contentType` in the command response specification can be very useful. The `contentType` indicates the format or type of data contained in the response, which helps in correctly interpreting and processing the response. Here's why it makes sense to include it:
 
@@ -515,7 +518,7 @@ Here’s how you can include the `contentType` in your command response specific
 
 ### Summary
 
-Including the `contentType` in your command response specification provides clear information about the format of the response data, enhancing data interpretation, interoperability, validation. 
+Including the `contentType` in the command response specification provides clear information about the format of the response data, enhancing data interpretation, interoperability, validation. 
 
 In a typical HTTP response, the `Content-Type` is indeed included as a header field. Including it within the body of a command response specification can seem redundant. However, in certain scenarios, it can still be beneficial to have `contentType` explicitly mentioned in the response body:
 
