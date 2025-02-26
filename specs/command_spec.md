@@ -566,6 +566,109 @@ In this example, the `Content-Type` header specifies the format of the response 
 While the `Content-Type` header in HTTP responses is typically sufficient to indicate the data format, including `contentType` within the response body can still be useful in certain scenarios, such as non-HTTP protocols, logging, auditing, and ensuring consistency across different transport layers.
 
 
+# Async Command Request
+Commands can be asynchronous. When dealing with asynchronous commands, it’s important to ensure that both the request and response specifications clearly indicate the asynchronous nature of the command and provide the necessary details for handling the asynchronous processing.
+
+### Identifying Asynchronous Commands in the Request and Response Specifications
+
+#### Request Specification
+
+1. **Command Type:** Indicate that the command is asynchronous.
+2. **Callback URL:** Provide a URL where the response should be sent once the command is processed.
+3. **Command Status:** Optional field to initially indicate that the command has been received and is being processed.
+
+#### Response Specification
+
+1. **Command Status:** Indicate the status of the command (e.g., pending, completed, failed).
+2. **Callback Response:** A separate response sent to the callback URL with the final result once the command is processed.
+
+### Example Asynchronous Command Request Specification
+
+Here's an example of an asynchronous command request:
+
+```json
+{
+  "commandName": "ProcessOrderCommand",
+  "commandId": "789e4567-e89b-12d3-a456-426614174789",
+  "timestamp": "2025-02-25T19:00:00Z",
+  "correlationId": "123e4567-e89b-12d3-a456-426614174123",
+  "commandType": "asynchronous",
+  "callbackUrl": "https://example.com/callback",
+  "payload": {
+    "orderId": "ORD12345",
+    "customerId": "CUST67890",
+    "items": [
+      {
+        "itemId": "ITEM001",
+        "quantity": 2,
+        "price": 100
+      },
+      {
+        "itemId": "ITEM002",
+        "quantity": 1,
+        "price": 50
+      }
+    ],
+    "totalAmount": 250
+  },
+  "metadata": {
+    "initiatedBy": "user123",
+    "sourceSystem": "OrderService"
+  }
+}
+```
+
+### Example Asynchronous Command Initial Response Specification
+
+Here's an example of the initial response sent immediately after receiving the command:
+
+```json
+{
+  "responseId": "b3d9f4c5-1a2e-4b8d-8e9b-3e6d4f7b5d8a",
+  "correlationId": "123e4567-e89b-12d3-a456-426614174123",
+  "commandId": "789e4567-e89b-12d3-a456-426614174789",
+  "timestamp": "2025-02-25T19:00:01Z",
+  "status": "pending",
+  "message": "Command received and processing started.",
+  "metadata": {
+    "processedBy": "OrderService"
+  }
+}
+```
+
+### Example Asynchronous Command Callback Response Specification
+
+Here's an example of the final response sent to the callback URL once the command is processed:
+
+```json
+{
+  "responseId": "d3e9f6c8-4a2f-5b6d-9e8b-4f3d7c5f6d8b",
+  "correlationId": "123e4567-e89b-12d3-a456-426614174123",
+  "commandId": "789e4567-e89b-12d3-a456-426614174789",
+  "timestamp": "2025-02-25T19:05:00Z",
+  "status": "success",
+  "payload": {
+    "orderId": "ORD12345",
+    "message": "Order processed successfully"
+  },
+  "errors": [],
+  "metadata": {
+    "processedBy": "OrderService",
+    "processingTime": "5 minutes"
+  }
+}
+```
+
+### Explanation
+
+- **Command Type:** The `commandType` field in the request indicates that the command is asynchronous.
+- **Callback URL:** The `callbackUrl` field in the request specifies where the final response should be sent once the command is processed.
+- **Initial Response:** The initial response is sent immediately to confirm that the command has been received and is being processed, with a status of "pending."
+- **Callback Response:** The final response is sent to the callback URL once the command is fully processed, with the final status and results.
+
+By including these fields, we can clearly indicate the asynchronous nature of the command and ensure that the request and response specifications provide all the necessary details for handling asynchronous processing. This approach enhances the reliability and clarity of the system's communication.
+
+
 
 
 
