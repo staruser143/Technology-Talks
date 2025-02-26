@@ -67,11 +67,11 @@ Designing an ideal command specification for sending requests in a CQRS pattern 
 
 # CorrelationId
 
-Including a `correlationId` in your command specification can be highly beneficial. The `correlationId` helps to track and correlate multiple related requests and responses across different systems, services, or components. This is especially useful in distributed systems where a single business process might span multiple microservices or components.
+Including a `correlationId` in the command specification can be highly beneficial. The `correlationId` helps to track and correlate multiple related requests and responses across different systems, services, or components. This is especially useful in distributed systems where a single business process might span multiple microservices or components.
 
 ### Benefits of Including `correlationId`
 
-1. **Traceability:** It allows you to trace the flow of a request through various components and services, making debugging and monitoring easier.
+1. **Traceability:** It allows us to trace the flow of a request through various components and services, making debugging and monitoring easier.
 2. **Consistency:** Ensures consistency by correlating commands, events, and queries related to the same business process or transaction.
 3. **Logging:** Improves logging by providing a unique identifier that can be used to group and analyze logs related to a specific request.
 4. **Error Handling:** Facilitates better error handling by tracking which parts of the process have succeeded or failed.
@@ -226,7 +226,7 @@ To send multiple commands as part of a single request, we can design a **partner
 - **Error Handling:** Define how errors in individual commands will be handled. For example, if one command fails, decide whether to rollback the entire batch or handle partial failures.
 - **Logging and Monitoring:** Implement logging and monitoring for both individual commands and the partner command to track and debug the entire process.
 
-This approach allows you to manage complex business processes that involve multiple related commands, ensuring consistency and traceability across the entire operation.
+This approach allows us to manage complex business processes that involve multiple related commands, ensuring consistency and traceability across the entire operation.
 
 
 
@@ -243,7 +243,7 @@ Including the domain or namespace in the  command specification can be very usef
 
 ### Updated Command Specification Example
 
-Here’s how we can include the domain or namespace in your command specification:
+Here’s how we can include the domain or namespace in the command specification:
 
 ```json
 {
@@ -382,7 +382,7 @@ Designing a command response specification is equally important to ensure clarit
 - **Errors:** Provides detailed error information for debugging and handling failures.
 - **Metadata:** Adds context to the response, such as processing time and the service that handled the command.
 
-Including these elements in your command response specification will help ensure that responses are informative, traceable, and useful for both clients and developers.
+Including these elements in the command response specification will help ensure that responses are informative, traceable, and useful for both clients and developers.
 
 # Multiple Command Responses
 
@@ -482,7 +482,7 @@ including the `contentType` in the command response specification can be very us
 
 ### Updated Command Response Specification Example
 
-Here’s how you can include the `contentType` in your command response specification:
+Here’s how we can include the `contentType` in the command response specification:
 
 ```json
 {
@@ -531,7 +531,7 @@ In a typical HTTP response, the `Content-Type` is indeed included as a header fi
    - Including `contentType` within the response body provides a self-contained log record, which can be useful for auditing and debugging purposes, especially when reviewing stored responses.
 
 3. **Consistency Across Transport Layers:**
-   - By including `contentType` in the response body, you ensure that the data format information is consistently available regardless of the transport layer. This can be particularly helpful in multi-protocol architectures.
+   - By including `contentType` in the response body, we ensure that the data format information is consistently available regardless of the transport layer. This can be particularly helpful in multi-protocol architectures.
 
 ### Example Usage in HTTP
 
