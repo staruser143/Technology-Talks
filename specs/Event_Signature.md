@@ -1,4 +1,7 @@
-The **`eventSignature`** field is a critical component in ensuring the **integrity** and **authenticity** of events in an event-driven system. It is used to verify that the event has not been tampered with during transmission and that it originates from a trusted source. This is particularly important in distributed systems where events are exchanged between multiple services, often over potentially insecure channels.
+# Event Signature
+* The **`eventSignature`** field is a critical component in ensuring the **integrity** and **authenticity** of events in an event-driven system.
+* It is used to verify that the event has not been tampered with during transmission and that it originates from a trusted source.
+* This is particularly important in distributed systems where events are exchanged between multiple services, often over potentially insecure channels.
 
 ---
 
@@ -129,4 +132,4 @@ Let’s consider a scenario where the `OrderService` emits an `OrderPlaced` even
 
 ---
 
-By using the `eventSignature` field, you can significantly enhance the security and reliability of your event-driven system, ensuring that only valid and trusted events are processed.
+By using the `eventSignature` field, we can significantly enhance the security and reliability of the event-driven system, ensuring that only valid and trusted events are processed.
