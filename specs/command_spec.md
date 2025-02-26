@@ -127,7 +127,7 @@ Including a `correlationId` can greatly enhance the observability and manageabil
 
 
 
-#Multiple Commands 
+# Multiple Commands 
 
 
 To send multiple commands as part of a single request, you can design a **partner command specification** that encapsulates multiple individual commands. This approach allows you to batch multiple commands together and send them in a single payload. Here's how you can structure it:
