@@ -10,6 +10,7 @@
 | **eventContext** | Identifies the enviroment in which is triggered. could be PRODUCTION,TESTING or STAGING or something similar |
 | **eventExpiry** | The time after which the event is considered stale or no longer relevant.  |
 | **traceId** |Matches the traceId from the command to tie the event back to the original request. |
+| **eventSignature** |Ensures event payload has not been altered after it is created,confirms the event was from a trusted source, protects against malicious actors who might inject or modify events. |
 | **spanId** | Unique Identifier for current event within the trace, representing an individual step in the chain |
 | **parentSpanId** | SpanId of the immediate predecessor event that triggered this event|
 | **causationId** | eventID of the event that caused the current event to be triggered|
