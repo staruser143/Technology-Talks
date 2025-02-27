@@ -1,4 +1,7 @@
-The **`payload`** field in an event specification should **only include the fields relevant to the event** being emitted, rather than the entire domain entity object. This approach ensures that the event is concise, focused, and only carries the necessary information for consumers to process it. Including the entire domain entity object can lead to unnecessary data duplication, increased payload size, and potential privacy or security concerns.
+## Payload field in Event Specification
+* The **`payload`** field in an event specification should **only include the fields relevant to the event** being emitted, rather than the entire domain entity object. 
+* This approach ensures that the event is concise, focused, and only carries the necessary information for consumers to process it.
+* Including the entire domain entity object can lead to unnecessary data duplication, increased payload size, and potential privacy or security concerns.
 
 Let’s break this down with an example in the context of the **insurance domain** (e.g., Quotes and Enrollments).
 
@@ -135,7 +138,7 @@ Let’s break this down with an example in the context of the **insurance domain
 
 ### **When to Include Additional Data**
 
-In some cases, you may need to include additional data in the payload to avoid forcing consumers to perform lookups. This is typically done when:
+In some cases, we may need to include additional data in the payload to avoid forcing consumers to perform lookups. This is typically done when:
 - The additional data is small and directly relevant to the event.
 - The lookup would introduce significant latency or complexity.
 - The data is immutable and unlikely to change.
