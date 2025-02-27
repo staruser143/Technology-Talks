@@ -1,0 +1,172 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Event",
+    "type": "object",
+    "properties": {
+      "eventName": {
+        "type": "string",
+        "description": "The name of the event."
+      },
+      "eventId": {
+        "type": "string",
+        "description": "A unique identifier for the event."
+      },
+      "commandId": {
+        "type": "string",
+        "description": "The ID of the command that triggered this event."
+      },
+      "timestamp": {
+        "type": "string",
+        "format": "date-time",
+        "description": "The timestamp when the event was created."
+      },
+      "traceId": {
+        "type": "string",
+        "description": "The trace ID for distributed tracing."
+      },
+      "spanId": {
+        "type": "string",
+        "description": "The span ID for distributed tracing."
+      },
+      "parentSpanId": {
+        "type": "string",
+        "description": "The parent span ID for distributed tracing."
+      },
+      "causationId": {
+        "type": "string",
+        "description": "The ID of the event or command that caused this event."
+      },
+      "version": {
+        "type": "string",
+        "description": "The version of the event schema."
+      },
+      "contentType": {
+        "type": "string",
+        "description": "The content type of the event payload."
+      },
+      "schemaRef": {
+        "type": "object",
+        "description": "Reference to the schema used for this event.",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The ID of the schema."
+          },
+          "version": {
+            "type": "string",
+            "description": "The version of the schema."
+          },
+          "uri": {
+            "type": "string",
+            "format": "uri",
+            "description": "The URI of the schema."
+          }
+        },
+        "required": ["id", "version", "uri"]
+      },
+      "eventDetails": {
+        "type": "object",
+        "description": "Details specific to the event.",
+        "properties": {
+          "eventType": {
+            "type": "string",
+            "description": "The type of the event."
+          },
+          "eventSource": {
+            "type": "string",
+            "description": "The source of the event."
+          },
+          "eventVersion": {
+            "type": "string",
+            "description": "The version of the event."
+          },
+          "eventStatus": {
+            "type": "string",
+            "description": "The status of the event."
+          },
+          "eventContext": {
+            "type": "string",
+            "description": "The context in which the event occurred."
+          },
+          "eventExpiry": {
+            "type": "string",
+            "format": "date-time",
+            "description": "The expiry time of the event."
+          },
+          "eventDestination": {
+            "type": "string",
+            "description": "The destination of the event."
+          },
+          "eventSignature": {
+            "type": "string",
+            "description": "The digital signature of the event."
+          },
+          "eventTags": {
+            "type": "array",
+            "description": "Tags associated with the event.",
+            "items": {
+              "type": "string"
+            }
+          },
+          "retryCount": {
+            "type": "integer",
+            "description": "The number of times the event has been retried."
+          }
+        },
+        "required": ["eventType", "eventSource", "eventVersion", "eventStatus", "eventContext", "eventExpiry", "eventDestination"]
+      },
+      "payload": {
+        "type": "object",
+        "description": "The payload of the event.",
+        "properties": {
+          "quoteId": {
+            "type": "string",
+            "description": "The ID of the quote."
+          },
+          "customerId": {
+            "type": "string",
+            "description": "The ID of the customer."
+          },
+          "products": {
+            "type": "array",
+            "description": "The list of products in the quote.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "productID": {
+                  "type": "string",
+                  "description": "The ID of the product."
+                },
+                "premiumAmount": {
+                  "type": "number",
+                  "description": "The premium amount for the product."
+                }
+              },
+              "required": ["productID", "premiumAmount"]
+            }
+          },
+          "totalPremiumAmount": {
+            "type": "number",
+            "description": "The total premium amount for the quote."
+          }
+        },
+        "required": ["quoteId", "customerId", "products", "totalPremiumAmount"]
+      },
+      "metadata": {
+        "type": "object",
+        "description": "Metadata about the event.",
+        "properties": {
+          "initiatedBy": {
+            "type": "string",
+            "description": "The entity that initiated the event."
+          },
+          "sourceSystem": {
+            "type": "string",
+            "description": "The system from which the event originated."
+          }
+        },
+        "required": ["initiatedBy", "sourceSystem"]
+      }
+    },
+    "required": ["eventName", "eventId", "commandId", "timestamp", "traceId", "spanId", "parentSpanId", "causationId", "version", "contentType", "schemaRef", "eventDetails", "payload", "metadata"]
+  }
