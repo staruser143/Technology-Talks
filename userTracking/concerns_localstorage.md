@@ -1,4 +1,7 @@
-Using `localStorage` on the client side to store a **temporary quote ID** is a common and practical approach, but there are some concerns and limitations you should be aware of. Below is a detailed analysis of the potential issues and strategies to mitigate them:
+## Concerns on using localStorage to store "Temporary Quote ID"
+Using `localStorage` on the client side to store a **temporary quote ID** is a common and practical approach, but there are some concerns and limitations we should be aware of. 
+
+Below is a detailed analysis of the potential issues and strategies to mitigate them:
 
 ---
 
@@ -14,7 +17,8 @@ Using `localStorage` on the client side to store a **temporary quote ID** is a c
    - Use libraries like `DOMPurify` to sanitize HTML content.
 
 2. **Use HTTP-only Cookies:**
-   - For sensitive data, consider using **HTTP-only cookies** instead of `localStorage`. These cookies are not accessible via JavaScript, reducing the risk of XSS attacks.
+   - For sensitive data, consider using **HTTP-only cookies** instead of `localStorage`.
+   - These cookies are not accessible via JavaScript, reducing the risk of XSS attacks.
 
 3. **Encrypt Data:**
    - Encrypt the temporary quote ID before storing it in `localStorage`.
@@ -36,7 +40,8 @@ Using `localStorage` on the client side to store a **temporary quote ID** is a c
    - Use `sessionStorage` as a fallback. Unlike `localStorage`, `sessionStorage` is cleared when the browser tab is closed, but it can still be useful for short-term persistence.
 
 2. **Backend Persistence:**
-   - Persist the temporary quote ID on the backend immediately after generating it. This ensures the quote process can be resumed even if the client-side storage is cleared.
+   - Persist the temporary quote ID on the backend immediately after generating it.
+   - This ensures the quote process can be resumed even if the client-side storage is cleared.
 
 3. **User Prompt:**
    - Notify users if their `localStorage` is cleared and provide options to recover their progress (e.g., by entering an email to retrieve the quote).
@@ -46,7 +51,8 @@ Using `localStorage` on the client side to store a **temporary quote ID** is a c
 ### **3. Cross-Tab Synchronization**
 
 #### **Risk: Inconsistent State Across Tabs**
-- `localStorage` is shared across all tabs of the same domain. If the user opens multiple tabs, they might overwrite or conflict with the temporary quote ID.
+- `localStorage` is shared across all tabs of the same domain.
+- If the user opens multiple tabs, they might overwrite or conflict with the temporary quote ID.
 
 #### **Mitigation Strategies:**
 1. **Tab-Specific IDs:**
@@ -160,4 +166,4 @@ Using `localStorage` on the client side to store a **temporary quote ID** is a c
 5. **Inform Users:**
    - Notify users about data storage practices and obtain their consent.
 
-By addressing these concerns, you can safely use `localStorage` to store temporary quote IDs while ensuring a secure and reliable user experience.
+By addressing these concerns, we can safely use `localStorage` to store temporary quote IDs while ensuring a secure and reliable user experience.
