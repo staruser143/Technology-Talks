@@ -1,4 +1,7 @@
-Using **Redis** to store temporary quote IDs and quote details until the user registers is a **highly scalable and efficient approach**. Redis is an in-memory data store that provides fast read/write operations, making it ideal for temporary data storage. However, there are some **constraints and considerations** you need to be aware of when using this approach.
+## Using REDIS to store temporary Quote IDs
+- Using **Redis** to store temporary quote IDs and quote details until the user registers is a **highly scalable and efficient approach**.
+- Redis is an in-memory data store that provides fast read/write operations, making it ideal for temporary data storage.
+- However, there are some **constraints and considerations** we need to be aware of when using this approach.
 
 ---
 
@@ -12,13 +15,13 @@ Using **Redis** to store temporary quote IDs and quote details until the user re
    - Redis can handle a large number of concurrent connections and data operations, making it suitable for high-traffic applications.
 
 3. **Flexibility:**
-   - Redis supports various data structures (e.g., strings, hashes, lists, sets), allowing you to store and manage quote details in a structured way.
+   - Redis supports various data structures (e.g., strings, hashes, lists, sets), allowing us to store and manage quote details in a structured way.
 
 4. **Automatic Expiry:**
-   - Redis supports **TTL (Time-to-Live)** for keys, so you can automatically expire temporary data after a certain period.
+   - Redis supports **TTL (Time-to-Live)** for keys, so we can automatically expire temporary data after a certain period.
 
 5. **Decoupling:**
-   - By storing temporary data in Redis, you decouple it from your primary database, reducing the load on your main data store.
+   - By storing temporary data in Redis, we decouple it from your primary database, reducing the load on your the main data store.
 
 ---
 
@@ -42,7 +45,7 @@ Using **Redis** to store temporary quote IDs and quote details until the user re
 
 #### **3. Data Migration**
 - **Risk: Complexity in Data Migration**
-  - When the user registers, you need to copy data from Redis to your primary database and delete it from Redis. This process must be atomic to avoid data inconsistencies.
+  - When the user registers, we need to copy data from Redis to your primary database and delete it from Redis. This process must be atomic to avoid data inconsistencies.
 
 - **Mitigation:**
   - Use **transactions** or **lua scripting** in Redis to ensure atomicity during data migration.
@@ -182,4 +185,4 @@ export class QuoteService {
 | **Unauthorized Access**       | Enable Redis AUTH and restrict access using a VPC or firewall.                |
 | **High Cost**                 | Use a managed Redis service and optimize data storage.                        |
 
-By using Redis for temporary data storage and migrating it to the primary database upon registration, you can achieve a **scalable, efficient, and secure solution**. However, you must carefully address the constraints to ensure data durability, consistency, and cost-effectiveness.
+By using Redis for temporary data storage and migrating it to the primary database upon registration, you can achieve a **scalable, efficient, and secure solution**. However, we must carefully address the constraints to ensure data durability, consistency, and cost-effectiveness.
