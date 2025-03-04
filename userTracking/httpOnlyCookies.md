@@ -1,10 +1,13 @@
-Using **HTTP-only cookies** to store a temporary quote ID is a more secure alternative to `localStorage` because HTTP-only cookies are not accessible via JavaScript, making them immune to **XSS (Cross-Site Scripting)** attacks. Below, I'll explain how to implement this in both the **frontend (ReactJS)** and **backend (NestJS)**.
+## Using HTTP-Only Cookies for Quote Application Tracking for Anonymous and Registered Users
+Using **HTTP-only cookies** to store a temporary quote ID is a more secure alternative to `localStorage` because HTTP-only cookies are not accessible via JavaScript, making them immune to **XSS (Cross-Site Scripting)** attacks. 
 
+## Implementation Approach in both the **frontend (ReactJS)** and **backend (NestJS)**.
 ---
 
 ### **1. Frontend (ReactJS)**
 
-Since HTTP-only cookies cannot be set or read directly by JavaScript, the frontend will rely on the backend to set and manage the cookie. The frontend only needs to make API requests, and the backend will handle the cookie operations.
+* Since HTTP-only cookies cannot be set or read directly by JavaScript, the frontend will rely on the backend to set and manage the cookie.
+* The frontend only needs to make API requests, and the backend will handle the cookie operations.
 
 #### **Steps in ReactJS:**
 1. **Start Quote Process:**
@@ -175,7 +178,7 @@ export class QuoteController {
   ```
 
 #### **Cross-Origin Requests:**
-- If your frontend and backend are on different domains, configure CORS to allow credentials (cookies):
+- If the frontend and backend are on different domains, configure CORS to allow credentials (cookies):
   ```typescript
   app.enableCors({
     origin: 'https://your-frontend-domain.com',
@@ -189,7 +192,8 @@ export class QuoteController {
 
 | **Component** | **Changes** |
 |----------------|-------------|
-| **Frontend (ReactJS)** | - Use `credentials: 'include'` in `fetch` calls.<br>- Remove `localStorage` usage. |
+| **Frontend (ReactJS)** | - Use `credentials: 'include'` in `fetch` calls.<br> |
 | **Backend (NestJS)** | - Use `cookie-parser` middleware.<br>- Set HTTP-only cookies using `res.cookie()`.<br>- Read cookies using `req.cookies`. |
 
-By using HTTP-only cookies, you ensure that the temporary quote ID is securely managed by the browser and inaccessible to malicious scripts. This approach provides a robust and secure way to handle temporary data like quote IDs.
+* By using HTTP-only cookies, we can ensure that the temporary quote ID is securely managed by the browser and inaccessible to malicious scripts.
+* This approach provides a robust and secure way to handle temporary data like quote IDs.
