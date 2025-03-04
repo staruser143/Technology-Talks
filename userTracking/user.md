@@ -1,4 +1,8 @@
-When the user hasn't registered yet but can still start a quote application, you need a strategy to track and persist the quote application details both **before and after registration**. This requires a combination of **anonymous tracking** (before registration) and **user-linked tracking** (after registration). Below are strategies to achieve this using **ReactJS (frontend)** and **NestJS (backend)**:
+## Track and Persist Quote App Details before(Anonymous) and after User Registration
+* When the user hasn't registered yet but can still start a quote application, we need a strategy to track and persist the quote application details both **before and after registration**.
+* This requires a combination of **anonymous tracking** (before registration) and **user-linked tracking** (after registration).
+
+## Below are strategies to achieve this using **ReactJS (frontend)** and **NestJS (backend)**:
 
 ---
 
