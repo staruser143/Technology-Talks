@@ -132,3 +132,68 @@ export class PlanGateway {
 
 This architecture supports both real-time and asynchronous workflows, ensuring a seamless user experience.
 
+---
+
+### **Why Fire the Same `recommendationUpdates` Event?**
+Reusing the `recommendationUpdates` event ensures consistency on the client side. Here’s why:
+
+1. **Unified Handling on the Frontend**:
+   - The frontend only needs to listen to a single event (`recommendationUpdates`) to receive updates about both initial recommendations and enriched data.
+   - This simplifies frontend logic—any updates to the plans (filtered or enriched) are handled consistently.
+
+2. **Incremental Updates**:
+   - Initially, the user gets basic filtered recommendations (synchronous).
+   - Later, enriched recommendations are pushed as they are ready (asynchronous). By using the same event name, the client dynamically updates the listing without differentiating between the stages of updates.
+
+3. **Real-Time User Feedback**:
+   - The `recommendationUpdates` event can be sent multiple times. For example:
+     - First update: Send basic recommendations (low-latency response).
+     - Second update: Send enriched or refined recommendations (when enrichment is completed asynchronously).
+
+This approach keeps the user interface seamless and responsive, maintaining a real-time experience.
+
+---
+
+### **How is `pushEnrichedRecommendations` Triggered?**
+The `pushEnrichedRecommendations` method is triggered asynchronously after the enrichment process is complete. Here’s how it works:
+
+1. **Enrichment Workflow**:
+   - When the backend receives user responses (via WebSocket or HTTP), it processes the initial filtering logic synchronously to generate basic recommendations.
+   - Simultaneously, the backend emits an asynchronous event (e.g., to Kafka or Redis Pub/Sub) for enrichment. This could involve calling machine learning models, combining external data sources, or applying advanced filtering.
+
+2. **Background Enrichment Process**:
+   - A separate service or a background worker (e.g., using NestJS queues or a microservice) processes the enrichment task.
+   - Once enriched data is ready, it triggers the backend gateway's `pushEnrichedRecommendations` method to notify the connected client via WebSockets.
+
+3. **Example of Asynchronous Trigger**:
+   ```typescript
+   async handleFilteredEvent(userResponses: UserResponseDto) {
+       const enrichedPlans = await this.planService.enrichPlans(userResponses); // Perform enrichment
+       this.planGateway.pushEnrichedRecommendations(userResponses.userId, enrichedPlans); // Notify the client
+   }
+   ```
+
+4. **Event Propagation**:
+   - The enrichment service could also publish a message to Kafka or a similar message broker. A consumer in the backend (e.g., using a NestJS Kafka subscriber) listens to this message and triggers `pushEnrichedRecommendations`.
+
+---
+
+### **Visualizing the Workflow**
+1. **User Interaction**:
+   - The user answers a question. 
+   - The backend filters plans and immediately sends filtered recommendations via `recommendationUpdates`.
+
+2. **Enrichment in the Background**:
+   - The backend or another service begins enriching recommendations asynchronously.
+
+3. **Sending Enriched Recommendations**:
+   - Once enrichment is complete, the backend pushes enriched recommendations to the client via the same `recommendationUpdates` event.
+
+---
+
+### **Benefits of This Design**
+- **Real-Time Updates**: The user gets immediate results (filtered plans) without waiting for the full enrichment process.
+- **Consistency**: The frontend only deals with one event type (`recommendationUpdates`), simplifying its implementation.
+- **Scalability**: The asynchronous enrichment can be offloaded to a distributed system like Kafka, making the architecture resilient to load.
+
+
