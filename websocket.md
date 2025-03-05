@@ -1,31 +1,29 @@
-Let's break down the implementation with code snippets for both React.js (frontend) and NestJS (backend).
-
-
 ---
 
-1. Frontend (React.js) Implementation
+## 1. Frontend (React.js) Implementation
 
 We'll use Socket.io for real-time updates.
 
 Install Dependencies
-
+```bash
 npm install socket.io-client
-
+```
 Setup WebSocket Connection (socket.js)
 
+```javascript
 import { io } from "socket.io-client";
 
 const socket = io("http://localhost:3000"); // Connect to NestJS backend
 
 export default socket;
-
+```
 
 ---
 
-Sidebar Component (Sidebar.js)
+## Sidebar Component (Sidebar.js)
 
 This component captures user answers and sends them to the backend.
-
+```javascript
 import React, { useState } from "react";
 import socket from "./socket";
 
@@ -60,14 +58,14 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
+```
 
 ---
 
-Plan Listing Component (PlanListing.js)
+## Plan Listing Component (PlanListing.js)
 
 This component listens for filtered plan updates from the backend.
-
+```javascript
 import React, { useState, useEffect } from "react";
 import socket from "./socket";
 
@@ -98,14 +96,14 @@ const PlanListing = () => {
 };
 
 export default PlanListing;
-
+```
 
 ---
 
-Main App Component (App.js)
+## Main App Component (App.js)
 
 Combines both components.
-
+```javascript
 import React from "react";
 import Sidebar from "./Sidebar";
 import PlanListing from "./PlanListing";
@@ -124,23 +122,25 @@ const App = () => {
 };
 
 export default App;
-
+```
 
 ---
 
-2. Backend (NestJS) Implementation
+## 2. Backend (NestJS) Implementation
 
-Install Dependencies
+# Install Dependencies
 
+```bash
 npm install @nestjs/websockets @nestjs/platform-socket.io socket.io
-
+```
 
 ---
 
-WebSocket Gateway (plan.gateway.ts)
+## WebSocket Gateway (plan.gateway.ts)
 
-This listens for user responses and sends filtered plans.
+# This listens for user responses and sends filtered plans.
 
+```javascript
 import {
   WebSocketGateway,
   SubscribeMessage,
@@ -166,14 +166,15 @@ export class PlanGateway {
     this.server.emit("filtered_plans_received", filteredPlans);
   }
 }
-
+```
 
 ---
 
-Plan Service (plan.service.ts)
+## Plan Service (plan.service.ts)
 
-Implements filtering logic.
+# Implements filtering logic.
 
+```typescript
 import { Injectable } from "@nestjs/common";
 
 @Injectable()
@@ -198,14 +199,15 @@ export class PlanService {
     return filteredPlans;
   }
 }
-
+```
 
 ---
 
-Module Setup (app.module.ts)
+## Module Setup (app.module.ts)
 
-Register services and gateway.
+# Register services and gateway.
 
+```typescript
 import { Module } from "@nestjs/common";
 import { PlanGateway } from "./plan.gateway";
 import { PlanService } from "./plan.service";
@@ -215,47 +217,25 @@ import { PlanService } from "./plan.service";
 })
 export class AppModule {}
 
-
+```
 ---
 
-Run the Backend
+## Run the Backend
 
+```bash
 npm run start
-
+```
 
 ---
 
-3. Workflow
-
+## 3. Workflow
 1. User selects an answer in the sidebar.
-
-
 2. Frontend emits an event (question_answered).
-
-
 3. Backend processes the event and filters the plans.
-
-
 4. Filtered plans are sent back to the frontend (filtered_plans_received).
-
-
 5. Frontend updates the plan listing dynamically.
 
-
-
-
 ---
 
-4. Next Steps & Enhancements
 
-Persist user selections using local storage or a database.
-
-Use Kafka/RabbitMQ if real-time filtering should be scalable.
-
-Optimize filtering logic by implementing caching (Redis).
-
-Use OpenTelemetry tracing for debugging real-time events.
-
-
-Would you like to extend this with a database for storing user selections?
 
