@@ -1,32 +1,22 @@
-To implement this using an event-driven approach with React.js and NestJS, follow these steps:
+## Event-driven approach with React.js and NestJS
 
-1. Frontend (React.js)
-
-Use React Context API or Redux to manage state for user responses.
-
-Implement a sidebar component that captures user responses dynamically.
-
-Emit events using WebSockets (Socket.io or native WebSockets) or EventSource (Server-Sent Events, SSE) when the user submits a response.
-
-The plan listing page listens for updates and dynamically re-renders when new plans are received.
+## 1. Frontend (React.js)
+* Use React Context API or Redux to manage state for user responses.
+* Implement a sidebar component that captures user responses dynamically.
+* Emit events using WebSockets (Socket.io or native WebSockets) or EventSource (Server-Sent Events, SSE) when the user submits a response.
+* The plan listing page listens for updates and dynamically re-renders when new plans are received.
 
 
-Flow
+## Flow
 
-1. User selects an answer in the sidebar → Dispatch an event (question_answered) via WebSockets/EventSource.
+* 1. User selects an answer in the sidebar → Dispatch an event (question_answered) via WebSockets/EventSource.
+* 2. Frontend listens for filtered plans from the backend (filtered_plans_received).
 
+## 2. Backend (NestJS)
 
-2. Frontend listens for filtered plans from the backend (filtered_plans_received).
-
-
-
-2. Backend (NestJS)
-
-Use WebSockets (via @nestjs/websockets) or SSE to send updates to clients in real-time.
-
-Implement an event-driven filtering mechanism:
-
-When a user answers a question, publish an event to filter plans.
+*  Use WebSockets (via @nestjs/websockets) or SSE to send updates to clients in real-time.
+* Implement an event-driven filtering mechanism:
+* When a user answers a question, publish an event to filter plans.
 
 Use NestJS EventEmitter or Kafka/RabbitMQ if you want distributed event handling.
 
@@ -35,14 +25,8 @@ Use NestJS EventEmitter or Kafka/RabbitMQ if you want distributed event handling
 Flow
 
 1. User response received → Emit UserResponseReceivedEvent (using NestJS EventEmitter or a message broker).
-
-
 2. Plan Filter Service listens to the event, applies filters, and fetches updated plans.
-
-
 3. Backend sends filtered plans back to the frontend via WebSockets or SSE.
-
-
 
 3. Event Flow Example
 
