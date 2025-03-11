@@ -19,6 +19,8 @@ Implementation Steps:
    * Error Handling: Implement robust error handling to catch and log any errors that occur during either the read model update or the archiving process.
    * Retry Logic: Implement retry logic for transient errors when writing to ADLS Gen2.
 Code Example (Conceptual):
+
+```typescript
 import { AzureFunction, Context } from "@azure/functions";
 import { Container, ChangeFeedStartFrom } from "@azure/cosmos";
 import { BlobServiceClient } from "@azure/storage-blob";
@@ -64,7 +66,7 @@ function shouldArchiveEvent(document: any): boolean {
 }
 
 export default cosmosDbTrigger;
-
+```
 Key Advantages:
  * Efficiency: Processing both operations within the same function execution minimizes overhead.
  * Real-time Archiving: Events are archived as they are processed by the change feed.
@@ -112,7 +114,10 @@ Yes, you can absolutely achieve the same combined functionality (updating your d
    * Use async/await to handle asynchronous operations.
  * Concurrency:
    * Consider using techniques like Promise.all to process events concurrently, if you need to optimize throughput. However be careful with the order of operations.
+   * 
 NestJS Code Example (Conceptual):
+
+```typescript
 import { Injectable, Logger } from '@nestjs/common';
 import { Container, CosmosClient, ChangeFeedStartFrom } from '@azure/cosmos';
 import { BlobServiceClient } from '@azure/storage-blob';
@@ -182,7 +187,7 @@ export class ChangeFeedService {
     this.logger.log(`Archived event: ${document.id}`);
   }
 }
-
+```
 This NestJS approach provides full control and flexibility over your change feed processing.
 
 
