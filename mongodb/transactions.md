@@ -10,7 +10,7 @@ This ability to perform transactions across collections and databases is what ma
    * These transactions maintain ACID properties, ensuring that even when operations span multiple collections and databases, data consistency is preserved.
 Therefore, you can confidently use MongoDB transactions to manage complex operations that involve data spread across different collections and even databases.
 
-
+```javascript
 import { Injectable } from '@nestjs/common';
 import { InjectConnection } from '@nestjs/mongoose';
 import { Connection, ClientSession } from 'mongoose';
@@ -68,15 +68,17 @@ export class TransactionService {
     }
   }
 }
+```
 
-// Example usage within a NestJS controller or service:
+Example usage within a NestJS controller or service:
+```javascript
 // Assuming document1 and document2 are objects containing data to insert.
 //
 // async someFunction() {
 //   await this.transactionService.performCrossCollectionTransaction(document1, document2);
 //   await this.transactionService.performCrossDatabaseTransaction(document1, document2);
 // }
-
+```
 Explanation and Key Considerations:
  * @nestjs/mongoose and mongoose:
    * This example relies on the @nestjs/mongoose module for MongoDB integration within NestJS.
