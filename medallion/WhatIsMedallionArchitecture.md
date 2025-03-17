@@ -1,8 +1,11 @@
+## What is Medallion Architecture?
 Medallion Architecture (also known as Multi-Hop Architecture) is a data lakehouse design pattern that organizes data into different layers or "medallions" — typically Bronze, Silver, and Gold — to improve data quality, manageability, and performance across the data lifecycle.
 
-Layers in Medallion Architecture:
+# Layers in Medallion Architecture:
 
-1. Bronze Layer (Raw Data):
+## 1. Bronze Layer (Raw Data):
+
+
 
 Purpose: Ingest raw data from various sources (e.g., databases, logs, streaming data).
 
