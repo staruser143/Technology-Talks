@@ -1,7 +1,5 @@
 # why would you use Databricks and Delta Lake on top of Azure Data Lake Storage (ADLS Gen2) in a real-world medallion architecture or enterprise analytics scenario.
 
-## Why Use Databricks in This Scenario?
-
 <table>
   <tr>
     <th>Unified Data Processing Platform</th>
@@ -64,54 +62,42 @@
 | **Secure and Scalable Data Storage**  | ADLS Gen2 provides hierarchical , scalable, cost-effective storage |
 | **Reliable, transaction-safe data pipelines**  | Delta Lake enables ACID transactions for safe writes and reads |
 | **Data Schema Management**  | Delta Lake enforces schema and allows schema evolution |
+| **Data Versioning & Rollback**  | Delta Lake's time travel feature allows restoring previous versions|
+| **Mixed batch and real-tie data ingestion**  | Delta Lake enables unified batch + streaming pipeline support|
+| **Optimized performance for analytics**  | Delta optimizations like Z-ordering , data skipping for fast query response times|
+| **End-to-end ML and advanced analytics workflows**  | Databricks supports ML/AI workflows using Spark ML,ML flow, and Delta Tables|
 
----
-
-4. Real-World Example (Insurance Case Study):
-
-Imagine you're building a Claims Data Analytics Platform:
-
-Bronze Layer: Ingest raw claims, adjuster notes, customer data (as JSON, CSV).
-
-Silver Layer: Clean, standardize, enrich claims with policyholder details.
-
-Gold Layer: Summarized datasets — total claims by region, fraud likelihood scores, claim timelines.
+## Real-World Example (Insurance Case Study):
+Imagine you're building a **Claims Data Analytics Platform**:
+* **Bronze Layer**: Ingest raw claims, adjuster notes, customer data (as JSON, CSV).
+* **Silver Layer**: Clean, standardize, enrich claims with policyholder details.
+* **Gold Layer**: Summarized datasets — total claims by region, fraud likelihood scores, claim timelines.
 
 
-If you only use ADLS Gen2:
+If you only use **ADLS Gen2**:
+* You get raw storage — but **no transactions, no schema enforcement, no optimized querying**.
+* You need to **build and manage Spark clusters** or other compute solutions separately.
+* You risk having **inconsistent or corrupted datasets** due to lack of ACID compliance.
 
-You get raw storage — but no transactions, no schema enforcement, no optimized querying.
+If you use **Databricks + Delta Lake on ADLS Gen2**:
+* You get **scalable compute + governed, high-quality data**.
+* You **manage data pipelines with reliability, enforce schema, query efficiently, and analyze/visualize** using Power BI directly on Gold tables.
+* Easy to **integrate machine learning** to detect fraud patterns or claims risk.
 
-You need to build and manage Spark clusters or other compute solutions separately.
+## Summary — Why Both Are Needed Together
 
-You risk having inconsistent or corrupted datasets due to lack of ACID compliance.
-
-
-If you use Databricks + Delta Lake on ADLS Gen2:
-
-You get scalable compute + governed, high-quality data.
-
-You manage data pipelines with reliability, enforce schema, query efficiently, and analyze/visualize using Power BI directly on Gold tables.
-
-Easy to integrate machine learning to detect fraud patterns or claims risk.
-
-
-
----
-
-5. Summary — Why Both Are Needed Together
-
-
----
-
-Final Thought:
-
-> Use Databricks + Delta Lake when you want to turn ADLS Gen2 into a fully governed, ACID-compliant, and scalable data lakehouse that supports real-time and batch data pipelines, advanced analytics, and ML.
+| Need   | Databricks + Delta Lake Role   | ADLS Gen2 Role   |
+|------------|------------|------------|
+| **Storage**  | Databricks does not store data, relies on ADLS   | Scalable, secure, hierarchical storage  |
+| **Data Processing**  | Distributed data processing (Spark)   |Not a processing engine, only storage   |
+| **ACID Transactions**  | Handled by Delta Lake (On top of ADLS)   | No Native ACID support   |
+| **Schema & Governance**  | Schema enforcement, schema evolution(Delta)   |No Schema Control, stores files as-is   |
+| **Performance (Query & Analytics)**  | Z-Order,data skipping,fast Delta queries  |None, just stores files   |
+| **Streaming + Batch Unified**  | Delta Tables handle both seamlessly  |No Unified view,requires external tools   |
+| **ML/AI Workflows**  | Fully supported within Databricks  |No native AI/ML, only raw file storage   |
 
 
+## Final Thought:
 
-
----
-
-If you want, I can also give a diagram/architecture flow summarizing this, or a comparison with Synapse or other alternatives. Let me know!
+### Use Databricks + Delta Lake when you want to turn ADLS Gen2 into a fully governed, ACID-compliant, and scalable data lakehouse that supports real-time and batch data pipelines, advanced analytics, and ML.
 
