@@ -3,60 +3,20 @@ Medallion Architecture (also known as Multi-Hop Architecture) is a data lakehous
 
 # Layers in Medallion Architecture:
 
-## 1. Bronze Layer (Raw Data):
 
-
-
-Purpose: Ingest raw data from various sources (e.g., databases, logs, streaming data).
-
-Characteristics:
-
-Data is stored as-is, without much transformation.
-
-High volume, low quality, schema may evolve.
-
-
-Usage: Audit, traceability, replay for new processing.
-
-
-
-2. Silver Layer (Cleaned and Enriched Data):
-
-Purpose: Clean, filter, and join datasets from Bronze to create refined datasets.
-
-Characteristics:
-
-Handles data quality, type casting, deduplication.
-
-Schema enforced.
-
-Ready for downstream analytics, but not fully modeled.
-
-
-Usage: Used for creating data marts, aggregates, machine learning features.
-
-
-
-3. Gold Layer (Business-Level Data):
-
-Purpose: Aggregate, summarize, and model data for business consumption.
-
-Characteristics:
-
-Highly curated datasets.
-
-Optimized for reporting and analytics.
-
-
-Usage: Used directly in dashboards, reports, and advanced analytics.
+|       | Purpose  | Characteristics   | Usage   |
+|-------|------------|------------|------------|
+| **Bronze Layer (Raw Data)** | Ingest raw data from various sources (e.g., databases, logs, streaming data).  | Data is stored as-is, without much transformation.High voume, low quality, schema may evolve.   | Audit, traceability, replay for new processing   |
+| **Silver Layer (Cleaned and Enriched Data)** | Clean, filter, and join datasets from Bronze to create refined datasets.   | Handles data quality, type casting, de-uplication. Schema enforced. Ready for downstream analytics, but not fully modeled.   | Used for creating data marts, aggregates, machine learning features   |
+| **Gold Layer (Business-Level Data)** | Aggregate, summarize, and model data for business consumption   | Highly curated datasets.Optimized for reporting and analytics.   | Used directly in dashboards, reports, and advanced analytics   |
 
 
 
 
-
----
-
-When Should You Use Medallion Architecture?
+## When Should You Use Medallion Architecture?
+| **Bronze Layer (Raw Data)** | Ingest raw data from various sources (e.g., databases, logs, streaming data).  | Data is stored as-is, without much transformation.High voume, low quality, schema may evolve.   | Audit, traceability, replay for new processing   |
+| **Silver Layer (Cleaned and Enriched Data)** | Clean, filter, and join datasets from Bronze to create refined datasets.   | Handles data quality, type casting, de-uplication. Schema enforced. Ready for downstream analytics, but not fully modeled.   | Used for creating data marts, aggregates, machine learning features   |
+| **Gold Layer (Business-Level Data)** | Aggregate, summarize, and model data for business consumption   | Highly curated datasets.Optimized for reporting and analytics.   | Used directly in dashboards, reports, and advanced analytics   |
 
 1. When dealing with large-scale data lakes or lakehouses:
 
