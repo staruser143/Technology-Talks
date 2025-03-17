@@ -71,7 +71,7 @@ Here are ways ADF interacts with Spark-based engines:
 
 
 ### Visual of Flow Example
-
+```
 ADF Pipeline:
     |
     +--> Data ingestion (Copy Activity from external source to ADLS Gen2)
@@ -84,7 +84,7 @@ ADF Pipeline:
     |
     +--> Notification (email, webhook) on completion
 
-
+```
 
 ### Summary
 * ADF doesn't run Spark natively — but it can orchestrate Spark jobs on Databricks, Synapse Spark, or HDInsight Spark.
