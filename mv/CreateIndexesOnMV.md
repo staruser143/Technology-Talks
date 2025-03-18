@@ -1,65 +1,69 @@
-Yes, you should create indexes on a materialized view in MongoDB, just like you would for a normal collection. Since materialized views are stored as regular collections, they do not automatically inherit indexes from the source collection.
+# Indexes on Materialized Views
+* We should create indexes on a materialized view in MongoDB, just like for a normal collection.
+* Since materialized views are stored as regular collections, they do not automatically inherit indexes from the source collection.
 
-🔹 Why Create Indexes on Materialized Views?
+## 🔹 **Why Create Indexes on Materialized Views?**
 
-✅ Improve Query Performance: Indexes help speed up lookups, especially when querying aggregated or transformed data.
-✅ Efficient Filtering & Sorting: Queries on materialized views can use indexes for fast access.
-✅ Optimize Joins & Lookups: If the view is used in $lookup operations, indexes enhance performance.
-✅ Reduce Full Collection Scans: Without indexes, queries on the materialized view may scan all documents.
+✅ - **Improve Query Performance**: Indexes help speed up lookups, especially when querying aggregated or transformed data.
+
+✅ - **Efficient Filtering & Sorting**: Queries on materialized views can use indexes for fast access.
+
+✅ - **Optimize Joins & Lookups**: If the view is used in $lookup operations, indexes enhance performance.
+
+✅ - **Reduce Full Collection Scans**: Without indexes, queries on the materialized view may scan all documents.
 
 
----
+## 🛠️ How to Create Indexes on a Materialized View
 
-🛠️ How to Create Indexes on a Materialized View
+* Since a materialized view is stored as a normal MongoDB collection, you can create indexes using the standard createIndex() method.
 
-Since a materialized view is stored as a normal MongoDB collection, you can create indexes using the standard createIndex() method.
+### Example 1: Creating an Index on a Materialized View
 
-Example 1: Creating an Index on a Materialized View
+* You have a **materialized view customer_sales**, which stores **total sales per customer** from an orders collection.
 
-You have a materialized view customer_sales, which stores total sales per customer from an orders collection.
-
-📌 Create an Index on customerId for Faster Queries
-
+ 📌 **Create an Index on customerId for Faster Queries**
+```javascript
 db.customer_sales.createIndex({ _id: 1 });
+```
 
-✅ Effect: Queries like db.customer_sales.find({ _id: "C123" }) will be faster.
+✅ **Effect: Queries like db.customer_sales.find({ _id: "C123" }) will be faster.**
 
-📌 Create a Compound Index on totalSpent for Sorting
-
+📌 **Create a Compound Index on totalSpent for Sorting**
+```javascript
 db.customer_sales.createIndex({ totalSpent: -1 });
+```
 
-✅ Effect: Queries like db.customer_sales.find().sort({ totalSpent: -1 }) will be optimized.
+✅ **Effect: Queries like ```db.customer_sales.find().sort({ totalSpent: -1 })``` will be optimized.**
 
 
----
 
-Example 2: Creating an Index for a Time-Based Materialized View
+### Example 2: Creating an Index for a Time-Based Materialized View
 
-You have a monthly_sales materialized view that stores total sales per month.
+* You have a **monthly_sales materialized view** that stores **total sales per month.**
 
-📌 Create an Index on Month for Faster Filtering
-
+📌 **Create an Index on Month for Faster Filtering**
+```javascript
 db.monthly_sales.createIndex({ _id: 1 });
+```
 
-✅ Effect: Queries like db.monthly_sales.find({ _id: "2024-03" }) will be efficient.
+✅ **Effect: Queries like ```db.monthly_sales.find({ _id: "2024-03" })``` will be efficient.**
 
-📌 Create an Expiring Index to Auto-Delete Old Records
+📌 **Create an Expiring Index to Auto-Delete Old Records**
 
-db.monthly_sales.createIndex({ createdAt: 1 }, { expireAfterSeconds: 2592000 });  // 30 days expiration
+```db.monthly_sales.createIndex({ createdAt: 1 }, { expireAfterSeconds: 2592000 });```  // 30 days expiration
 
-✅ Effect: Old records are automatically deleted after 30 days.
+✅ **Effect: Old records are automatically deleted after 30 days.**
 
 
----
+📌 **When to Create Indexes on a Materialized View?**
 
-📌 When to Create Indexes on a Materialized View?
+✅ * If you **frequently query the materialized view**
 
-✅ If you frequently query the materialized view
-✅ If the view has large data and needs efficient lookups
-✅ If queries filter by specific fields (find(), sort(), lookup())
-✅ If a field is used in aggregations or joins
+✅ * If the **view has large data and needs efficient lookups**
 
-❌ Avoid creating too many indexes—each index increases write overhead when updating the materialized view.
+✅ * If **queries filter by specific fields (find(), sort(), lookup())**
 
-Would you like recommendations on how to refresh the materialized view automatically?
+✅ * If a **field is used in aggregations or joins**
+
+❌ **Avoid creating too many indexes—each index increases write overhead when updating the materialized view.**
 
