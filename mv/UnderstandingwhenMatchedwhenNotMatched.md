@@ -1,57 +1,54 @@
-Yes, the whenMatched and whenNotMatched options in the $merge stage of MongoDB's aggregation framework work similarly to an upsert operation, but they provide more granular control over how existing and new documents are handled when updating a materialized view.
+# whenMatched/WhenNotMatched in $merge stage  vs Upsert
+* The **whenMatched and whenNotMatched** options in the **$merge stage** of MongoDB's aggregation framework work similarly to an upsert operation, but they provide **more granular control over how existing and new documents are handled** when updating a materialized view.
 
+## Understanding whenMatched and whenNotMatched
 
----
+* When using **$merge**, MongoDB determines whether a document in the aggregation result matches an existing document in the target collection based on the **_id field (or a custom on field if specified)**.
 
-Understanding whenMatched and whenNotMatched
+🔹 **whenMatched (If a matching document exists)**
 
-When using $merge, MongoDB determines whether a document in the aggregation result matches an existing document in the target collection based on the _id field (or a custom on field if specified).
+* Defines what to do when a document from the aggregation matches an existing document in the target collection.
 
-🔹 whenMatched (If a matching document exists)
+**Options**:
 
-Defines what to do when a document from the aggregation matches an existing document in the target collection.
+**"merge"** → **Updates the existing document with new fields (default behavior, like an update)**.
 
-Options:
+**"replace"** → **Replaces the entire document with the new one**.
 
-"merge" → Updates the existing document with new fields (default behavior, like an update).
+**"fail"** → **Throws an error if a match is found**.
 
-"replace" → Replaces the entire document with the new one.
+**"keepExisting"** → **Keeps the existing document as is (ignores updates)**.
 
-"fail" → Throws an error if a match is found.
-
-"keepExisting" → Keeps the existing document as is (ignores updates).
-
-"pipeline" → Allows applying a transformation pipeline to modify the existing document before merging.
-
-
-
-🔹 whenNotMatched (If no match is found)
-
-Defines what to do when a document does not exist in the target collection.
-
-Options:
-
-"insert" → Inserts the new document (default behavior, like an insert).
-
-"discard" → Ignores the new document and does not insert it.
-
-"fail" → Throws an error if no match is found.
+**"pipeline"** → **Allows applying a transformation pipeline to modify the existing document before merging**.
 
 
 
+🔹 **whenNotMatched (If no match is found)**
 
----
+* Defines what to do when a document does not exist in the target collection.
 
-Example: Using $merge for a Materialized View
+**Options**:
 
-Let's say we have an orders collection:
+**"insert" → Inserts the new document (default behavior, like an insert).**
 
+**"discard" → Ignores the new document and does not insert it**.
+
+**"fail" → Throws an error if no match is found.**
+
+
+## **Example: Using $merge for a Materialized View**
+
+* Let's say we have an orders collection:
+
+```
 { "_id": 1, "customerId": 100, "amount": 50 }
 { "_id": 2, "customerId": 100, "amount": 70 }
 { "_id": 3, "customerId": 101, "amount": 30 }
+```
 
-We want to create a materialized view that stores total spending per customer:
+* We want to create a materialized view that stores total spending per customer:
 
+```
 db.orders.aggregate([
   { $group: { _id: "$customerId", totalSpent: { $sum: "$amount" } } },
   { 
@@ -63,39 +60,35 @@ db.orders.aggregate([
     } 
   }
 ]);
+```
 
-How It Works:
-
-If a customer already exists in customer_spending, their totalSpent is updated (merged).
-
-If a customer does not exist, a new record is inserted.
-
-
-
----
-
-Comparison to Upsert
-
-Key Differences:
-
-$merge provides more control than upsert, allowing replacements, ignoring updates, or applying transformations.
-
-$merge operates at the aggregation level, while upsert is used with individual updateOne or updateMany operations.
+### How It Works:
+* If a customer already exists in **customer_spending**, their **totalSpent is updated (merged)**.
+* If a customer does not exist, a new record is inserted.
 
 
 
----
+## Comparison to Upsert
 
-Best Practices
+| Feature   | $merge (whenMatched/whenNotMatched)  | $update with upsert: true   |
+|------------|------------|------------|
+| **Insert New Document if no match**  | **Yes (whenNotMatched: "insert")**   | **Yes (upsert: True )**   |
+| **Update Existing Document**  | **Yes (WhenMatched:"merge")**   | **Yes (upsert:True)**   |
+| **Replace Existing Document**  | **Yes (WhenMatched: "replace")**   | **No**  |
+| **Keep Existing Document Unchanged**  | **Yes (WhenMatched: "keepExisting")**   | **No**  |
+| **Apply Transformation on pipeline on update**  | **Yes (WhenMatched: "pipeline")**   | **No** |
 
-Use whenMatched: "merge" for incremental updates in a materialized view.
+### Key Differences:
 
-Use whenMatched: "replace" if you need complete data replacement.
+* **$merge** provides **more control** than upsert, allowing **replacements ignoring updates, or applying transformations**.
 
-Use whenNotMatched: "discard" to prevent inserting new documents.
-
-Schedule re-execution of the aggregation to refresh the materialized view periodically.
+* **$merge** operates at the **aggregation level**, while upsert is used with individual updateOne or updateMany operations.
 
 
-Would you like guidance on scheduling automatic refreshes in MongoDB?
+### Best Practices
+* Use whenMatched: **"merge"** for **incremental updates** in a materialized view.
+* Use whenMatched: **"replace"** if you need **complete data replacement**.
+* Use whenNotMatched: "discard" to **prevent inserting new documents**.
+* Schedule re-execution of the aggregation to **refresh the materialized view periodically**.
+
 
