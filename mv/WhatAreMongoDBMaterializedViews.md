@@ -1,10 +1,10 @@
-# MongoDB Materialized Views
+# MongoDB On-Demand Materialized Views
 * MongoDB Materialized Views are **precomputed, stored query results** that improve query performance by reducing the need for expensive real-time aggregations. 
 * They are typically created **using the $merge stage in an Aggregation Pipeline**, which writes the results of the aggregation into a separate collection.
 * Unlike standard views in MongoDB (which are virtual and recompute results at query time), materialized views persist data in a collection and **need to be manually refreshed to stay up to date**.
 
 
-## When to Use MongoDB Materialized Views
+## When to Use MongoDB On-Demand Materialized Views
 
 ✅ <b>Use Cases:</b>
 
