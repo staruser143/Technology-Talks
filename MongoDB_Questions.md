@@ -1,7 +1,3 @@
-Certainly! Here’s a curated list of questions you can ask the MongoDB consultant to better understand how MongoDB Atlas can support your event-driven/event sourcing system based on CQRS (Command Query Responsibility Segregation) and DDD (Domain-Driven Design) for an insurance client in the payer domain on Azure:
-
----
-
 ### **1. MongoDB Atlas and Azure Integration**
 - How does MongoDB Atlas integrate with Azure services, and what are the best practices for deploying Atlas on Azure?
 - Can MongoDB Atlas leverage Azure’s native networking features (e.g., VNet peering, private endpoints) for secure communication?
