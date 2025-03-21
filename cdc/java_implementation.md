@@ -1,4 +1,4 @@
-Yes, you can implement a **common framework in Java** to support **Change Data Capture (CDC)** for both **Azure Cosmos DB for NoSQL API** and **MongoDB Atlas**. Java is well-supported by both databases, and you can leverage their respective SDKs to build a robust, configuration-driven framework.
+**Common framework in Java** to support **Change Data Capture (CDC)** for both **Azure Cosmos DB for NoSQL API** and **MongoDB Atlas**. Java is well-supported by both databases, and you can leverage their respective SDKs to build a robust, configuration-driven framework.
 
 Below is a step-by-step guide to implement this solution in Java:
 
