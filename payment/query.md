@@ -1,0 +1,2 @@
+When using event sourcing architecture with Event store data store, how do we handle scenarios like payment for products. We need to provide real-time status to customers  , so in that scenarios should we connect to payment system , complete the payment and then return status to client or just add  paymentInProgress event to event store and send status as payment request received and in process message to client and asynchronously handle the payment to payment system and once completed notify client accordingly.
+
