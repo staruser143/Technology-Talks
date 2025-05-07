@@ -23,7 +23,7 @@ Snapshotting helps mitigate these issues by reducing the number of events that n
    * If no snapshot is found (e.g., for a newly created aggregate), it replays all events from the beginning.
 
 
-## Implementing Snapshotting in Your NestJS Application with MongoDB:
+## Implementing Snapshotting in NestJS Application with MongoDB:
 ### Here's a conceptual outline of how to implement snapshotting:
  * **Snapshot Repository**: Create a service or repository (e.g., QuoteRequestSnapshotRepository) to handle saving and retrieving snapshots from MongoDB. This repository would interact with a dedicated MongoDB collection for snapshots (e.g., quote_request_snapshots).
 ```
