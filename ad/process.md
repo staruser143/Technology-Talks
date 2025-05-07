@@ -2,12 +2,13 @@ If different pods in your AKS cluster need access to different Azure services (o
 
 Here's why and how you would do it:
 
-Why Repeat the Process?
+## Why Repeat the Process?
 
- * Principle of Least Privilege: Granting each pod only the exact permissions it needs is a fundamental security best practice. You don't want a pod that only reads from a Blob container to have permissions to write to a database or access secrets in Key Vault.
- * Isolation and Security: If one pod's identity is compromised, the blast radius is limited to the Azure resources that specific identity has access to.
- * Clear Separation of Concerns: Managing permissions becomes more organized and understandable when each workload (represented by a set of pods) has its own distinct identity and associated permissions.
-How to Repeat the Process (using Azure AD Workload Identity as the recommended approach):
+ * **Principle of Least Privilege**: Granting each pod only the exact permissions it needs is a fundamental security best practice. You don't want a pod that only reads from a Blob container to have permissions to write to a database or access secrets in Key Vault.
+ * **Isolation and Security**: If one pod's identity is compromised, the blast radius is limited to the Azure resources that specific identity has access to.
+ * **Clear Separation of Concerns**: Managing permissions becomes more organized and understandable when each workload (represented by a set of pods) has its own distinct identity and associated permissions
+   .
+### How to Repeat the Process (using Azure AD Workload Identity as the recommended approach):
 
 For each set of pods requiring a unique set of Azure service access:
  * Create a New Azure AD Application:
