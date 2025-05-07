@@ -2,6 +2,26 @@
 * Snapshotting is the process of periodically saving the current state of an aggregate to persistent storage.
 * Instead of always replaying the entire history of events from the beginning to reconstruct the aggregate's state when processing a command, we can load the most recent snapshot and then only replay the events that occurred after that snapshot.
 
+* Snapshotting is an optimization technique used in **Event Sourcing** to improve performance and reduce the amount of event replay needed when reconstructing an entity's state.
+
+### **What is Snapshotting?**
+In Event Sourcing, every state change of an entity is stored as an event. Over time, the number of stored events can grow significantly, making it inefficient to reconstruct an entity’s current state by replaying all events from the beginning. Snapshotting solves this by periodically saving the entity’s state at specific points in time.
+
+A **snapshot** is a complete representation of an entity’s state at a given moment, reducing the need to replay all historical events during retrieval. When reconstructing an entity, the process is:
+1. Load the most recent **snapshot**.
+2. Replay only the subsequent events after the snapshot.
+
+### **Why Use Snapshotting in Event Sourcing?**
+Snapshotting provides several benefits:
+- **Improves Performance**: Reduces the number of events that need to be replayed, speeding up state reconstruction.
+- **Optimizes Storage**: Avoids unnecessary duplication of data while retaining event history.
+- **Scales Better**: Helps applications handle large datasets by preventing excessive event replay.
+- **Supports Faster Queries**: If queries require frequent entity reconstruction, snapshots minimize processing time.
+
+Snapshots are usually stored alongside events and are created at intervals, such as every **N** events or based on specific conditions (e.g., significant state changes).
+
+Would you like an example of snapshot implementation, perhaps in a cloud-native context like Kubernetes or AWS? I can tailor it to your expertise in modular, scalable architectures!
+
 ## Why Use Snapshotting?
 As an aggregate evolves and accumulates a long history of events, replaying all those events every time a command needs to be processed can become inefficient and time-consuming. This can lead to:
  * **Increased Latency**: Command processing takes longer as more events need to be read and applied.
