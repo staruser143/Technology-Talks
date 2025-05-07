@@ -35,11 +35,12 @@ Take note of the appId (also known as the client ID) from the output. We'll need
 CLIENT_ID="<your-app-id>"
 ```
 
-Step 2: Create a Federated Identity Credential
+Step 2: **Create a Federated Identity Credential**
 Now, we'll create a federated identity credential between our Azure AD application and a Kubernetes service account in our AKS cluster. This establishes the trust relationship.
- * Namespace: Choose the Kubernetes namespace where your pod will run (e.g., default).
- * Service Account Name: Choose a name for the Kubernetes service account that your pod will use (e.g., my-app-sa).
-First, create the Kubernetes service account if it doesn't exist:
+ * **Namespace**: Choose the Kubernetes namespace where your pod will run (e.g., default).
+ * **Service Account Name**: Choose a name for the Kubernetes service account that your pod will use (e.g., my-app-sa).
+   
+First, **create the Kubernetes service account** if it doesn't exist:
 ```
 NAMESPACE="default"
 SERVICE_ACCOUNT_NAME="my-app-sa"
@@ -47,7 +48,7 @@ SERVICE_ACCOUNT_NAME="my-app-sa"
 ```
 kubectl create serviceaccount $SERVICE_ACCOUNT_NAME -n $NAMESPACE
 ```
-Now, create the federated identity credential. Replace the placeholders with your actual values:
+Now, **create the federated identity credential**. Replace the placeholders with your actual values:
 ```
 AKS_RESOURCE_GROUP="<your-aks-resource-group>"
 AKS_CLUSTER_NAME="<your-aks-cluster-name>"
@@ -61,17 +62,19 @@ az identity federated-credential create --name "aks-workload-identity" \
     --subject system:serviceaccount:$NAMESPACE:$SERVICE_ACCOUNT_NAME \
     --audience api://AzureADTokenExchange
 ```
-Explanation of Parameters:
+### Explanation of Parameters:
  * --name: A name for your federated identity credential.
  * --identity-id: The appId (client ID) of the Azure AD application we created.
  * --issuer: The OIDC issuer URL for Azure AD Workload Identity in your subscription's region. This specific URL (https://oidc.prod-eastus2.workload.azure.com/$SUBSCRIPTION_ID/oidc) is a general endpoint. AKS handles the specific tenant discovery.
  * --subject: This specifies the Kubernetes service account that will be allowed to use this Azure AD application. The format is system:serviceaccount:<namespace>:<serviceaccount-name>.
  * --audience: This should always be api://AzureADTokenExchange for Azure AD Workload Identity.
-Step 3: Grant Permissions to the Azure AD Application
+
+Step 3: **Grant Permissions to the Azure AD Application**
 Now, we need to grant the Azure AD application the necessary permissions to access the Azure Blob Storage. We'll assign the "Storage Blob Data Reader" role to the application on the specific Blob container.
+
+```
 STORAGE_ACCOUNT_NAME="<your-storage-account-name>"
 CONTAINER_NAME="<your-container-name>"
-
 ```
 # Get the resource ID of the Blob container
 ```
@@ -151,8 +154,8 @@ In this code:
  * We import DefaultAzureCredential from the azure.identity library. This credential type automatically handles authentication using various Azure identity providers, including Azure AD Workload Identity when running in an AKS pod with it configured.
  * We don't need to provide any explicit credentials (like connection strings or access keys). DefaultAzureCredential handles the token acquisition behind the scenes.
 Verification:
- * Once your pod is running, check its logs to see if it can successfully connect to Azure Blob Storage and list the blobs in the container.
- * If you encounter issues, double-check the following:
+ * Once the pod is running, check its logs to see if it can successfully connect to Azure Blob Storage and list the blobs in the container.
+ * If we encounter issues, double-check the following:
    * The Azure AD application ID (CLIENT_ID) is correct.
    * The federated identity credential is configured correctly with the correct issuer, subject (namespace and service account), and audience.
    * The Azure AD application has the necessary RBAC role assigned to the correct Blob Storage resource.
