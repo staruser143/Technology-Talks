@@ -12,9 +12,9 @@ Snapshotting helps mitigate these issues by reducing the number of events that n
 ## How Snapshotting Works:
  * **Threshold**: We define a threshold (e.g., every 100 or 500 events) for when a snapshot should be taken.
  * **Snapshot Storage**: We need a separate storage mechanism to save snapshots. This could be another collection in the MongoDB database or a different storage system altogether. Each snapshot would typically store:
-   * The aggregateId of the snapshot.
-   * The state of the aggregate at the time the snapshot was taken (all relevant properties).
-   * The version or the sequence number of the last event included in the snapshot.
+   * **The aggregateId of the snapshot**.
+   * **The state of the aggregate at the time the snapshot was taken (all relevant properties)**.
+   * **The version or the sequence number of the last event included in the snapshot**
  * **Taking a Snapshot**: After a certain number of events have been applied to an aggregate, the system saves a snapshot of its current state along with the version of the last applied event.
  * **Loading the Aggregate**: When a command is received for a specific aggregate:
    * The system first tries to load the most recent snapshot for that aggregateId.
