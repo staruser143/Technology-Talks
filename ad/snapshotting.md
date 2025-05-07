@@ -1,27 +1,32 @@
-You've hit upon a crucial optimization technique in Event Sourcing: Snapshotting.
-What is Snapshotting?
-Snapshotting is the process of periodically saving the current state of an aggregate to persistent storage. Instead of always replaying the entire history of events from the beginning to reconstruct the aggregate's state when processing a command, you can load the most recent snapshot and then only replay the events that occurred after that snapshot.
-Why Use Snapshotting?
+# What is Snapshotting?
+* Snapshotting is the process of periodically saving the current state of an aggregate to persistent storage.
+* Instead of always replaying the entire history of events from the beginning to reconstruct the aggregate's state when processing a command, we can load the most recent snapshot and then only replay the events that occurred after that snapshot.
+
+## Why Use Snapshotting?
 As an aggregate evolves and accumulates a long history of events, replaying all those events every time a command needs to be processed can become inefficient and time-consuming. This can lead to:
- * Increased Latency: Command processing takes longer as more events need to be read and applied.
- * Increased Resource Consumption: More CPU and memory are used for replaying a large number of events.
- * Scalability Issues: As the number of events grows, the performance degradation can impact the overall scalability of your application.
+ * **Increased Latency**: Command processing takes longer as more events need to be read and applied.
+ * **Increased Resource Consumption**: More CPU and memory are used for replaying a large number of events.
+ * **Scalability Issues**: As the number of events grows, the performance degradation can impact the overall scalability of your application.
 Snapshotting helps mitigate these issues by reducing the number of events that need to be replayed.
-How Snapshotting Works:
- * Threshold: You define a threshold (e.g., every 100 or 500 events) for when a snapshot should be taken.
- * Snapshot Storage: You need a separate storage mechanism to save snapshots. This could be another collection in your MongoDB database or a different storage system altogether. Each snapshot would typically store:
+
+## How Snapshotting Works:
+ * **Threshold**: We define a threshold (e.g., every 100 or 500 events) for when a snapshot should be taken.
+ * **Snapshot Storage**: We need a separate storage mechanism to save snapshots. This could be another collection in the MongoDB database or a different storage system altogether. Each snapshot would typically store:
    * The aggregateId of the snapshot.
    * The state of the aggregate at the time the snapshot was taken (all relevant properties).
    * The version or the sequence number of the last event included in the snapshot.
- * Taking a Snapshot: After a certain number of events have been applied to an aggregate, the system saves a snapshot of its current state along with the version of the last applied event.
- * Loading the Aggregate: When a command is received for a specific aggregate:
+ * **Taking a Snapshot**: After a certain number of events have been applied to an aggregate, the system saves a snapshot of its current state along with the version of the last applied event.
+ * **Loading the Aggregate**: When a command is received for a specific aggregate:
    * The system first tries to load the most recent snapshot for that aggregateId.
    * If a snapshot is found, it loads the aggregate's state from the snapshot.
    * Then, it only retrieves and replays the events that occurred after the version recorded in the snapshot.
    * If no snapshot is found (e.g., for a newly created aggregate), it replays all events from the beginning.
-Implementing Snapshotting in Your NestJS Application with MongoDB:
-Here's a conceptual outline of how you might implement snapshotting:
- * Snapshot Repository: Create a service or repository (e.g., QuoteRequestSnapshotRepository) to handle saving and retrieving snapshots from MongoDB. This repository would interact with a dedicated MongoDB collection for snapshots (e.g., quote_request_snapshots).
+
+
+## Implementing Snapshotting in Your NestJS Application with MongoDB:
+### Here's a conceptual outline of how to implement snapshotting:
+ * **Snapshot Repository**: Create a service or repository (e.g., QuoteRequestSnapshotRepository) to handle saving and retrieving snapshots from MongoDB. This repository would interact with a dedicated MongoDB collection for snapshots (e.g., quote_request_snapshots).
+```
    // src/quotes/repositories/quote-request-snapshot.repository.ts
 
 import { Injectable, InjectModel } from '@nestjs/common';
@@ -46,8 +51,11 @@ export class QuoteRequestSnapshotRepository {
     await this.quoteRequestSnapshotModel.create({ aggregateId, version, state });
   }
 }
+```
 
- * Modifying the Aggregate: Your QuoteRequest aggregate needs to track its version (number of events applied). You'll also need a way to serialize its state for saving in the snapshot and to hydrate from a snapshot.
+ * **Modifying the Aggregate**: The QuoteRequest aggregate needs to track its version (number of events applied). We'll also need a way to serialize its state for saving in the snapshot and to hydrate from a snapshot.
+
+```
    // src/quotes/domain/quote-request.aggregate.ts
 
 import { AggregateRoot } from '@nestjs/cqrs';
@@ -128,8 +136,10 @@ export class QuoteRequest extends AggregateRoot {
     this.version = snapshot.version;
   }
 }
+```
 
- * Modifying the Repository: Your QuoteRepository needs to incorporate snapshotting logic when loading and saving aggregates.
+ * **Modifying the Repository**: The QuoteRepository needs to incorporate snapshotting logic when loading and saving aggregates.
+```
    // src/quotes/repositories/quote.repository.ts
 
 import { Injectable, Inject } from '@nestjs/common';
@@ -174,11 +184,12 @@ export class QuoteRepository {
     }
   }
 }
+```
 
-Key Considerations:
- * Snapshot Frequency: Choosing the right snapshot frequency is crucial. Too frequent snapshots might add unnecessary overhead, while too infrequent snapshots might not provide significant performance benefits. You'll need to experiment to find the optimal threshold for your application.
- * Snapshot Content: Decide which parts of your aggregate's state are essential to include in the snapshot. Avoid including transient or easily recalculable data.
- * Snapshot Consistency: Ensure that the snapshot is taken at a consistent point in the aggregate's lifecycle (e.g., after all events for a command have been applied).
- * Testing: Thoroughly test your snapshotting implementation to ensure it correctly saves and restores the aggregate's state and doesn't introduce any inconsistencies.
- * Schema Evolution: Consider how you will handle changes to your aggregate's state over time and ensure that your snapshot schema can accommodate these changes or implement migration strategies.
-By implementing snapshotting, you can significantly improve the performance of loading and processing commands for aggregates with a long event history in your Event Sourced healthcare insurance quoting subdomain. Remember to carefully consider the trade-offs and test your implementation thoroughly.
+### Key Considerations:
+ * **Snapshot Frequency**: Choosing the right snapshot frequency is crucial. Too frequent snapshots might add unnecessary overhead, while too infrequent snapshots might not provide significant performance benefits. We'll need to experiment to find the optimal threshold for your application.
+ * **Snapshot Content**: Decide which parts of the aggregate's state are essential to include in the snapshot. Avoid including transient or easily recalculable data.
+ * **Snapshot Consistency**: Ensure that the snapshot is taken at a consistent point in the aggregate's lifecycle (e.g., after all events for a command have been applied).
+ * **Testing**: Thoroughly test the snapshotting implementation to ensure it correctly saves and restores the aggregate's state and doesn't introduce any inconsistencies.
+ * **Schema Evolution**: Consider how we will handle changes to your aggregate's state over time and ensure that the snapshot schema can accommodate these changes or implement migration strategies.
+   By implementing snapshotting, we can significantly improve the performance of loading and processing commands for aggregates with a long event history in your Event Sourcing System.
