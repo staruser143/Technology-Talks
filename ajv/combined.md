@@ -1,3 +1,4 @@
+```typescript
 // schemas/registrationSchema.ts
 export const registrationSchema = {
   type: "object",
@@ -20,8 +21,9 @@ export const registrationSchema = {
   additionalProperties: false,
   passwordsMatch: true // Custom cross-field keyword
 };
+```
 
-
+```typescript
 // utils/ajvInstance.ts
 import Ajv from "ajv";
 import addFormats from "ajv-formats";
@@ -59,3 +61,4 @@ ajv.addKeyword({
 });
 
 export default ajv;
+```
