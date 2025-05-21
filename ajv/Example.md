@@ -1,7 +1,9 @@
+```sh
 npm install ajv
 npm install --save-dev @types/ajv
+```
 
-
+```
 // schema.ts
 export const dobSchema = {
   type: "object",
@@ -15,7 +17,9 @@ export const dobSchema = {
   required: ["dateOfBirth"],
   additionalProperties: false
 };
+```
 
+```
 // validator.ts
 import Ajv, { JSONSchemaType } from "ajv";
 import addFormats from "ajv-formats";
@@ -44,7 +48,9 @@ ajv.addKeyword({
 });
 
 export default ajv;
+```
 
+```
 // index.ts
 import ajv from "./validator";
 import { dobSchema } from "./schema";
@@ -59,4 +65,6 @@ if (validate(data)) {
   console.log("Valid: User is at least 18.");
 } else {
   console.log("Invalid:", validate.errors);
+
+```
 }
