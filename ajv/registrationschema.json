@@ -1,0 +1,23 @@
+// public/schemas/registrationSchema.json
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "dateOfBirth": {
+      "type": "string",
+      "format": "date",
+      "minAge": 18
+    },
+    "password": {
+      "type": "string",
+      "minLength": 6
+    },
+    "confirmPassword": {
+      "type": "string",
+      "minLength": 6
+    }
+  },
+  "required": ["dateOfBirth", "password", "confirmPassword"],
+  "additionalProperties": false,
+  "passwordsMatch": true
+}
