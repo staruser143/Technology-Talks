@@ -1,3 +1,4 @@
+```typescript
 // schemas/registrationSchema.ts
 export const registrationSchema = {
   type: "object",
@@ -20,6 +21,9 @@ export const registrationSchema = {
   additionalProperties: false,
   passwordsMatch: true
 };
+```
+
+```typescript
 
 // utils/ajvInstance.ts
 import Ajv from "ajv";
@@ -60,4 +64,4 @@ ajv.addKeyword({
 });
 
 export default ajv;
-
+```
