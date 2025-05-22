@@ -1,6 +1,8 @@
-You're hitting on a very advanced and powerful use case for JSON Schema, moving beyond just UI generation and into defining dynamic application workflows. Yes, JSON Schema can absolutely be used to configure backend API submissions and drive multi-form environments based on API responses.
-Here's how you can achieve this, along with the concepts and tools involved:
-1. Extending JSON Schema for API Configuration
+# Using JSON Schema for Backend API Submissions
+JSON Schema can absolutely be used to configure backend API submissions and drive multi-form environments based on API responses.
+
+Here's how we can achieve this, along with the concepts and tools involved:
+## 1. Extending JSON Schema for API Configuration
 JSON Schema itself doesn't have native keywords for "submit to this URL with this method." It's a data validation and description language. However, you can extend its capabilities using:
  * Custom Keywords (Recommended): This is the most common and robust approach. You define your own custom keywords within your JSON Schema, prefixed to avoid collisions (e.g., x-, ui:).
    * x-api-endpoint: Defines the URL for submission.
@@ -98,7 +100,7 @@ Example with Custom Keywords:
   }
 }
 
-2. The Dynamic UI Generation and Orchestration Layer
+## 2. The Dynamic UI Generation and Orchestration Layer
 You'll need a custom application layer (your frontend code) that reads these extended JSON Schemas and acts upon them. This is where the magic happens:
 a. Schema Loader/Resolver:
  * Your application needs to load JSON Schemas, possibly from a central schema registry or local files.
