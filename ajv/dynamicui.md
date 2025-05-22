@@ -11,7 +11,10 @@ JSON Schema itself doesn't have native keywords for "submit to this URL with thi
    * x-error-response-schema: Points to another JSON Schema for error responses.
    * x-next-form-schema: Specifies which schema to load for the next form in a multi-step process. This can be conditional.
  * UI Schema (as a separate configuration): As discussed, a UI Schema can hold rendering hints. You could also place API configuration here, but it's generally cleaner to use custom keywords directly within the main JSON Schema if the API details are tightly coupled to the data structure.
+   
 Example with Custom Keywords:
+
+```json
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
   "title": "Order Placement Form",
@@ -99,9 +102,10 @@ Example with Custom Keywords:
     ]
   }
 }
+```
 
 ## 2. The Dynamic UI Generation and Orchestration Layer
-You'll need a custom application layer (your frontend code) that reads these extended JSON Schemas and acts upon them. This is where the magic happens:
+We need a custom application layer (your frontend code) that reads these extended JSON Schemas and acts upon them. This is where the magic happens:
 a. Schema Loader/Resolver:
  * Your application needs to load JSON Schemas, possibly from a central schema registry or local files.
  * It should be able to resolve $ref pointers to other schemas.
@@ -140,6 +144,7 @@ e. Multi-Form State Management:
    * JSONForms: Explicitly designed for dynamic form generation from schemas, and provides concepts for multi-form scenarios and data mapping.
    * Custom React/Angular/Vue Components: For the orchestration layer, you'll be writing your own components that fetch and manage the schemas, render the forms, and handle the API interactions.
 Example Workflow (Conceptual Code):
+```typescript
 // In your main application component (e.g., React component)
 
 import React, { useState, useEffect } from 'react';
@@ -287,8 +292,9 @@ function DynamicMultiFormFlow() {
 }
 
 export default DynamicMultiFormFlow;
+```
 
-Challenges and Advanced Considerations:
+### Challenges and Advanced Considerations:
  * Rule Engine for x-next-step: The example's conditional logic is very basic. For complex multi-step flows, you might need a more sophisticated rule engine to evaluate x-next-step conditions against the API response. Libraries like json-logic-js could help here.
  * Security: Be very careful about exposing sensitive API details (e.g., full API keys) directly in client-side schemas. Use environment variables or secure token systems. The Authorization: Bearer {token} placeholder is a good example; your client-side code would need to dynamically inject the actual token.
  * State Management: For very long or complex multi-step forms, robust state management (Redux, Zustand, React Context, Vuex, Ngrx) becomes crucial to keep track of data and workflow progress.
