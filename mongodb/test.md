@@ -15,7 +15,7 @@ In MongoDB, documents in a collection are not guaranteed to be stored or retriev
 Events are not guaranteed to be stored or fetched in order unless you explicitly sort by an ordering field when querying.
 
 ### Query:
-If I have an event structure with fields like eventId,aggregateId,timestamp,eventName and also including the event specific fields, where eventId woudl be unique. Every aggregateId can have multiple eventId's associated with it as separate events. In this scenario, do we still need sequenceNo field to be added.
+If I have an event structure with fields like ` **eventId,aggregateId,timestamp,eventName** ` and also including the event specific fields, where eventId woudl be unique. Every aggregateId can have multiple eventId's associated with it as separate events. In this scenario, do we still need sequenceNo field to be added.
 
 ### Response: 
 Yes, it is recommended to add a **sequenceNo** (or similar) field for each event per aggregate, even if you have `timestamp` and `eventId`.
@@ -239,9 +239,11 @@ export class EventStoreService {
 **Tip:**  
 For high-throughput systems, consider batching or using a more advanced concurrency control pattern.
 
-### Query: Can you explain how transaction is helpful for this scenario.
+### Query: 
+Can you explain how transaction is helpful for this scenario.
 
-### Response: A **transaction** in MongoDB ensures that a series of operations are executed atomically—either all succeed or none do. In the context of appending events to an event store:
+### Response:
+A **transaction** in MongoDB ensures that a series of operations are executed atomically—either all succeed or none do. In the context of appending events to an event store:
 
 ### Why transactions help:
 
