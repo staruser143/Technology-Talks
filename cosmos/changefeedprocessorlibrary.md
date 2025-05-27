@@ -332,3 +332,25 @@ We do **not** need to add a sequence number field to your event data for this sc
 **Summary:**  
 - **Within a partition:** No sequence number needed; Cosmos DB Change Feed preserves order.
 - **Across partitions:** Sequence number or timestamp is needed if global order is required.
+
+
+
+## When provisioning a **lease container** for the Change Feed Processor Library in Cosmos DB, you should use the following partition key:
+
+```
+/id
+```
+
+**Why?**
+- The Change Feed Processor library uses the `id` property of each lease document as the partition key.
+- This ensures even distribution and correct lease management across processor instances.
+
+**How to provision:**
+- When creating the lease container, set the partition key path to `/id`.
+- The container does not need any special indexing or throughput settings beyond your expected scale.
+
+**Example (Azure Portal or ARM):**
+- Partition key path: `/id`
+
+**Reference:**  
+[Lease container requirements (Microsoft Docs)](https://learn.microsoft.com/en-us/azure/cosmos-db/change-feed-processor#lease-container-requirements)
