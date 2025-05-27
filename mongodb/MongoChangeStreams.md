@@ -48,7 +48,8 @@ Yes, always ensure `sequenceNo` is strictly increasing for each `aggregateId` to
 ### Query:
 Do we mean if we create an unique index on (aggregateId,sequenceNo) we do not need to add any logic to check for increasign sequenceNo
 
-### Response: Creating a unique index on `(aggregateId, sequenceNo)` in MongoDB **prevents duplicate sequence numbers** for the same aggregate, but it does **not** automatically ensure that `sequenceNo` values are strictly increasing or sequential.
+### Response:
+Creating a unique index on `(aggregateId, sequenceNo)` in MongoDB **prevents duplicate sequence numbers** for the same aggregate, but it does **not** automatically ensure that `sequenceNo` values are strictly increasing or sequential.
 
 **What the unique index does:**
 - Guarantees that you cannot insert two events with the same `aggregateId` and `sequenceNo`.
@@ -146,9 +147,11 @@ export class EventStoreService {
 
 Let me know if you need the schema definition or more details!
 
-### Query: How can I use transactions and at the same time ensure it is robust with retry/backoff strategies.
+### Query: 
+How can I use transactions and at the same time ensure it is robust with retry/backoff strategies.
 
-### Response: To use transactions with MongoDB in NestJS (with Mongoose) and ensure robustness with retry/backoff, you can:
+### Response:
+To use transactions with MongoDB in NestJS (with Mongoose) and ensure robustness with retry/backoff, you can:
 
 1. **Start a session and transaction** for each append operation.
 2. **Read the latest sequenceNo** within the transaction.
