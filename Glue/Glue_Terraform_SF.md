@@ -1,5 +1,5 @@
 ### Query:
-How to use Native WS Glue Connector for Salesfroce?
+How to use Native AWS Glue Connector for Salesfroce?
 
 ### Response:
 
