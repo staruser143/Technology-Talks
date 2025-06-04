@@ -1,24 +1,8 @@
-Query: How do you use Azure Logic Apps to create a a workflow
+### Query:
+What is a Logic App Resoruce
 
-Azure (Preview): I can help with that. First, you need to install the GitHub Copilot for Azure extension.
-
-Install GitHub Copilot for Azure
-
-After that, please repeat your question.
-
-Query: Does that need connection to Azure
-
-GitHub Copilot: Yes, creating and running workflows with Azure Logic Apps requires a connection to an Azure subscription. Logic Apps is a cloud service, so you need to:
-
-1. **Sign in to the Azure Portal** (https://portal.azure.com).
-2. **Create a Logic App resource** in your Azure subscription.
-3. **Design your workflow** using the Logic Apps Designer, which connects to Azure services and other connectors.
-
-You can design workflows locally using Visual Studio Code with the Logic Apps extension, but deploying and running them still requires an Azure connection.
-
-Query: What is a Logic App Resoruce
-
-GitHub Copilot: An **Azure Logic App resource** is a cloud-based service in Microsoft Azure that lets you automate workflows and business processes. It acts as a container for your workflow, where you define triggers (what starts the workflow) and actions (what the workflow does).
+### Response:
+An **Azure Logic App resource** is a cloud-based service in Microsoft Azure that lets you automate workflows and business processes. It acts as a container for your workflow, where you define triggers (what starts the workflow) and actions (what the workflow does).
 
 When you create a Logic App resource in Azure, you get:
 
@@ -28,9 +12,11 @@ When you create a Logic App resource in Azure, you get:
 
 You create a Logic App resource through the Azure Portal, Azure CLI, or ARM templates. Once created, you use the Logic Apps Designer to build your workflow visually.
 
-Query: Can I use Terraform to create Logic App resource
+### Query:
+Can I use Terraform to create Logic App resource
 
-GitHub Copilot: Yes, you can use **Terraform** to create an Azure Logic App resource.
+### Response: 
+Yes, you can use **Terraform** to create an Azure Logic App resource.
 
 Terraform provides the `azurerm_logic_app_workflow` resource to define and deploy Logic Apps. You can also use Terraform to manage related resources like resource groups, connections, and triggers.
 
@@ -70,9 +56,11 @@ DEFINITION
 
 You can customize the `definition` block to specify your workflow’s triggers and actions.
 
-Query: Do we still need to access Azure Portal to work with the Azure App REsource after running the script
+### Query:
+Do we still need to access Azure Portal to work with the Azure App REsource after running the script
 
-GitHub Copilot: You do **not** need to use the Azure Portal to create or deploy the Logic App resource if you use Terraform—the resource will be created and configured as defined in your script.
+### Response:
+You do **not** need to use the Azure Portal to create or deploy the Logic App resource if you use Terraform—the resource will be created and configured as defined in your script.
 
 However, you **might** still use the Azure Portal for:
 - **Visual workflow editing** (the Logic Apps Designer is web-based).
@@ -84,15 +72,12 @@ However, you **might** still use the Azure Portal for:
 - **Azure Portal** is optional for management, monitoring, and visual editing.  
 You can do most tasks with Terraform and the Azure CLI, but the Portal provides a graphical interface for some features.
 
-Query: Can you provide a sample workflow  definition which can be intergrated with terraform script
+### Query: 
+Provide a workflow definition for a business process with multiple steps to understand its workings.
 
-Query: Provie a workflow definition for a business process with multiple steps to understand its workings.
+### Response: 
 
-GitHub Copilot: 
-
-Query: For an order processing system , how do the workflow be defined
-
-GitHub Copilot: Here’s a sample **Logic App workflow definition** for an order processing system with multiple steps. This example covers:
+Response: Here’s a sample **Logic App workflow definition** for an order processing system with multiple steps. This example covers:
 
 1. **Trigger:** When a new order is received (HTTP request).
 2. **Step 1:** Validate the order.
@@ -232,9 +217,11 @@ You can use this JSON in your Terraform `azurerm_logic_app_workflow` resource’
 You can expand each step with more actions, conditions, or error handling as needed.  
 **Replace the URIs** with your actual service endpoints.
 
-Query: How is the trigger defined for the workflow
+### Query:
+How is the trigger defined for the workflow
 
-GitHub Copilot: In an Azure Logic App workflow, the **trigger** defines what starts the workflow. In the sample order processing workflow above, the trigger is defined as follows:
+### Response: 
+In an Azure Logic App workflow, the **trigger** defines what starts the workflow. In the sample order processing workflow above, the trigger is defined as follows:
 
 ````json
 // Trigger definition for Logic App workflow
@@ -265,15 +252,15 @@ GitHub Copilot: In an Azure Logic App workflow, the **trigger** defines what sta
 **Result:**  
 When an HTTP POST request with the specified schema is sent to the Logic App’s endpoint, the workflow is triggered and begins processing.
 
-Query: Does that mean Logic App has an endpoint to which we can post requests?
+### Query: Does that mean Logic App has an endpoint to which we can post requests?
 
-GitHub Copilot: Yes, when you use the **HTTP Request** trigger in a Logic App, Azure automatically creates a unique HTTP endpoint URL for your Logic App. You can send HTTP POST requests to this endpoint to start the workflow.
+### Response: Yes, when you use the **HTTP Request** trigger in a Logic App, Azure automatically creates a unique HTTP endpoint URL for your Logic App. You can send HTTP POST requests to this endpoint to start the workflow.
 
 You can find this endpoint URL in the Azure Portal after saving your Logic App, or retrieve it programmatically. This allows your applications or services to trigger the Logic App by posting data to that URL.
 
 Query: When using Terraform to provision Logic App Resource, would we have to define outputs to get the endpoint URL once provisioned.
 
-GitHub Copilot: Yes, if you want to retrieve the Logic App’s HTTP endpoint URL after provisioning with Terraform, you should define an **output** in your Terraform configuration.
+Response: Yes, if you want to retrieve the Logic App’s HTTP endpoint URL after provisioning with Terraform, you should define an **output** in your Terraform configuration.
 
 For a Logic App with an HTTP trigger, you can use the `workflow_trigger_callback_url` data source to get the endpoint URL:
 
@@ -296,7 +283,7 @@ You can then see the endpoint in your Terraform output.
 
 Query: What other ways can we trigger the Logic App workflow
 
-GitHub Copilot: Azure Logic Apps supports many types of triggers beyond HTTP requests. Some common ways to trigger a Logic App workflow include:
+Response: Azure Logic Apps supports many types of triggers beyond HTTP requests. Some common ways to trigger a Logic App workflow include:
 
 - **Recurrence (Timer):** Run on a schedule (e.g., every hour, daily).
 - **Service Bus:** When a message arrives in a Service Bus queue or topic.
@@ -312,7 +299,7 @@ Each trigger type is defined in the Logic App’s workflow definition and can be
 
 Query: Where is the state maintained in workflow when it progresses in the workflow
 
-GitHub Copilot: In Azure Logic Apps, the **state of the workflow** is managed and persisted automatically by the Logic Apps service. As the workflow progresses through its steps (actions), Azure stores the state, inputs, outputs, and status of each action.
+Response: In Azure Logic Apps, the **state of the workflow** is managed and persisted automatically by the Logic Apps service. As the workflow progresses through its steps (actions), Azure stores the state, inputs, outputs, and status of each action.
 
 **Key points:**
 - **State is not stored in your app or infrastructure.**
@@ -325,7 +312,7 @@ You do not need to manage workflow state yourself—Azure Logic Apps handles it 
 
 Query: If there are multiple requests recived for the workflow, would there be multiple instances of the workflow created as separate threads
 
-GitHub Copilot: Yes, when multiple requests are received by a Logic App workflow (for example, via its HTTP trigger), **Azure Logic Apps creates a separate workflow instance for each request**. Each instance runs independently and maintains its own state, inputs, and outputs.
+Response: Yes, when multiple requests are received by a Logic App workflow (for example, via its HTTP trigger), **Azure Logic Apps creates a separate workflow instance for each request**. Each instance runs independently and maintains its own state, inputs, and outputs.
 
 These instances are managed by the Logic Apps service and are not tied to threads in your code. They can run in parallel, and you can view each run separately in the Azure Portal under the Logic App’s “Runs history.”
 
@@ -335,7 +322,7 @@ These instances are managed by the Logic Apps service and are not tied to thread
 
 Query: Does Azure logic apps provides an API to get insight on the execution of workflows like history, status etc
 
-GitHub Copilot: Yes, Azure Logic Apps provides a **REST API** and **Azure Resource Manager (ARM) API** to get insights into workflow executions, including run history, status, inputs, outputs, and errors.
+Response: Yes, Azure Logic Apps provides a **REST API** and **Azure Resource Manager (ARM) API** to get insights into workflow executions, including run history, status, inputs, outputs, and errors.
 
 **Common API endpoints:**
 - **List workflow runs:**  
@@ -351,7 +338,7 @@ You can use these APIs to programmatically monitor, audit, and analyze workflow 
 
 Query: What is a run, is it an instance of the workflow
 
-GitHub Copilot: Yes, in Azure Logic Apps, a **run** is an instance of the workflow.  
+Response: Yes, in Azure Logic Apps, a **run** is an instance of the workflow.  
 
 Each time the workflow is triggered (for example, by an HTTP request or a scheduled event), a new run is created. This run represents a single execution of the workflow, with its own state, inputs, outputs, and execution history.  
 
@@ -359,7 +346,7 @@ You can view and manage each run separately in the Azure Portal or via the Logic
 
 Query: Can we define multiple triggers for a workflow
 
-GitHub Copilot: No, in Azure Logic Apps (Standard and Consumption), **a workflow can have only one trigger**. Each workflow starts with a single trigger, which defines how the workflow is initiated.
+Response: No, in Azure Logic Apps (Standard and Consumption), **a workflow can have only one trigger**. Each workflow starts with a single trigger, which defines how the workflow is initiated.
 
 If you need to start the same workflow from multiple sources, you can:
 - Create separate workflows, each with its own trigger, and call a common child workflow.
@@ -371,7 +358,7 @@ A single workflow = one trigger. For multiple triggers, use multiple workflows o
 
 Query: What are the different types , Standard and Consumption and when should we use them for which scenario
 
-GitHub Copilot: Azure Logic Apps offers two main hosting models: **Consumption** and **Standard**.
+Response: Azure Logic Apps offers two main hosting models: **Consumption** and **Standard**.
 
 ---
 
