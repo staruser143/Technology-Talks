@@ -339,9 +339,11 @@ You can use Terraform’s `aws_secretsmanager_secret` and `aws_secretsmanager_se
 **Summary:**  
 Always use AWS Secrets Manager (or similar) for sensitive fields in infrastructure provisioning.
 
-### Query: Can you provide examples of to use secretmanager in terraform to store a secret and reference them accordingly
+### Query:
+Can you provide examples of to use secretmanager in terraform to store a secret and reference them accordingly
 
-### Response: Certainly! Here’s a step-by-step example of how to store secrets in AWS Secrets Manager using Terraform and reference them in your Glue Connection.
+### Response: 
+Certainly! Here’s a step-by-step example of how to store secrets in AWS Secrets Manager using Terraform and reference them in your Glue Connection.
 
 ---
 
@@ -538,4 +540,20 @@ resource "aws_glue_job" "example" {
 The IAM role for Glue is granted permission to read the specific secret from Secrets Manager.
 
 ---
+### Required Oauth Scopes for SF to S3
+For AWS Glue to access Salesforce data using the Salesforce Connector, you should configure the following **OAuth scopes** in your Salesforce Connected App:
 
+- **Access and manage your data (api)**
+- **Perform requests on your behalf at any time (refresh_token, offline_access)**
+- *(Optional, but often useful)* **Full access (full)**
+
+**Minimum required:**
+- `api`
+- `refresh_token` (or `offline_access`)
+
+**How to configure:**
+- In the Connected App, under **OAuth Scopes**, add:
+  - `Access and manage your data (api)`
+  - `Perform requests on your behalf at any time (refresh_token, offline_access)`
+
+This ensures Glue can read/write data and refresh tokens as needed. Only add broader scopes (like `full`) if your use case requires it.
