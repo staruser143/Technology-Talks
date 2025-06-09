@@ -1,7 +1,71 @@
 In this segment, Professor Noble-Grange discovers Ms. Ference works with working professionals, not college students. What do you think she should have done once she gained that knowledge?
 
+Based on the transcript, Professor Noble-Grange (Angela) initially asks Melissa Ference if she works with "college students" and designs "anything that helps the current students at Cornell." Melissa clarifies that eCornell primarily focuses on "online learning experiences for working professionals."
+However, Melissa then immediately adds a crucial piece of information: "More recently, eCornell has been involved in working with Cornell University on for-credit opportunities for matriculated students. In fact, when COVID happened, eCornell became involved more than ever, helping faculty to get their teaching online to deliver to students virtually."
+Given this, Professor Noble-Grange did not fully absorb or immediately dismiss Melissa's relevance to her concern. She quickly pivots to how eCornell's expertise could be valuable to her, even for matriculated students, especially in light of COVID-19.
+What Professor Noble-Grange actually did, and what she should have done, align quite well in this scenario:
+What she actually did (and effectively should have done):
+ * Acknowledge and Process the Information: She acknowledged Melissa's primary focus on working professionals.
+ * Identify the Underlying Need: Despite the difference in primary audience, Professor Noble-Grange immediately recognized that the skills and processes Melissa uses for online learning design (especially eCornell's involvement in putting faculty teaching online during COVID) are directly applicable to her problem of helping a mainstream college transition to effective online education for their students.
+ * Probe for Overlap/Transferability: She then asked the very pertinent follow-up question: "Yeah, that makes sense, because one of the things — when I worked with my very first eCornell course, one of the things I realized is all of us should have instructional designers... you just manage them, but are you also doing that in addition to the designers?" This shows she's connecting Melissa's expertise in instructional design to the needs of her college, regardless of the specific student demographic eCornell usually serves.
+ * Connect to Her Own Problem: She then explicitly linked eCornell's capabilities (studios, instructional designers) to the struggles of the non-elite college she serves as a trustee, particularly in the context of COVID-19.
+In short, Professor Noble-Grange's response was quite effective. Instead of simply saying, "Oh, you don't work with college students? Then you can't help me," she recognized that the core expertise in instructional design and online delivery was transferable and highly relevant to her problem, even if the primary target audience was different. She successfully leveraged that connection to initiate a valuable discussion about how Melissa's knowledge could benefit her college.
+
+
 Why do you think Professor Noble-Grange asked Ms. Ference what Ms. Ference's favorite part of her job is?
+
+
+Professor Noble-Grange likely asked Ms. Ference about her favorite part of her job for a few key reasons:
+Building Rapport and Personal Connection
+It's a common conversational tactic to build rapport and create a more personal connection. Early in the conversation, Professor Noble-Grange explicitly states, "I wanted to get to know you a little bit, since I don't know you very well." Asking about a "favorite part" is a low-stakes, open-ended question that encourages a positive and often enthusiastic response, making the conversation feel more human and less like a formal interview.
+Gaining Insight into Passion and Motivation
+Understanding what someone enjoys most about their work can reveal their underlying motivations and values. Melissa's answer—that her favorite part is student feedback because "that's how you learn" and "where things shine"—offers a crucial insight into her dedication to continuous improvement and student-centered design. This aligns perfectly with Professor Noble-Grange's later concerns about ensuring quality education for all students, especially at her non-elite institution. Knowing Melissa is passionate about student outcomes would have reassured Professor Noble-Grange that Melissa's advice would be genuinely focused on student benefit.
+Identifying Shared Ground or Potential Strengths
+By asking this question, Professor Noble-Grange might have been subtly trying to identify areas of shared passion or potential strengths that could be leveraged. If Melissa had said her favorite part was, for example, working with specific technologies, that might have given Professor Noble-Grange a different angle for their later discussion about resources. Instead, Melissa's focus on student feedback highlighted her pedagogical commitment, which is exactly what Angela's college desperately needed.
+
+
 
 What tools of persuasion are Professor Noble-Grange using here? Choose all that apply.
 
+Yes, Professor Noble-Grange effectively applies Logos, Ethos, and Pathos in her communication with Ms. Ference.
+Here's how:
+ * Logos (Appeal to Logic and Reason):
+   * Statistics and Facts: She uses quantifiable data to illustrate the scale of the problem: "over 4,500 schools," "Less than a hundred — I'd say probably 50 are considered elite." This provides a logical foundation for her argument about the vast disparity in educational resources.
+   * Problem-Solution Framing: She logically lays out the problem (non-elite colleges struggling with online transition during COVID due to lack of resources) and then logically proposes how Melissa's expertise could be a part of the solution (providing guidance, leveraging existing knowledge).
+   * Value Proposition: She uses logical reasoning to explain why Melissa's help would be valuable: "would save some energy and effort," "would get us started," and get them on the right path when they have no instructional designers.
+   * Practicality of Request: Her suggestion of a "quick lay of the land" or "written tips" is a logical, low-commitment request, making it seem reasonable and achievable for Melissa.
+ * Ethos (Appeal to Credibility and Character):
+   * Building Her Own Credibility: As a "chair of the Academic Policy Mission Fulfillment Committee" and a trustee, she implicitly establishes her own credible position and understanding of the college's needs and academic challenges.
+   * Elevating Melissa's Credibility: She consistently praises Melissa's background and expertise: "You're so good at this," "you're trained at some elite places," "you'll get instant credibility with them," "somebody with your expertise." This not only flatters Melissa but also strengthens the argument that Melissa's advice is uniquely valuable.
+   * Shared Professional Ground: By acknowledging their shared affiliation with "elite" institutions (Cornell, Yale), she subtly aligns herself with Melissa, creating a sense of shared understanding and mutual respect.
+ * Pathos (Appeal to Emotion):
+   * Empathy for Students: Her most powerful use of pathos comes when she describes the students at the non-elite college: "these kids, they would never be at Cornell, and yet they are changing their lives. So these kids come to school and they're changing not only their own lives, but the lives of their families because they can get a better job, a well-paying job." This evokes a strong sense of compassion and highlights the profound, life-altering impact of the education these students are seeking, appealing to Melissa's sense of social responsibility.
+   * Highlighting the Struggle: Describing how the college's "one tech person" (a librarian) had to "train himself up quickly to try to help the faculty to be able to modify what they were doing to save the semester" paints a vivid picture of the struggle and the earnest, heartfelt efforts being made, which can elicit sympathy and a desire to help.
+   * Sense of Urgency/Crisis: The mention of "COVID hit" and the need to "get online quick" also creates an emotional appeal by underscoring the dire circumstances and the critical need for immediate solutions.
+By skillfully combining these three rhetorical appeals, Professor Noble-Grange constructs a compelling and persuasive case that goes beyond merely asking for help, instead framing it as an opportunity for Melissa to contribute her significant expertise to a truly worthy cause.
+
+
 Think about the two times Professor Noble-Grange used questions to encourage Ms. Ference to offer a solution on her own. Now think about how at the end of the conversation Professor Noble-Grange directly asks Ms. Ference for her participation. Do you think Professor Noble-Grange should have been more direct earlier? Why or why not?
+
+Professor Noble-Grange's approach, while seemingly indirect initially, was likely more effective than being direct earlier.
+Let's break down why:
+The "Encouraging Questions" Professor Noble-Grange Used:
+ * "How can we at Cornell — do we even — is that even possible? How can we take what we know and our resources and everything that we're capable of and help some of these other schools; or should we, even, help some of these other colleges so that they can continue to serve who they serve?" (This broad, philosophical question encourages Melissa to think about the larger problem and potential solutions from her expert perspective.)
+ * "I'm wondering, in my role as a trustee, how I could actually model what you did with your friend for some of the instructors at this college... I figure out, how do we take experiential stuff and still give the kids the knowledge... I'm trying to think of how to take that model that you're talking about you did with your friend and apply it to my discussions in the board." (This question is more specific, asking Melissa to elaborate on a methodological solution for a concrete problem Angela faces.)
+The Direct Request at the End:
+ * "...if you were able to offer — because of your expertise, and you're trained at some elite places and so you'll get instant credibility with them — and just give some sort of a quick 'Here's the things you ought to be asking your faculty' or 'Here's a kind of' — I don't know; you said an assessment or something — 'of what tools you should have for what you're trying to accomplish'; is that something you would ever be willing to do for us, where you could give us a quick lay of the land so we would know how to proceed from there?"
+Why Professor Noble-Grange's Gradual Approach Was Effective (and why being direct earlier might not have been):
+ * Building Rapport and Trust:
+   * Why it worked: Angela started by genuinely getting to know Melissa, expressing appreciation, and building a friendly rapport. A direct ask too early, especially from someone Melissa doesn't know well, could have felt transactional or presumptuous, potentially leading to a quick "no."
+   * Contrast: If Angela had immediately launched into, "Can you come speak to my board about instructional design for free?", Melissa might have politely declined, citing her busy schedule or the mismatch in their typical clientele.
+ * Providing Crucial Context and Emotional Connection:
+   * Why it worked: Before asking for help, Angela painted a vivid picture of the problem: the vast disparity in higher education, the struggles of non-elite colleges, and the profound impact on first-generation students during COVID-19. This context helped Melissa understand why her expertise was so desperately needed and appealed to her sense of purpose and empathy (Pathos).
+   * Contrast: Without this emotional and logical foundation, Melissa might have seen the request as just another professional obligation rather than a chance to make a significant difference.
+ * Assessing Melissa's Receptiveness and Values:
+   * Why it worked: The earlier, more open-ended questions allowed Melissa to reveal her passion for student feedback and her philosophy of "help the person help themselves." This allowed Angela to tailor her later, direct request to something that aligned with Melissa's values and preferred approach (e.g., a "quick lay of the land" rather than a full-scale intervention, and pointing to free resources).
+   * Contrast: A premature direct request might have been misaligned with Melissa's working style or interests, making her less likely to agree.
+ * Overcoming Initial Perceived Mismatches:
+   * Why it worked: Melissa initially clarified that eCornell primarily works with "working professionals." Angela's nuanced follow-up questions allowed her to pivot and highlight eCornell's critical role with matriculated students during COVID, thus demonstrating the direct relevance of Melissa's expertise to Angela's problem.
+   * Contrast: A direct request after Melissa's initial clarification might have been easily dismissed as "that's not what we do."
+In conclusion, Professor Noble-Grange's gradual, conversational, and context-building approach was highly strategic. It allowed her to build rapport, present a compelling case, understand Melissa's perspective, and ultimately frame her direct request in a way that maximized the chances of a positive response. Being more direct earlier would have risked alienating Melissa or receiving a quick rejection before the full scope and emotional weight of the problem could be conveyed.
+
