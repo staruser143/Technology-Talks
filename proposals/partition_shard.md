@@ -13,3 +13,46 @@ Here is a visual comparison between **Azure Cosmos DB Partition Keys** and **Mon
 - Both keys are **immutable** and must be defined at the time of creation.
 
 Let me know if you'd like this as a downloadable PDF or want to explore how to choose a good partition/shard key!
+
+
+Yes, both **partition keys in Azure Cosmos DB** and **shard keys in MongoDB Atlas** are **mandatory**—but in slightly different contexts and for different reasons:
+
+---
+
+### 🔹 **Azure Cosmos DB**
+
+- ✅ **Partition Key is Mandatory** when creating a container.
+- Every item must include a value for the partition key field.
+- It is used to:
+  - Distribute data across physical partitions.
+  - Enable **efficient point reads** and **scalable writes**.
+- You **cannot change** the partition key after container creation.
+
+> ⚠️ If you don’t choose a good partition key, you may face **hot partitions** or **scaling issues**.
+
+---
+
+### 🔹 **MongoDB Atlas**
+
+- ❌ **Shard Key is Not Mandatory** by default.
+- You only need a shard key if you **enable sharding** on a collection.
+- In **non-sharded clusters**, MongoDB uses a single replica set and doesn’t require a shard key.
+- In **sharded clusters**, the shard key is:
+  - Required to distribute data across shards.
+  - Needed for **efficient targeted queries**.
+  - Also **immutable** once set.
+
+> ⚠️ Poor shard key choice can lead to **unbalanced shards** and **performance bottlenecks**.
+
+---
+
+### 🔸 Summary
+
+| Feature            | Cosmos DB Partition Key | MongoDB Shard Key         |
+|--------------------|--------------------------|----------------------------|
+| **Mandatory?**     | ✅ Yes (always)           | ✅ Only if sharding is enabled |
+| **When Required**  | On container creation     | On enabling sharding       |
+| **Immutable?**     | ✅ Yes                    | ✅ Yes                      |
+| **Purpose**        | Partitioning and scaling | Sharding and scaling       |
+
+Would you like a visual summary of this comparison too?
