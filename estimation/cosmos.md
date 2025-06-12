@@ -1,27 +1,29 @@
-Request Units/Second (RU/s) consumed depends on,
-Type of Operation:insert,update,delete,query
-Size & Complexity of data
+### Request Units/Second (RU/s) consumed depends on,
+* Type of Operation:   **insert,update,delete,query**
+* Size & Complexity of data
 
-OpType      RU/s Consumption (Approx)
-Insert      Depends on Item Size ; typically 5-10 RU for small items(~1 Kb)
-Update      Similar to insert; if replacing the whole document, its like write
-Delete      Usually cheaper;around 5 RU for small items
 
-Factors that influce RU/s usage
-Item Size    
-  Larger docs consume more RU/s
-  RU/s scales roughly linearly with size
-Query Complexity
-  Simple Queries ( e.g point reads, by ID) are very cheap (~1 RU)
-  Complex Queries with filters,joins or aggregations can consume hundreds of RU/s
-Indexing
-  CosmosDB automatically indexes all properties by default
-  Custom Index policies  can reduce RU/s for specific queries
-Partitioning
-  Efficient Partitioning improves performance and reduces RU/s
-  Poor partitioning can lead to cross partition queries, which are more expensive
-Concurrency
-  High Throughput scenarios (many ops per second) requiring provisioning more RU/s
+**OpType**      **RU/s Consumption (Approx)**
+
+**Insert**      Depends on Item Size ; typically 5-10 RU for small items(~1 Kb)
+**Update**      Similar to insert; if replacing the whole document, its like write
+**Delete**      Usually cheaper;around 5 RU for small items
+
+**Factors that influence RU/s usage**
+**Item Size**    
+  * Larger docs consume more RU/s
+  * RU/s scales roughly linearly with size
+**Query Complexity**
+  * Simple Queries ( e.g point reads, by ID) are very cheap (~1 RU)
+  * Complex Queries with filters,joins or aggregations can consume hundreds of RU/s
+**Indexing**
+  * CosmosDB automatically indexes all properties by default
+  * Custom Index policies  can reduce RU/s for specific queries
+**Partitioning**
+  * Efficient Partitioning improves performance and reduces RU/s
+  * Poor partitioning can lead to cross partition queries, which are more expensive
+**Concurrency**
+  * High Throughput scenarios (many ops per second) requiring provisioning more RU/s
 
 Example Scenario
 Scenario            Estimated RU/s
