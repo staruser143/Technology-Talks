@@ -1,3 +1,4 @@
+# How do I use AWS Glue Salesforce Connector to connect to Salesforce from AWS Glue
 To use the **AWS Glue Salesforce Connector** to connect to Salesforce and extract data into an S3 bucket, follow these steps:
 
 ---
