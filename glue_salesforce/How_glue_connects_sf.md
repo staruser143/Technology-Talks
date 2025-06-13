@@ -1,3 +1,4 @@
+# When creating a Glue Connection should we provide Client ID , Client Secret and also the Refresh token. How does Glue connect to salesforce with these
 Yes, when creating a **Salesforce connection in AWS Glue using OAuth 2.0**, you typically need to provide the following credentials:
 
 ---
@@ -50,6 +51,39 @@ When creating the connection in the AWS Glue Console:
 - **Access Token URL**: `https://login.salesforce.com/services/oauth2/token`
 
 ---
+# Once we provide ClientId,ClientSecret , Refresh Token and Access Token URL, does Glue takes care of getting the access token using the provided details
+
+Yes — once you provide the **Client ID**, **Client Secret**, **Refresh Token**, and **Access Token URL** in the AWS Glue **Salesforce connection**, Glue **automatically handles** the process of obtaining and refreshing the **access token**.
+
+---
+
+## 🔄 What AWS Glue Does Internally
+
+1. **Token Exchange**:
+   - Glue sends a `POST` request to the **Access Token URL** (`https://login.salesforce.com/services/oauth2/token`) with:
+     - `grant_type=refresh_token`
+     - `client_id`
+     - `client_secret`
+     - `refresh_token`
+
+2. **Access Token Retrieval**:
+   - Salesforce responds with a **new access token**.
+   - Glue uses this token to authenticate API calls to Salesforce.
+
+3. **Automatic Refresh**:
+   - Glue will **automatically repeat** this process whenever the access token expires.
+   - You do **not** need to manually refresh or update the token.
+
+---
+
+## ✅ Benefits of This Setup
+- **Secure**: OAuth credentials are stored securely in the Glue connection.
+- **Automated**: No need to manage token lifecycle manually.
+- **Scalable**: Works seamlessly with Glue jobs and crawlers.
+
+---
+
+# When the access token expires, does Glue again use the provided details and refresh token to obtain Access token automatically >
 
 Yes, exactly — **AWS Glue automatically handles access token refresh** using the **refresh token** you provide in the Salesforce connection configuration.
 
@@ -83,6 +117,7 @@ This process is **fully automated** and **transparent** to you — no manual int
 
 ---
 
+# When using Glue Connection, where should we store the sensitive details like clientId,ClientSEcret,refresh token and access token url
 
 Great question! When using **AWS Glue Connections** to store sensitive credentials like **Client ID**, **Client Secret**, **Refresh Token**, and **Access Token URL**, it's important to follow **best practices for security**.
 
@@ -142,6 +177,7 @@ Example policy for Secrets Manager access:
 | IAM Role Permissions      | Essential      | Controls access to connections/secrets |
 
 ---
+# How about access token url, is it not required to stored in secrets manager ?
 
 Great follow-up! Here's the breakdown:
 
@@ -184,6 +220,7 @@ You might consider storing it in Secrets Manager if:
 | Access Token URL  | ❌ Optional               | Static and non-sensitive |
 
 ---
+# Yes, please provide a sample JSON structure.
 
 Here’s a **sample JSON structure** you can use to store your Salesforce OAuth credentials in **AWS Secrets Manager**:
 
