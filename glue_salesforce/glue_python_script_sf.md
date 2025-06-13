@@ -1,3 +1,5 @@
+# How about the option to use AWS Glue Python Shell job along with Simple Salesforce. when should we consider that and what are connection details for it
+
 Using a **Python Shell job in AWS Glue** with the `simple-salesforce` library is a lightweight and flexible alternative to the native Salesforce connector. It’s especially useful in certain scenarios.
 
 ---
@@ -100,6 +102,8 @@ sf = Salesforce(instance_url=instance_url, session_id=access_token)
 ```
 
 ---
+# What would the size of small to medium dataset?
+
 The definition of a **"small to medium dataset"** can vary depending on the context, but in the case of **AWS Glue Python Shell jobs** and **Salesforce data extraction**, here’s a practical guideline:
 
 ---
@@ -133,6 +137,7 @@ The definition of a **"small to medium dataset"** can vary depending on the cont
 - Consider **splitting jobs** by object or time range (e.g., `LastModifiedDate`)
 
 ---
+# Yes, please provide the sample script.
 
 Here’s a **sample AWS Glue Python Shell job script** that:
 
@@ -199,6 +204,7 @@ while True:
 - Monitor **Salesforce API limits** using `sf.limits()`.
 
 ---
+# Yes, please show how to use Secrets Manager.
 
 Here’s how you can securely use **AWS Secrets Manager** in your **AWS Glue Python Shell job** to retrieve Salesforce credentials and connect using `simple-salesforce`.
 
@@ -265,6 +271,8 @@ Make sure your Glue job’s IAM role has permission to access the secret:
 ```
 
 ---
+# Yes, please include S3 writing with pagination.
+
 
 Here’s a complete **AWS Glue Python Shell job script** that:
 
@@ -349,6 +357,7 @@ while True:
 Here are some **common issues and pitfalls** you might encounter when using an **AWS Glue Python Shell job with `simple-salesforce` and Secrets Manager** to extract data from Salesforce and write to S3:
 
 ---
+# What are some common issues with this setup?
 
 ## ⚠️ Common Issues and How to Handle Them
 
@@ -412,6 +421,7 @@ Here are some **common issues and pitfalls** you might encounter when using an *
 - **Solution**: Ensure the secret and Glue job are in the **same region** or use cross-region access.
 
 ---
+# Yes, please provide a checklist.
 
 Here’s a **checklist** to help you monitor and troubleshoot your **AWS Glue Python Shell job** that connects to **Salesforce using `simple-salesforce`** and **Secrets Manager**, and writes data to **S3**.
 
