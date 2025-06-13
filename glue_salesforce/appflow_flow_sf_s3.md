@@ -1,3 +1,5 @@
+# Instead of AWS Glue, can I consider AWS Appflow to read data from Salesforce to aws s3 bucket?
+
 Yes, you can absolutely consider using **AWS AppFlow** to read data from **Salesforce** and load it into an **S3 bucket** — and in many cases, it might be a **simpler and more efficient** option than AWS Glue, especially for integration-focused use cases.
 
 ---
@@ -46,6 +48,8 @@ Yes, you can absolutely consider using **AWS AppFlow** to read data from **Sales
 - You need **custom logic** or **fine-grained control**
 
 ---
+# Yes, please provide a setup guide for AppFlow.
+
 
 Here’s a **step-by-step guide** to set up an **AWS AppFlow** integration from **Salesforce to Amazon S3**:
 
@@ -126,6 +130,7 @@ Choose how the flow runs:
 - Run the flow manually or wait for the scheduled trigger
 
 ---
+# How does this compare with AWS Glue from a pricing aspect?
 
 Here’s a **pricing comparison** between **AWS Glue** and **AWS AppFlow** based on current information:
 
