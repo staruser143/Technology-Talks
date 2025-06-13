@@ -1,0 +1,72 @@
+{
+  "info": {
+    "name": "Salesforce OAuth 2.0 Authorization Code Flow with PKCE",
+    "description": "Postman collection to exchange authorization code for access token using PKCE",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Exchange Authorization Code for Token",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "grant_type",
+              "value": "authorization_code",
+              "type": "text"
+            },
+            {
+              "key": "code",
+              "value": "{{authorization_code}}",
+              "type": "text"
+            },
+            {
+              "key": "client_id",
+              "value": "{{client_id}}",
+              "type": "text"
+            },
+            {
+              "key": "client_secret",
+              "value": "{{client_secret}}",
+              "type": "text"
+            },
+            {
+              "key": "redirect_uri",
+              "value": "{{redirect_uri}}",
+              "type": "text"
+            },
+            {
+              "key": "code_verifier",
+              "value": "{{code_verifier}}",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "https://login.salesforce.com/services/oauth2/token",
+          "protocol": "https",
+          "host": [
+            "login",
+            "salesforce",
+            "com"
+          ],
+          "path": [
+            "services",
+            "oauth2",
+            "token"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
