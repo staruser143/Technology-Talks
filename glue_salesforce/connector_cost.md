@@ -1,3 +1,5 @@
+# Is there a cost involved for using the connector from marketplace
+
 Yes, there **is a cost** involved when using the **Salesforce Connector for AWS Glue** from the AWS Marketplace.
 
 ### 💰 Pricing Details (as of June 2025)
