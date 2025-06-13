@@ -1,3 +1,5 @@
+# I assume we have to create a connected app in Salesforce and obtain the required OAuth credentials, ClientID and clientSecret. After obtaining them how do we use in AWS Glue
+
 Yes, you're absolutely right — when using **OAuth 2.0** to connect AWS Glue to Salesforce, you need to:
 
 1. **Create a Connected App** in Salesforce.
