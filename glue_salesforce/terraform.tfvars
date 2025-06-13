@@ -1,0 +1,7 @@
+aws_region               = "us-east-1"
+salesforce_client_id     = "your-client-id"
+salesforce_client_secret = "your-client-secret"
+salesforce_refresh_token = "your-refresh-token"
+salesforce_instance_url  = "https://yourInstance.salesforce.com"
+subnet_id                = "subnet-abc123"
+security_group_id        = "sg-abc123"
