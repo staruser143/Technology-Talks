@@ -1,3 +1,5 @@
+# How do we setup/initialize the AWS Glue Salesforce Connector , should we get it from marketplace?
+
 Yes, to use the **AWS Glue Salesforce Connector**, you typically need to **install it from the AWS Marketplace** before it becomes available in your Glue environment.
 
 Here’s how to **set up and initialize** the Salesforce Connector for AWS Glue:
