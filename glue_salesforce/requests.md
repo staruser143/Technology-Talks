@@ -10,6 +10,13 @@ code_challenge = base64.urlsafe_b64encode(
 code_verifier:D7P5TvbQBRa-UdEfzXFIYVDRI4hJM8ME8Juv2wIe_1u94YXIaMz8MLFzjemobxTsG51EGhhEbuzUVGGc2CsnUg
 code_challenge: toZetD4K01g8l0yMbAGUAYcAQHBOOf7LBlkUTvqItbs
 
+
+https://orgfarm-3365db1462-dev-ed.develop.my.salesforce.com
+ 
+Here’s the username for your Developer Edition:
+jaadukanna.sri554@agentforce.com
+
+
 ```
 https://login.salesforce.com/services/oauth2/authorize
 ?response_type=code
