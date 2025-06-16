@@ -381,6 +381,76 @@ If you're looking for a **simpler setup**, you could:
 
 
 
+Yes, when you're using **Azure**, it's a great idea to consider **Azure Event Hubs** as a replacement for Kafka — especially if you're looking for a **fully managed, scalable, and cloud-native** solution.
+
+---
+
+## ✅ Why Use Azure Event Hubs Instead of Kafka?
+
+| Feature | Kafka | Azure Event Hubs |
+|--------|-------|------------------|
+| **Managed Service** | Requires setup and maintenance | Fully managed |
+| **Scalability** | Manual scaling | Auto-scaling with throughput units |
+| **Integration** | Native Kafka APIs | Kafka-compatible + Azure SDKs |
+| **Security** | Manual setup | Azure AD, RBAC, VNET integration |
+| **Monitoring** | Requires external tools | Built-in Azure Monitor & diagnostics |
+
+---
+
+## 🧩 How to Integrate MongoDB with Azure Event Hubs
+
+### 1. **MongoDB Change Stream Listener**
+Same as before — you listen to MongoDB change streams using a NestJS service.
+
+### 2. **Publish to Azure Event Hubs**
+Use the **Azure SDK for JavaScript** to publish events:
+
+```bash
+npm install @azure/event-hubs
+```
+
+```ts
+import { EventHubProducerClient } from '@azure/event-hubs';
+
+const producer = new EventHubProducerClient('<connection-string>', '<event-hub-name>');
+
+const batch = await producer.createBatch();
+batch.tryAdd({ body: changeEvent });
+await producer.sendBatch(batch);
+```
+
+### 3. **Consume from Event Hubs**
+You can use:
+- **Azure Functions** (event-driven)
+- **NestJS microservice** with Kafka-compatible client
+- **EventProcessorClient** from Azure SDK
+
+---
+
+## 🔄 Kafka Compatibility
+
+Azure Event Hubs supports **Kafka protocol**, so you can use Kafka clients like `kafkajs` with minimal changes:
+
+```ts
+const kafka = new Kafka({
+  brokers: ['<your-event-hub-namespace>.servicebus.windows.net:9093'],
+  ssl: true,
+  sasl: {
+    mechanism: 'plain',
+    username: '$ConnectionString',
+    password: '<your-event-hub-connection-string>',
+  },
+});
+```
+
+---
+
+## ✅ Recommendation
+
+If you're already on Azure, **Event Hubs** is a great choice for:
+- Reducing operational overhead
+- Seamless integration with other Azure services
+- Built-in security and monitoring
 
 
 
