@@ -1,0 +1,4 @@
+pyjwt
+cryptography
+requests
+boto3
