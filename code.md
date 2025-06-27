@@ -18,8 +18,16 @@ db.domainCollection.updateOne(
 hash(partitionKey) % totalInstances == instanceIndex
 ```
 
+```sh
+npm install mongodb crc-32 dotenv
+```
 
 ```javascript
+
+require('dotenv').config();
+const { MongoClient } = require('mongodb');
+const crc32 = require('crc-32');
+
 const instanceIndex = parseInt(process.env.INSTANCE_INDEX, 10);
 const totalInstances = parseInt(process.env.TOTAL_INSTANCES, 10);
 
