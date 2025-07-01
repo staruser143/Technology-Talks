@@ -1,0 +1,1 @@
+I want to build a common framework which can be leveraged by different teams building services for a event driven system based on event sourcing and CQRS. The framework should reduce boilerplate code which developers have to write and should make their tasks effective. What are the features/modules which should be part of the common framework built using NestJS.
