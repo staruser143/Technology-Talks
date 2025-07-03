@@ -1,0 +1,49 @@
+[
+  {
+    "field": "ageAndActive",
+    "expr": "age >= 22 && isActive == true",
+    "message": "User must be at least 22 and active",
+    "code": "ERR_AGE_ACTIVE"
+  },
+  {
+    "field": "emailOrActive",
+    "expr": "regexMatch(email, \"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$\") || isActive == true",
+    "message": "Email must be valid or user must be active",
+    "code": "ERR_EMAIL_OR_ACTIVE"
+  },
+  {
+    "field": "age",
+    "expr": "age >= 22",
+    "message": "Age must be at least 22",
+    "code": "ERR_AGE"
+  },
+  {
+    "field": "email",
+    "expr": "regexMatch(email, \"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$\")",
+    "message": "Email is invalid",
+    "code": "ERR_EMAIL"
+  },
+  {
+    "field": "isActive",
+    "expr": "isActive == true",
+    "message": "User must be active",
+    "code": "ERR_ACTIVE"
+  }, {
+    "field": "passwordShouldMatch",
+    "expr": "password == confirmPassword",
+    "message": "Passwords do not match",
+    "code": "ERR_PASSWORD_MISMATCH"
+  },
+  {
+    "field": "passwordMaxLength",
+    "expr": "maxLength(password, 10)",
+    "message": "Password must not exceed 10 characters",
+    "code": "ERR_PASSWORD_MAXLEN"
+  },
+  {
+    "field": "passwordMinLength",
+    "expr": "password.length >= 8",
+    "message": "Password must be at least 8 characters",
+    "code": "ERR_PASSWORD_MINLEN"
+  }
+]
