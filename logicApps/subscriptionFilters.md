@@ -220,3 +220,47 @@ Use:
 - **User-defined properties** for **custom filtering logic**.
 
 
+Yes, your proposed architecture is both **feasible** and **effective** for integrating MongoDB with Azure Logic Apps using **NestJS**, **MongoDB Change Streams**, and **Azure Service Bus**.
+
+---
+
+### 🧩 **Architecture Overview**
+
+#### ✅ **1. NestJS Service with MongoDB Change Streams**
+- Use NestJS to listen for changes in a MongoDB collection via **Change Streams**.
+- Detect inserts, updates, deletes, etc.
+
+#### ✅ **2. Publish to Azure Service Bus**
+- When a change is detected, publish a message to a **Service Bus topic**.
+- Include relevant metadata in the message:
+  - Use **Label** or **CorrelationId** for routing.
+  - Add **user-defined properties** (e.g., `eventType`, `priority`, `customerId`).
+
+#### ✅ **3. Use Subscription Filters**
+- Create **multiple subscriptions** on the topic.
+- Define **SQL filters** based on message properties:
+  ```sql
+  eventType = 'CustomerUpdated' AND priority = 'High'
+  ```
+
+#### ✅ **4. Trigger Logic Apps**
+- Each subscription is connected to a **Logic App workflow**.
+- Logic App triggers only when a message matching the filter arrives.
+
+---
+
+### 🔐 **Security & Reliability Tips**
+- Use **Azure Identity** or **SAS tokens** securely in NestJS.
+- Implement **retry logic** and **dead-letter queues** in Service Bus.
+- Use **structured logging** in NestJS for traceability.
+
+---
+
+### 📌 **Benefits of This Approach**
+- **Real-time responsiveness** via Change Streams.
+- **Scalable routing** using Service Bus filters.
+- **Decoupled workflows** with Logic Apps.
+- **Maintainable and extensible** architecture.
+
+---
+
