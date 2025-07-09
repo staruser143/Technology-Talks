@@ -1,5 +1,6 @@
 ```mermaid
  graph TD
-    A[Event Grid] --> B[Azure Logic App]
-    B --> C[Process Data]
-    B --> D[Send Notification] 
+    A[ChangeStream Service] --> B[Service Bus]
+    B[Service Bus] --> C[Azure Logic App]
+    C[Azure Logic App] --> D[Salesforce API]
+
