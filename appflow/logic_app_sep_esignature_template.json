@@ -1,0 +1,97 @@
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json",
+    "actions": {
+      "Validate_SEP": {
+        "type": "Compose",
+        "inputs": {
+          "sep_status": "Approved",
+          "submitted_by": "@triggerBody()?['submitted_by']",
+          "application_id": "@triggerBody()?['application_id']",
+          "agent_email": "@triggerBody()?['agent_email']"
+        },
+        "runAfter": {}
+      },
+      "Check_SEP_and_Submitter": {
+        "type": "If",
+        "expression": {
+          "and": [
+            {
+              "equals": [
+                "@outputs('Validate_SEP')['sep_status']",
+                "Approved"
+              ]
+            },
+            {
+              "equals": [
+                "@outputs('Validate_SEP')['submitted_by']",
+                "Agent"
+              ]
+            }
+          ]
+        },
+        "actions": {
+          "Trigger_eSignature_Workflow": {
+            "type": "Http",
+            "inputs": {
+              "method": "POST",
+              "uri": "https://your-esignature-workflow-endpoint",
+              "body": {
+                "application_id": "@outputs('Validate_SEP')['application_id']",
+                "agent_email": "@outputs('Validate_SEP')['agent_email']"
+              }
+            },
+            "runAfter": {}
+          }
+        },
+        "else": {
+          "actions": {
+            "Proceed_Without_eSignature": {
+              "type": "Compose",
+              "inputs": "Enrollment submitted directly by individual/group. Proceed without eSignature.",
+              "runAfter": {}
+            }
+          }
+        },
+        "runAfter": {
+          "Validate_SEP": [
+            "Succeeded"
+          ]
+        }
+      }
+    },
+    "triggers": {
+      "Manual_HTTP_Trigger": {
+        "type": "Request",
+        "kind": "Http",
+        "inputs": {
+          "schema": {
+            "type": "object",
+            "properties": {
+              "application_id": {
+                "type": "string"
+              },
+              "submitted_by": {
+                "type": "string"
+              },
+              "agent_email": {
+                "type": "string"
+              },
+              "life_event_type": {
+                "type": "string"
+              },
+              "life_event_date": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "application_id",
+              "submitted_by"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "parameters": {}
+}
