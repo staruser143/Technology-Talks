@@ -1,0 +1,144 @@
+Here’s a **sample Azure Logic App JSON template** that implements a **daily recurrence-based workflow** to send reminders based on custom intervals (e.g., Days 1, 3, 5, 7, 11) from the application submission date.
+
+---
+
+### 🧾 **Logic App JSON Template (Simplified)**
+
+```json
+{
+  "definition": {
+    "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json",
+    "actions": {
+      "Get_Applications": {
+        "type": "ApiConnection",
+        "inputs": {
+          "host": {
+            "connection": {
+              "name": "@parameters('$connections')['sql']['connectionId']"
+            }
+          },
+          "method": "get",
+          "path": "/queries/getPendingApplications"
+        },
+        "runAfter": {},
+        "metadata": {
+          "description": "Fetch applications with signature_status = 'Awaiting'"
+        }
+      },
+      "For_Each_Application": {
+        "type": "Foreach",
+        "foreach": "@outputs('Get_Applications')",
+        "actions": {
+          "Calculate_Days_Since_Submission": {
+            "type": "Compose",
+            "inputs": "@sub(int(formatDateTime(utcNow(),'yyyyMMdd')), int(formatDateTime(items('For_Each_Application')?['submission_date'],'yyyyMMdd')))"
+          },
+          "Check_Reminder_Due": {
+            "type": "If",
+            "expression": {
+              "and": [
+                {
+                  "contains": [
+                    "[1,3,5,7,11]",
+                    "@outputs('Calculate_Days_Since_Submission')"
+                  ]
+                },
+                {
+                  "not": {
+                    "contains": [
+                      "@items('For_Each_Application')?['reminders_sent']",
+                      "@outputs('Calculate_Days_Since_Submission')"
+                    ]
+                  }
+                }
+              ]
+            },
+            "actions": {
+              "Send_Reminder_Email": {
+                "type": "ApiConnection",
+                "inputs": {
+                  "host": {
+                    "connection": {
+                      "name": "@parameters('$connections')['sendgrid']['connectionId']"
+                    }
+                  },
+                  "method": "post",
+                  "path": "/v3/mail/send",
+                  "body": {
+                    "personalizations": [
+                      {
+                        "to": [
+                          {
+                            "email": "@items('For_Each_Application')?['agent_email']"
+                          }
+                        ],
+                        "subject": "Reminder: Please eSign the Application"
+                      }
+                    ],
+                    "from": {
+                      "email": "noreply@yourdomain.com"
+                    },
+                    "content": [
+                      {
+                        "type": "text/plain",
+                        "value": "Please sign the pending application using the link provided."
+                      }
+                    ]
+                  }
+                }
+              },
+              "Update_Reminder_Log": {
+                "type": "ApiConnection",
+                "inputs": {
+                  "host": {
+                    "connection": {
+                      "name": "@parameters('$connections')['sql']['connectionId']"
+                    }
+                  },
+                  "method": "patch",
+                  "path": "/tables/applications",
+                  "body": {
+                    "application_id": "@items('For_Each_Application')?['application_id']",
+                    "reminders_sent": "@concat(items('For_Each_Application')?['reminders_sent'], ',', outputs('Calculate_Days_Since_Submission'))"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "triggers": {
+      "Daily_Trigger": {
+        "type": "Recurrence",
+        "recurrence": {
+          "frequency": "Day",
+          "interval": 1
+        }
+      }
+    }
+  },
+  "parameters": {
+    "$connections": {
+      "value": {
+        "sql": {
+          "connectionId": "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Web/connections/sql",
+          "connectionName": "sql",
+          "id": "/subscriptions/{subscription-id}/providers/Microsoft.Web/locations/{location}/managedApis/sql"
+        },
+        "sendgrid": {
+          "connectionId": "/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Web/connections/sendgrid",
+          "connectionName": "sendgrid",
+          "id": "/subscriptions/{subscription-id}/providers/Microsoft.Web/locations/{location}/managedApis/sendgrid"
+        }
+      }
+    }
+  }
+}
+```
+
+---
+
+### 🧠 Notes:
+- Replace placeholders like `{subscription-id}`, `{resource-group}`, and `{location}`.
+- You’ll need a stored procedure or query (`getPendingApplications`) that returns applications with `signature_status = "Awaiting"` and includes `submission_date`, `agent_email`, and `reminders_sent`.
