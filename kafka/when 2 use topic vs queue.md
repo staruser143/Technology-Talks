@@ -7,12 +7,19 @@
 **Feature**	                               **Queue (e.g., SQS, RabbitMQ)**                               **Kafka Topic**
 
 Message Consumption	                   Message is removed after being consumed	                     Message is retained, even after consumption
+
 Consumer Model	                       Competing consumers – one message goes to one consumer	       Pub-sub model via consumer groups – each group gets the full stream
+
 Message Order	                         Preserved (within queue or FIFO queue)	                       Preserved per partition
+
 Replayability	                         ❌ Not possible	                                             ✅ Yes – replay from past offsets
+
 Retention	                             Short-lived – deleted after acknowledgment	                   Controlled by time or size, independent of consumption
+
 Backpressure                           Handling	Strong with features like dead-letter queues	       Needs manual design for backpressure
+
 Durability	                           High, but usually tied to processing	                         Extremely high (log retention decouples storage from consumption)
+
 Use Cases                              Simple, fire-and-forget, task queues	                         Streaming, event sourcing, analytics, log processing
 
 
