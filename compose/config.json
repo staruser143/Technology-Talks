@@ -1,0 +1,22 @@
+{
+  "name": "mongo-multi-collections-to-unified-topic",
+  "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
+  "connection.uri": "mongodb+srv://<user>:<password>@<cluster-url>",
+  "database": "db1",
+  "collection": "",  // Leave blank when using regex namespace
+  "pipeline": "[{\"$match\": {\"operationType\": {\"$in\": [\"insert\", \"update\", \"replace\"]}}}]",
+
+  "copy.existing": true,
+  "copy.existing.pipeline": "[{\"$match\": {}}]",
+
+  "publish.full.document.only": true,
+
+  "topic.naming.strategy": "static",
+  "topic": "unified-topic",
+
+  "namespace.regex": "db1\\.(coll1|coll2)",
+
+  "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+  "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+  "value.converter.schemas.enable": false
+}
