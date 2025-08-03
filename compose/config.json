@@ -14,7 +14,7 @@
   "topic.naming.strategy": "static",
   "topic": "unified-topic",
 
-  "namespace.regex": "db1\\.(coll1|coll2)",
+  "namespace.regex": "db1\\.(quoteEvents|profileEvents)",
 
   "key.converter": "org.apache.kafka.connect.storage.StringConverter",
   "value.converter": "org.apache.kafka.connect.json.JsonConverter",
