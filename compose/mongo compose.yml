@@ -1,0 +1,14 @@
+version: '3.8'
+
+services: zookeeper: image: confluentinc/cp-zookeeper:7.3.0 container_name: zookeeper ports: - 2181:2181 environment: ZOOKEEPER_CLIENT_PORT: 2181
+
+kafka: image: confluentinc/cp-kafka:7.3.0 container_name: kafka depends_on: - zookeeper ports: - 9092:9092 environment: KAFKA_BROKER_ID: 1 KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181 KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092 KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+mongo: image: mongo:6 container_name: mongo ports: - 27017:27017
+
+mongo-express: image: mongo-express:1.0.0-alpha.4 container_name: mongo-express ports: - 8081:8081 environment: ME_CONFIG_MONGODB_SERVER: mongo ME_CONFIG_BASICAUTH_USERNAME: admin ME_CONFIG_BASICAUTH_PASSWORD: password
+
+kafka-connect: image: confluentinc/cp-kafka-connect:7.3.0 container_name: kafka-connect depends_on: - kafka ports: - 8083:8083 volumes: - ./plugins:/usr/share/java/connectors - ./register-mongo-connector.json:/etc/kafka-connect/register-mongo-connector.json - ./register-mongo-connector.sh:/etc/kafka-connect/register-mongo-connector.sh environment: CONNECT_BOOTSTRAP_SERVERS: kafka:9092 CONNECT_REST_PORT: 8083 CONNECT_GROUP_ID: kafka-connect-group CONNECT_CONFIG_STORAGE_TOPIC: connect-configs CONNECT_OFFSET_STORAGE_TOPIC: connect-offsets CONNECT_STATUS_STORAGE_TOPIC: connect-status CONNECT_KEY_CONVERTER: org.apache.kafka.connect.storage.StringConverter CONNECT_VALUE_CONVERTER: org.apache.kafka.connect.json.JsonConverter CONNECT_VALUE_CONVERTER_SCHEMAS_ENABLE: false CONNECT_PLUGIN_PATH: /usr/share/java/connectors CONNECT_LOG4J_LOGGERS: org.reflections=ERROR command: ["/bin/bash", "-c", "/etc/kafka-connect/register-mongo-connector.sh && /etc/confluent/docker/run"]
+
+kafka-ui: image: provectuslabs/kafka-ui:latest container_name: kafka-ui ports: - 8080:8080 depends_on: - kafka environment: KAFKA_CLUSTERS_0_NAME: local KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:9092 KAFKA_CLUSTERS_0_ZOOKEEPER: zookeeper:2181
+
