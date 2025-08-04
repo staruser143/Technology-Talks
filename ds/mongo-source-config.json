@@ -1,0 +1,16 @@
+{
+  "name": "mongodb-source-connector",
+  "config": {
+    "connector.class": "com.mongodb.kafka.connect.MongoSourceConnector",
+    "tasks.max": "1",
+    "connection.uri": "mongodb://root:example@mongodb:27017",
+    "database": "test",
+    "collection": "source_collection",
+    "topic.prefix": "mongo.",
+    "publish.full.document.only": "true",
+    "output.format.key": "schema",
+    "output.format.value": "json",
+    "output.schema.key": "{\"type\":\"string\"}",
+    "output.schema.value": "{\"type\":\"record\",\"name\":\"Document\",\"fields\":[{\"name\":\"_id\",\"type\":\"string\"},{\"name\":\"data\",\"type\":\"string\"}]}"
+  }
+}
