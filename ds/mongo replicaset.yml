@@ -1,0 +1,22 @@
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    command: mongod --replSet rs0 --bind_ip_all  # 🔥 Critical for replica set
+    volumes:
+      - mongodb_data:/data/db
+
+  # Initialize the replica set (one-time setup)
+  mongodb-setup:
+    image: mongo:latest
+    depends_on:
+      - mongodb
+    restart: on-failure
+    command: >
+      bash -c "sleep 10 && 
+      mongosh --host mongodb --username root --password example --eval 'rs.initiate()'"
