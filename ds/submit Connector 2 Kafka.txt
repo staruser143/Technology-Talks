@@ -5,3 +5,9 @@ curl -X POST -H "Content-Type: application/json" \
 curl -X POST -H "Content-Type: application/json" \
   --data @mongo-source-config.json \
   http://kafka-connect:8083/connectors
+
+
+curl -X POST -H "Content-Type: application/json" \
+  --user myuser:mypassword \
+  --data @mongo-source-config.json \
+  http://localhost:8083/connectors
