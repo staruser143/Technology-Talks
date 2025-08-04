@@ -11,3 +11,6 @@ curl -X POST -H "Content-Type: application/json" \
   --user myuser:mypassword \
   --data @mongo-source-config.json \
   http://localhost:8083/connectors
+
+
+curl http://localhost:8083/connector-plugins
