@@ -1,0 +1,6 @@
+curl http://localhost:8083/connector-plugins | jq
+
+
+curl -X POST -H "Content-Type: application/json" \
+  --data @mongo-source-config.json \
+  http://localhost:8083/connectors
