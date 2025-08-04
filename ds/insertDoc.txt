@@ -1,0 +1,1 @@
+docker exec -it mongodb mongosh -u root -p example --eval 'db.source_collection.insertOne({ name: "test", value: 123 })'
