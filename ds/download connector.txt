@@ -1,0 +1,5 @@
+mkdir -p mongodb-kafka-connector && \
+cd mongodb-kafka-connector && \
+curl -O https://github.com/mongodb/mongo-kafka/releases/download/r1.9.0/mongodb-kafka-connect-mongodb-1.9.0.zip && \
+unzip mongodb-kafka-connect-mongodb-1.9.0.zip && \
+rm mongodb-kafka-connect-mongodb-1.9.0.zip
