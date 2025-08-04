@@ -3,3 +3,7 @@ cd mongodb-kafka-connector && \
 curl -O https://github.com/mongodb/mongo-kafka/releases/download/r1.9.0/mongodb-kafka-connect-mongodb-1.9.0.zip && \
 unzip mongodb-kafka-connect-mongodb-1.9.0.zip && \
 rm mongodb-kafka-connect-mongodb-1.9.0.zip
+
+
+
+wget https://repo1.maven.org/maven2/org/mongodb/kafka/mongo-kafka-connect/1.15.0/mongo-kafka-connect-1.15.0-all.jar -P ./plugins/mongodb-kafka-connect/
