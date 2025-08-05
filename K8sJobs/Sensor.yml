@@ -1,0 +1,34 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Sensor
+metadata:
+  name: my-event-sensor
+spec:
+  dependencies:
+    - name: my-kafka-dependency
+      eventSourceName: my-kafka-events
+      eventName: my-event-source
+      # Use a data filter to check the event payload
+      filters:
+        - path: "payload.eventType" # Assuming eventType is a key in your Kafka message payload
+          type: "string"
+          value: "special-type"    # The specific type you want to trigger on
+  triggers:
+    - template:
+        name: my-batch-job-trigger
+        k8s:
+          operation: create
+          source:
+            resource:
+              apiVersion: batch/v1
+              kind: Job
+              # This is your Job template. The Sensor will use this to create a Job.
+              metadata:
+                generateName: special-batch-job-
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: my-batch-processor
+                        image: my-batch-image:v1
+                        command: ["/bin/bash", "-c", "echo 'Processing event'; sleep 10"]
+                    restartPolicy: Never
