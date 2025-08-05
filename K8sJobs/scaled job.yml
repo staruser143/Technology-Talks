@@ -1,0 +1,34 @@
+# scaledjob.yaml
+apiVersion: keda.sh/v1alpha1
+kind: ScaledJob
+metadata:
+  name: servicebus-processor
+spec:
+  jobTargetRef:
+    template:
+      spec:
+        serviceAccountName: keda-servicebus-sa # Reference the Service Account
+        containers:
+          - name: processor-container
+            image: <your-batch-image>
+            imagePullPolicy: Always
+            # Use environment variables to pass queue name and namespace to your application
+            env:
+              - name: AZURE_SERVICEBUS_QUEUE_NAME
+                value: "<your-service-bus-queue-name>"
+              - name: AZURE_SERVICEBUS_NAMESPACE
+                value: "<your-service-bus-namespace>"
+          restartPolicy: Never
+  pollingInterval: 30 # How often KEDA checks for new messages (in seconds)
+  successfulJobsHistoryLimit: 5 # How many successful jobs to keep
+  failedJobsHistoryLimit: 5   # How many failed jobs to keep
+  maxReplicaCount: 10         # Maximum number of concurrent jobs
+  triggers:
+    - type: azure-servicebus
+      metadata:
+        queueName: "<your-service-bus-queue-name>"
+        queueLength: "1" # This triggers a job for every message in the queue
+        namespace: "<your-service-bus-namespace>"
+        # KEDA will use this triggerAuthentication to connect to Service Bus
+      authenticationRef:
+        name: azure-servicebus-auth
