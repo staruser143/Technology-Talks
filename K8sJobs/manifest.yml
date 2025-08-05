@@ -1,0 +1,13 @@
+apiVersion: argoproj.io/v1alpha1
+kind: EventSource
+metadata:
+  name: my-kafka-events
+spec:
+  kafka:
+    my-event-source:
+      # Your Kafka broker connection details
+      url: kafka-broker.my-cluster:9092
+      topic: my-events-topic
+      # A consumer group is required for Kafka
+      consumerGroup: my-event-source-group
+      # ... other configuration for TLS, SASL, etc.
