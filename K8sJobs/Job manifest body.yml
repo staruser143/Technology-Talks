@@ -1,0 +1,21 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "generateName": "logic-app-job-"
+  },
+  "spec": {
+    "template": {
+      "spec": {
+        "containers": [
+          {
+            "name": "batch-processor",
+            "image": "my-registry.com/my-batch-job:v1",
+            "args": ["<some-dynamic-value-from-trigger>"]
+          }
+        ],
+        "restartPolicy": "Never"
+      }
+    }
+  }
+}
