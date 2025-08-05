@@ -506,10 +506,60 @@ For a **sink connector** (writing to Azure Service Bus), the policy must have th
 
 ### 🧪 Optional: Test the Connection
 
-You can test the connection string using a simple script (Node.js, Python, or Azure CLI) to send a test message to the queue. Would you like a quick script to do that in Node.js or Python?
+Here’s a simple **Node.js script** to test sending a message to your Azure Service Bus queue using the **connection string** from your Shared Access Policy:
 
-Let me know your preferred language, and I’ll generate it for you.
+---
 
+### 📦 **Prerequisites**
+
+Install the Azure Service Bus SDK:
+
+```bash
+npm install @azure/service-bus
+```
+
+---
+
+### 🧪 **Test Script: `sendTestMessage.js`**
+
+```javascript
+const { ServiceBusClient } = require("@azure/service-bus");
+
+// Replace with your actual connection string and queue name
+const connectionString = "Endpoint=sb://<your-namespace>.servicebus.windows.net/;SharedAccessKeyName=KafkaConnectPolicy;SharedAccessKey=<your-key>";
+const queueName = "my-queue";
+
+async function main() {
+  const sbClient = new ServiceBusClient(connectionString);
+  const sender = sbClient.createSender(queueName);
+
+  try {
+    const message = {
+      body: "Test message from Node.js",
+      contentType: "text/plain",
+    };
+
+    await sender.sendMessages(message);
+    console.log("✅ Message sent successfully!");
+  } catch (err) {
+    console.error("❌ Error sending message:", err);
+  } finally {
+    await sender.close();
+    await sbClient.close();
+  }
+}
+
+main();
+```
+
+---
+
+### ✅ What This Verifies
+- Your **connection string** is valid.
+- The **queue exists** and is accessible.
+- The **Send permission** is correctly configured.
+
+##
 
 
 
