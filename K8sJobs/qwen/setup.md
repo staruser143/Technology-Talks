@@ -33,36 +33,36 @@ flowchart TD
 
     %% =============== AUTHENTICATION ===============
     subgraph Auth [Authentication]
-        MI_KEDA[Managed Identity\n(KEDA)]
-        MI_Argo[Managed Identity\n(Argo Events)]
-        SAS_Token[SAS Token\n(Fallback)]
+        MI_KEDA["Managed Identity\n(KEDA)"]
+        MI_Argo["Managed Identity\n(Argo Events)"]
+        SAS_Token["SAS Token\n(Fallback)"]
     end
 
     %% =============== ORCHESTRATION LAYER ===============
     subgraph Orchestrators [Orchestration Tools]
-        KEDA[KEDA\nScaledJob\n(azure-servicebus/kafka scaler)]
-        ArgoEvents[Argo Events\nEventSource + Sensor]
+        KEDA["KEDA\nScaledJob\n(azure-servicebus/kafka scaler)"]
+        ArgoEvents["Argo Events\nEventSource + Sensor"]
     end
 
     %% =============== EVENT FLOW & FILTERING ===============
     subgraph Processing [Event Processing]
-        FilterKEDA{Filter:\n eventType == "PROCESS_NOW"?}
-        FilterArgo{Filter:\n eventType == "PROCESS_NOW"?}
+        FilterKEDA{"Filter:\n eventType == 'PROCESS_NOW'"?}
+        FilterArgo{"Filter:\n eventType == 'PROCESS_NOW'"?}
     end
 
     %% =============== JOB EXECUTION ===============
     subgraph AKSCluster [AKS Cluster]
-        Job[Job: Batch Process\n(Container Image)]
+        Job["Job: Batch Process\n(Container Image"]
         CM[ConfigMap/Secrets]
         MI_AKS[AKS Workload Identity\nLinked to MI_KEDA/MI_Argo]
     end
 
     %% =============== JOB OUTCOME ===============
     subgraph Outcome [Job Completion Flow]
-        Success[Job Succeeded\n→ Mark message done]
-        Failure[Job Failed\n→ Retry or DLQ]
-        Retry[Retry Job\n(backoffLimit)]
-        DLQ[Send to Dead Letter Queue\n(Azure SB DLQ / Kafka Topic)]
+        Success["Job Succeeded\n→ Mark message done"]
+        Failure["Job Failed\n→ Retry or DLQ"]
+        Retry["Retry Job\n(backoffLimit)"]
+        DLQ["Send to Dead Letter Queue\n(Azure SB DLQ / Kafka Topic)"]
     end
 
     %% =============== EVENT FLOWS ===============
@@ -72,8 +72,8 @@ flowchart TD
     KEDA -->|"Uses Managed Identity"| MI_KEDA
     MI_KEDA -->|"Auth to Kafka"| Kafka
     KEDA -->|"Apply Filter"| FilterKEDA
-    FilterKEDA -- Yes -->|"Trigger Job"| Job
-    FilterKEDA -- No -->|"Ack & Skip"| Kafka
+    FilterKEDA -- Yes --|"Trigger Job"| Job
+    FilterKEDA -- No --|"Ack & Skip"| Kafka
 
     %% Service Bus -> KEDA
     ServiceBus -->|"Queue Message"| KEDA
@@ -89,8 +89,8 @@ flowchart TD
     ArgoEvents -->|"Uses Managed Identity"| MI_Argo
     MI_Argo -->|"Secure webhook handling"| ArgoEvents
     ArgoEvents -->|"Apply Filter"| FilterArgo
-    FilterArgo -- Yes -->|"Trigger Job"| Job
-    FilterArgo -- No -->|"Ack & Exit"|
+    FilterArgo -- Yes -- |"Trigger Job"| Job
+    FilterArgo -- No -- |"Ack & Exit"|
 
     %% Kafka -> Argo Events
     Kafka -->|"Stream"| ArgoEvents
