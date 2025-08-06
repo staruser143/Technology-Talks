@@ -1,0 +1,16 @@
+A Kafka Connnect process reads from Mongo Source Collection and Writes to Kafka Topic.
+Multiple Consumers Read the events from  that Kafka Topic which is published by a Kafka Connect process.
+One Consumer(Snapshot Processor) Reads from Kafka Topic and builds a READ Model Collection in Domain Database.
+Another Consumer Reads from same Topic and writes to 2 different queues based on the status field in the event.
+If status is "COMPLETED" it writes to "COMPLETED" queue.
+IF status if "PENDING" it writes to "PENDING" queue.
+
+A Daily Recurrence Azure Logic App Flow would be scheduled to trigger once per day as per configuration.
+When the Flow triggers it would Read the items from the "PENDING" queue and process them accordingly.
+If processed successfully and the status is "COMPLETED" it would update the domain store collection in Domain Database.
+IF processed successfully , It would also put the item to the "COMPLETED" queue.
+If not processed successfully, it would put the item back in queue.
+
+Another Logic App Flow(Main Flow) would be triggered when items are added to the "COMPLETED" queue .
+It would Read the items in the "COMPLETED" queue and process it accordingly by invoking BPM and other downstream services.
+
