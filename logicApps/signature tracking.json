@@ -1,0 +1,21 @@
+{
+  "applicationId": "APP-7890",           // Partition key
+  "agentEmail": "agent@broker.com",
+  "signatureReceived": false,
+  "signatureReceivedAt": null,
+  "remindersSent": [
+    {
+      "day": 3,
+      "sentAt": "2025-04-01T10:00:00Z",
+      "subject": "Reminder: Please sign application APP-7890"
+    },
+    {
+      "day": 5,
+      "sentAt": "2025-04-03T10:00:00Z",
+      "subject": "Second reminder: Action required"
+    }
+  ],
+  "status": "WAITING_FOR_SIGNATURE",
+  "createdAt": "2025-03-30T08:00:00Z",
+  "ttl": 15552000  // Optional: auto-expire after ~180 days (Cosmos DB)
+}
