@@ -1,0 +1,5 @@
+Kafka → Service Bus → Logic App → Wait
+                             ↗
+Agent → Web Portal → Function → Resume
+                             ↘
+                         Timeout → PENDING_APPROVAL
