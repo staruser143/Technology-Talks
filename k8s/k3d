@@ -1,0 +1,12 @@
+# Install k3d
+curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+
+# Create a 3-node cluster (1 server, 2 workers)
+k3d cluster create learn-cluster --agents 2
+
+# Use it
+kubectl get nodes
+# Output: 3 nodes — ready to learn!
+
+# Delete when done
+k3d cluster delete learn-cluster
