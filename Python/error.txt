@@ -1,1 +1,31 @@
 Your max_length is set to 500, but your input_length is only 399. Since this is a summarization task, where outputs shorter than the input are typically wanted, you might consider decreasing max_length manually, e.g. summarizer('...', max_length=199)
+
+
+
+NotImplementedError: Cannot copy out of meta tensor; no data! Please use torch.nn.Module.to_empty() instead of torch.nn.Module.to() when moving module from meta to a different device.
+Traceback:
+File "/workspace/codespaces-express/python-demos/app.py", line 8, in <module>
+    summarizer = pipeline("summarization", model="facebook/bart-large-cnn")
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/transformers/pipelines/__init__.py", line 1210, in pipeline
+    return pipeline_class(model=model, framework=framework, task=task, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/transformers/pipelines/text2text_generation.py", line 85, in __init__
+    super().__init__(*args, **kwargs)
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/transformers/pipelines/base.py", line 1043, in __init__
+    self.model.to(self.device)
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/transformers/modeling_utils.py", line 4341, in to
+    return super().to(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1369, in to
+    return self._apply(convert)
+           ^^^^^^^^^^^^^^^^^^^^
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/torch/nn/modules/module.py", line 928, in _apply
+    module._apply(fn)
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/torch/nn/modules/module.py", line 928, in _apply
+    module._apply(fn)
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/torch/nn/modules/module.py", line 955, in _apply
+    param_applied = fn(param)
+                    ^^^^^^^^^
+File "/workspace/.pyenv_mirror/user/current/lib/python3.12/site-packages/torch/nn/modules/module.py", line 1362, in convert
+    raise NotImplementedError(
