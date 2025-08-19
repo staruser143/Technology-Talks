@@ -1,4 +1,4 @@
-Great question, Sridhar. When you’re storing PDFs as a `byte[]`/`BinData` in MongoDB (or, more appropriately, via GridFS), the **best practice is a hybrid**:
+ When you’re storing PDFs as a `byte[]`/`BinData` in MongoDB (or, more appropriately, via GridFS), the **best practice is a hybrid**:
 
 - **Use REST (plain HTTP endpoints) for uploading & downloading the binary stream**  
   (because HTTP handles streaming, content negotiation, `Range` requests, caching, CDNs, and backpressure well).
