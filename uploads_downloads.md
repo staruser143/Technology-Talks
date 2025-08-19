@@ -140,4 +140,3 @@ flowchart LR
 
 ---
 
-If you want, I can generate a **second diagram** for the **Tus protocol** variant (with `Upload-Offset`/`Upload-Length` semantics), or tailor this to your **Node.js/Express + MongoDB GridFS** stack with exact handlers and error codes. Prefer that?
