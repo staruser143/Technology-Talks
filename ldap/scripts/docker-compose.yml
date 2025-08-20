@@ -1,0 +1,39 @@
+
+version: '3.8'
+services:
+  ldap:
+    image: osixia/openldap:1.5.0
+    container_name: ldap
+    environment:
+      - LDAP_ORGANISATION=Example Corp
+      - LDAP_DOMAIN=example.com
+      - LDAP_ADMIN_PASSWORD=admin_password
+    ports:
+      - "389:389"
+      - "636:636"
+    volumes:
+      - ./ldap/data:/var/lib/ldap
+      - ./ldap/config:/etc/ldap/slapd.d
+
+  apache:
+    image: httpd:2.4
+    container_name: apache_ldaps
+    ports:
+      - "443:443"
+    volumes:
+      - ./apache/conf:/usr/local/apache2/conf
+      - ./apache/htdocs:/usr/local/apache2/htdocs
+    depends_on:
+      - ldap
+      - nodeapp
+
+  nodeapp:
+    build: ./nodeapp
+    container_name: nodeapp
+    ports:
+      - "3000:3000"
+    environment:
+      - LDAP_URL=ldaps://ldap:636
+      - BASE_DN=dc=example,dc=com
+      - BIND_DN=cn=admin,dc=example,dc=com
+      - BIND_PASSWORD=admin_password
