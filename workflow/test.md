@@ -1,39 +1,9 @@
-**Excellent question — and yes, you absolutely should leverage Kubernetes `CronJob` instead of the `@Cron()` decorator** for both the **reminder worker** and **timeout worker** in a production AKS environment.
 
-Let’s clarify the difference, explain why **Kubernetes `CronJob` is the better choice**, and show you how to do it correctly.
 
----
-
-## 🔍 The Key Difference
-
-| Approach | `@Cron()` Decorator | Kubernetes `CronJob` |
-|--------|----------------------|------------------------|
-| **Where it runs** | Inside a long-running pod (e.g., API or worker service) | As a one-off job scheduled by Kubernetes |
-| **Execution model** | In-process timer (Node.js `setInterval`) | Runs a container once at scheduled time |
-| **Scalability** | Risk of duplicate runs if multiple replicas | Guaranteed single execution (by design) |
-| **Reliability** | If pod restarts, timer may be lost | Kubernetes manages retries, history |
-| **Observability** | Logs mixed with app logs | Clear job history via `kubectl get jobs` |
-| **Best for** | Lightweight in-app tasks (e.g., cache refresh) | **Batch jobs like reminders, timeouts** |
-
-> ✅ For **scheduled background jobs** like sending reminders or checking timeouts, **Kubernetes `CronJob` is the superior, production-grade choice**.
+ ✅ For **scheduled background jobs** like sending reminders or checking timeouts, **Kubernetes `CronJob` is the superior, production-grade choice**.
 
 ---
 
-## ❌ Why `@Cron()` Is a Bad Fit for This Use Case
-
-Using `@Cron()` in a long-running service (like a NestJS API pod) for reminders/timeouts leads to:
-
-| Problem | Explanation |
-|-------|-------------|
-| 🚫 **Duplicate executions** | If you scale to 2+ replicas, **both will run the same cron job** |
-| 🚫 **No fault tolerance** | If pod crashes, job is lost |
-| 🚫 **Hard to monitor** | No native job history — you must build logging |
-| 🚫 **Tight coupling** | Mixes API logic with background jobs |
-| 🚫 **Wasted resources** | Keeps a full pod running just to fire a timer |
-
-> ⚠️ This is an **anti-pattern** for batch-style workflows.
-
----
 
 ## ✅ Recommended: Use Kubernetes `CronJob` for Both Workers
 
@@ -111,7 +81,7 @@ spec:
 
 ---
 
-## ✅ Worker Scripts (No `@Cron()` Needed)
+## ✅ Worker Scripts 
 
 ### `send-reminders.worker.ts` — Runs Once
 
@@ -213,20 +183,15 @@ graph TD
 
 ## ✅ Summary
 
-> ✅ **Yes — use Kubernetes `CronJob` for both reminder and timeout workers.**
-> ❌ **Do not use `@Cron()` decorator** for these batch jobs.
+> ✅ ** Use Kubernetes `CronJob` for both reminder and timeout workers.**
 
-This gives you:
+
+This gives us:
 - **Reliable, scalable, observable scheduling**
 - **No vendor lock-in** (runs on any Kubernetes)
 - **Clean separation** of concerns
 - **Production-grade fault tolerance**
 
-You're building a **compliant, audit-ready healthcare system** — and **Kubernetes `CronJob` is the right tool for scheduled background work**.
-
----
-
-## 🚀 Want More?
 
 Let me know if you'd like:
 - A **Helm chart** with both `CronJob`s
