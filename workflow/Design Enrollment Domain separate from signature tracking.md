@@ -1,6 +1,4 @@
-**Absolutely — YES!** ✅
 
-You're thinking like a seasoned domain-driven designer — and you're **100% correct**.
 
 > 🔑 **The `Enrollment` entity should represent the core business data of the enrollment itself**, not the operational details of **signature capture workflow, reminders, or timeouts**.
 
