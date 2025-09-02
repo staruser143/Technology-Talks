@@ -1,18 +1,16 @@
-Great question! 🔐
-
-When using **Azure Logic Apps Standard** with **Azure Key Vault**, you may need to access not only **secrets** (like passwords or connection strings), but also **certificates** — for example, when:
+When using **Azure Logic Apps Standard** with **Azure Key Vault**, we may need to access not only **secrets** (like passwords or connection strings), but also **certificates** — for example, when:
 
 - Authenticating to APIs or services using **client certificate authentication**
 - Signing requests (e.g., SAML, AS2, EDI)
 - Connecting to backend systems that require **mutual TLS (mTLS)**
 
-To enable this, you must grant the Logic App’s **Managed Identity** the appropriate **certificate permissions** in **Azure Key Vault Access Policies**.
+To enable this, we must grant the Logic App’s **Managed Identity** the appropriate **certificate permissions** in **Azure Key Vault Access Policies**.
 
 ---
 
 ## ✅ Certificate Permissions Required for Logic Apps
 
-When your Logic App needs to **use a certificate from Key Vault**, the **Managed Identity** assigned to the Logic App must have the following **Key Vault certificate permissions**:
+When the Logic App needs to **use a certificate from Key Vault**, the **Managed Identity** assigned to the Logic App must have the following **Key Vault certificate permissions**:
 
 ### 🔑 Required Certificate Permissions:
 | Permission | Purpose |
@@ -60,7 +58,7 @@ There are two main ways to use a certificate in a Logic App:
 
 ### 1. **Use Certificate in HTTP Action (Client Certificate Auth)**
 
-In your workflow JSON:
+In the workflow JSON:
 
 ```json
 "actions": {
@@ -116,9 +114,9 @@ handler.ClientCertificates.Add(new X509Certificate2(cert.Cer, cert.KeyVaultSecre
 
 | Point | Explanation |
 |------|-------------|
-| 🔐 **Private Key Access** | To use mTLS, you need the **private key** — stored in Key Vault as a **secret** (PFX) |
-| 📁 **Certificate as Secret** | Even if you grant `certificate/get`, you may also need `secrets/get` to retrieve the PFX |
-| 🔄 **Auto-Rotation** | If the cert auto-rotates in Key Vault, your app must reload it (not automatic in Logic App) |
+| 🔐 **Private Key Access** | To use mTLS, we need the **private key** — stored in Key Vault as a **secret** (PFX) |
+| 📁 **Certificate as Secret** | Even if we grant `certificate/get`, we may also need `secrets/get` to retrieve the PFX |
+| 🔄 **Auto-Rotation** | If the cert auto-rotates in Key Vault, our app must reload it (not automatic in Logic App) |
 | 🛑 **Designer Limitation** | Logic App Standard **does not natively support** client certificate auth in HTTP actions via UI |
 
 ---
@@ -161,15 +159,11 @@ key_permissions = [
 ✅ **Best approach**:
 1. Grant `certificates/get`, `secrets/get` to Logic App’s identity
 2. Use an **Azure Function** or **APIM** to handle the certificate-based call
-3. Call that component from your Logic App
+3. Call that component from our Logic App
 
-This keeps your architecture secure, scalable, and maintainable.
+This keeps our architecture secure, scalable, and maintainable.
 
----
 
-Let me know if you'd like:
-- A full example Azure Function to retrieve and use a cert
-- How to configure APIM with client certificates
 - Terraform module for secure certificate access
 
 Happy securing! 🔐🚀
