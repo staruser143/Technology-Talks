@@ -1,5 +1,3 @@
-Excellent question! 🔍
-
 Azure Logic Apps Standard often needs access to both **Azure Key Vault** and **Azure Storage Account**, but for **different reasons** — each serving a distinct purpose in the architecture and security model.
 
 Let’s break down **why** a Logic App needs access to these two services:
