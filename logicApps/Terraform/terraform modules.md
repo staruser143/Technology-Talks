@@ -1,4 +1,4 @@
-Absolutely! Below is a **complete set of Terraform modules** to deploy the **secure enterprise architecture** for **Azure Logic Apps Standard** with:
+Below is a **complete set of Terraform modules** to deploy the **secure enterprise architecture** for **Azure Logic Apps Standard** with:
 
 ✅ Private Endpoints  
 ✅ Managed Identity  
@@ -368,18 +368,6 @@ terraform {
 | **Private DNS** | Prevent DNS spoofing |
 
 ---
-
-## 🚀 Next Steps
-
-Let me know if you'd like:
-- ✅ **Bicep version** of this architecture
-- ✅ **GitHub Actions CI/CD pipeline**
-- ✅ **How to enable logging with Azure Monitor**
-- ✅ **Terraform module for ExpressRoute**
-- ✅ **How to test connectivity**
-
----
-
-This Terraform setup gives you a **fully secure, production-ready, compliant Logic Apps Standard environment** — perfect for enterprise use.
+his Terraform setup gives you a **fully secure, production-ready, compliant Logic Apps Standard environment** — perfect for enterprise use.
 
 Happy securing! 🔐🚀
