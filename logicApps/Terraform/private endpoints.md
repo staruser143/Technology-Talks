@@ -1,14 +1,12 @@
-Great question! 🔍
-
-Using **Private Endpoints with Azure Logic Apps Standard** is **not mandatory**, but it's a **critical security and networking best practice** in enterprise or regulated environments. Let’s explore **why** you’d want to use private endpoints and when they make sense.
+Using **Private Endpoints with Azure Logic Apps Standard** is **not mandatory**, but it's a **critical security and networking best practice** in enterprise or regulated environments. Let’s explore **why** us’d want to use private endpoints and when they make sense.
 
 ---
 
 ## 🔐 What Are Private Endpoints?
 
-**Azure Private Endpoints** enable you to connect to Azure services (like Logic Apps, Storage, SQL, etc.) over a **private network (VNet)** instead of over the public internet.
+**Azure Private Endpoints** enable us to connect to Azure services (like Logic Apps, Storage, SQL, etc.) over a **private network (VNet)** instead of over the public internet.
 
-They assign a **private IP address** from your VNet to the service endpoint, so traffic stays within the Microsoft backbone network — **no exposure to the public internet**.
+They assign a **private IP address** from our VNet to the service endpoint, so traffic stays within the Microsoft backbone network — **no exposure to the public internet**.
 
 ---
 
