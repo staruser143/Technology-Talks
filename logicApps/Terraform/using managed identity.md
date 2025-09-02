@@ -1,4 +1,4 @@
-Absolutely! Here's the **updated version** of the previous example that uses **Managed Identity** instead of storage account keys — enhancing security by eliminating the need to handle or store access keys.
+# Uses **Managed Identity** instead of storage account keys — enhancing security by eliminating the need to handle or store access keys.
 
 ---
 
@@ -329,12 +329,3 @@ You can now:
 | Two-phase deployment (infra + logic) | ✅ |
 | CI/CD ready | ✅ |
 
----
-
-Let me know if you'd like:
-- A **Bicep version** of this
-- Integration with **Azure Key Vault** (e.g., for connection strings)
-- How to use **private endpoints** with Logic App Standard
-- Example with **API Connections** using managed identity
-
-Happy secure coding! 🔐🚀
