@@ -1,4 +1,4 @@
-Absolutely! Below is a **comprehensive, enterprise-grade secure architecture diagram** for **Azure Logic Apps Standard** using:
+Below is a **comprehensive, enterprise-grade secure architecture diagram** for **Azure Logic Apps Standard** using:
 
 - ✅ Private Endpoints  
 - ✅ Managed Identity  
@@ -142,14 +142,6 @@ Let me know if you'd like the **Terraform code** to deploy this entire setup!
 
 ---
 
-## 📥 Download or Customize
-
-You can:
-- Copy the Mermaid code into [Mermaid Live Editor](https://mermaid.live/edit)
-- Export as PNG/SVG
-- Integrate into your architecture docs (Confluence, Visio, etc.)
-
----
 
 ## ✅ Summary
 
@@ -165,12 +157,6 @@ It’s ideal for **enterprise, regulated, or high-security** environments.
 
 ---
 
-## 🚀 Next Steps
-
-Let me know if you'd like:
-- ✅ **Terraform modules** to deploy this architecture
-- ✅ **Bicep version**
-- ✅ **Step-by-step deployment guide**
 - ✅ **How to monitor with Azure Monitor & Sentinel**
 
 Happy architecting! 🏗️🔐🚀
