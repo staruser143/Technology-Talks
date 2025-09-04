@@ -65,4 +65,3 @@ Here’s a **detailed comparison of Azure Service Bus tiers (Basic, Standard, Pr
 
 ---
 
-👉 Do you want me to **create a comparison table** summarizing all these points (features, limits, use cases) for quick reference? Or should I also **include pricing details and cost implications** for each tier?
