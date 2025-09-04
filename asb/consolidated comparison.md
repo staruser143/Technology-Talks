@@ -1,8 +1,5 @@
-Absolutely—here’s a **consolidated, side‑by‑side comparison** of Azure Service Bus tiers with **features, networking, reliability, security, pricing model, and use cases**. I kept the entries concise and cited Microsoft sources inline.
+ **Consolidated, side‑by‑side comparison** of Azure Service Bus tiers with **features, networking, reliability, security, pricing model, and use cases**.
 
-> **Note:** Message size, networking, and feature availability reflect the current Microsoft pricing/feature matrix and docs. Always validate your region/currency in the **Azure Pricing page / calculator**.[1](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)
-
----
 
 ### Azure Service Bus — Tiers at a Glance
 
@@ -21,17 +18,15 @@ Absolutely—here’s a **consolidated, side‑by‑side comparison** of Azure S
 
 ---
 
-## Cost Implications (How to think about it)
+## Cost Implications 
 
 - **Basic (ops‑based)** is cheapest when you only need queues and low message volumes. If you outgrow queues‑only or need pub/sub, you’ll graduate to Standard. (pricing model & features) [1](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)  
 - **Standard (base + ops + connections)** scales economically for **tens to hundreds of millions** of operations/month *if* you don’t need private networking. Watch for **per‑connection** costs if you maintain large numbers of always‑on clients. (pricing model) [1](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)  
 - **Premium (hourly per MU)** gives **predictable cost** and **performance** with **no per‑op/connection charges**—this often wins at **very high throughput**, with **strict latency/SLA**, or when you require **Private Endpoints/VNet** and **Geo‑DR**. (pricing model & networking) [1](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)[3](https://docs.azure.cn/en-us/service-bus-messaging/private-link-service)
 
-> For exact **₹/$/€** amounts and break‑even analysis in your region, plug your monthly **operations, connections, and any Geo‑replication GB** into the **[Azure Service Bus Pricing calculator](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)**.
 
----
 
-### Quick recommendations (rule‑of‑thumb)
+### Recommendations 
 
 - **Choose Basic** if you need **only queues**, minimal cost, and non‑critical dev/test.[1](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)  
 - **Choose Standard** if you need **topics/subscriptions**, **transactions/sessions**, and **cost‑effective shared infrastructure**—but **no VNet**.[1](https://azure.microsoft.com/en-in/pricing/details/service-bus/?ef_id=_k_EAIaIQobChMIvY_WvJObgwMVfaVmAh0WhgzHEAAYASAAEgJaPfD_BwE_k_)  
