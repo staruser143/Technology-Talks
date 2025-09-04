@@ -1,5 +1,3 @@
-Here’s what we found so far:
-
 - **Break-even for Premium (1 MU):**  
   **≈ 1.29 billion operations/month** (same as before).
 
