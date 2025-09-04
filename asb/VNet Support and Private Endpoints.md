@@ -35,5 +35,3 @@
 - **Hybrid or multi-tier architectures** where security boundaries are strict.
 
 ---
-
-👉 Do you want me to **create a diagram showing how VNet integration with Private Endpoints works for Premium tier** compared to Standard/Basic? Or should I **prepare a quick comparison table of networking features across tiers**?
