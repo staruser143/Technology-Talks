@@ -9,3 +9,5 @@ I am looking for a solution which,
   - has Support of Analytics like Engagement Tracking	with Open rate, click-through rate (CTR), time to open
   - has Support for Bulk email sending at scale and
   - Should be cost-efficient
+    
+What options do I have?
