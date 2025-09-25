@@ -1,0 +1,5 @@
+<invoice>
+    <customer>John Doe</customer>
+    <amount>299.99</amount>
+    <date>2024-06-01</date>
+</invoice>
