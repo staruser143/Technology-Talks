@@ -1,0 +1,55 @@
+templates:
+  - key: "invoice.v1"
+    engine: "html-freemarker"
+    version: 1
+    description: "Invoice - PDF from HTML via FreeMarker"
+    inputSchemaRef: "schemas/invoice.v1.json"
+    output:
+      mimeType: "application/pdf"
+      adapters: ["storage.azureblob", "email.acs"]
+    resources:
+      templateUri: "git://templates/invoice.v1.ftl"
+      assets:
+        - "git://templates/assets/styles.css"
+        - "git://templates/assets/logo.svg"
+    processors:
+      pre:  []
+      post:
+        - type: "pdf.watermark"
+          config:
+            text: "CONFIDENTIAL"
+            opacity: 0.1
+        - type: "pdf.optimize"
+          config:
+            level: "size"
+
+  - key: "kyc-form.v3"
+    engine: "acroform"
+    version: 3
+    description: "KYC form - fill AcroForm fields and flatten"
+    inputSchemaRef: "schemas/kyc.v3.json"
+    output:
+      mimeType: "application/pdf"
+      adapters: ["storage.azureblob"]
+    resources:
+      formUri: "s3://forms/kyc-v3.pdf"
+    acroform:
+      fieldMappings:
+        # dataPath → formFieldName
+        "applicant.firstName": "FirstName"
+        "applicant.lastName": "LastName"
+        "applicant.address.line1": "Addr1"
+        "applicant.address.city": "City"
+        "kyc.pep": "IsPEP"      # boolean checkbox
+      flatten: true
+      font:
+        name: "NotoSans"
+        files:
+          - "git://fonts/NotoSans-Regular.ttf"
+          - "git://fonts/NotoSans-Bold.ttf"
+    processors:
+      pre:  []
+      post:
+        - type: "pdf.sign"
+          config:
+            certRef: "hsm:certs/kyc-signer"
