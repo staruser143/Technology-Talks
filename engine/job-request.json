@@ -1,0 +1,20 @@
+{
+  "templateKey": "invoice.v1",
+  "version": 1,
+  "renderProfile": "default",
+  "data": {
+    "invoiceNo": "INV-10234",
+    "date": "2025-09-29",
+    "billTo": { "name": "Acme Corp", "address": "..." },
+    "items": [
+      { "desc": "Widget A", "qty": 3, "price": 19.99 },
+      { "desc": "Widget B", "qty": 1, "price": 99.00 }
+    ],
+    "totals": { "subTotal": 158.97, "tax": 12.72, "grandTotal": 171.69 }
+  },
+  "outputs": [
+    { "adapter": "storage.azureblob", "path": "invoices/2025/INV-10234.pdf" },
+    { "adapter": "email.acs", "to": ["ap@acme.com"], "subject": "Your Invoice INV-10234" }
+  ],
+  "correlationId": "e0e0c2ca-8f0b-4a91-9a2b-3bfe3fdb8f42",
+  "idempotencyKey": "invoice:INV-10234:v1"
