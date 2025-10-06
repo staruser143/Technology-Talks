@@ -1,0 +1,16 @@
+Work
+	Complete common library for
+		PDF Template	and 
+		HTML (using Freeemarker Templates)
+	
+	Add Transformations, Custom Functions, using scripting library feature
+	Add Testcases for all those
+	Add option(s) to Read Configuration file from 
+		Within deployment/project artifact ( resources folder)
+		Outside deployment/project artificat folder
+		Remote location (S3,AzureBlobStorage,Database)
+	Expose library as REST API endpoint
+	Add NodeJS SDK for REST API endpoint
+	
+Check-in Code to repository
+	Check progress on RSA Key Pair
