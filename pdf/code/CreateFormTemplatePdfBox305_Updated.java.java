@@ -5,9 +5,9 @@ import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.PDResources;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.apache.pdfbox.pdmodel.graphics.color.PDColor;
 import org.apache.pdfbox.pdmodel.graphics.color.PDDeviceRGB;
 
@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class CreateFormTemplatePdfBox3 {
+public class CreateFormTemplatePdfBox305_Updated {
     public static void main(String[] args) throws IOException {
         try (PDDocument doc = new PDDocument()) {
             // A4 page
@@ -37,15 +37,20 @@ public class CreateFormTemplatePdfBox3 {
             PDAcroForm acroForm = new PDAcroForm(doc);
             catalog.setAcroForm(acroForm);
 
-            // Default font/resources + DA (avoid blank text in viewers)
-            PDFont helv = PDType1Font.HELVETICA;
+            // === Default font/resources + DA (3.x way) ===
+            // Create a Standard 14 Helvetica using the new constructor
+            PDType1Font helv = new PDType1Font(Standard14Fonts.FontName.HELVETICA);
+
             PDResources dr = new PDResources();
-            dr.put(COSName.getPDFName("Helv"), helv);
+            // Register the font and get an auto alias (e.g., F1)
+            COSName alias = dr.add(helv);
             acroForm.setDefaultResources(dr);
-            acroForm.setDefaultAppearance("/Helv 10 Tf 0 g");
+
+            // Use the alias in the DA string (font size 10 pt, black)
+            acroForm.setDefaultAppearance("/" + alias.getName() + " 10 Tf 0 g");
             acroForm.setNeedAppearances(false);
 
-            // Static labels (simple, non-overwriting constructor is fine here)
+            // Static labels
             drawLabels(doc, page);
 
             // Fields
@@ -74,17 +79,20 @@ public class CreateFormTemplatePdfBox3 {
             gender.setValue("Female");        // must match one export value
             country.setValue("India");
 
-            // refresh appearances (3.x)
+            // Generate appearances (3.x)
             acroForm.refreshAppearances();
 
-            doc.save("FormTemplate_A4_pdfbox3.0.5.pdf");
+            doc.save("FormTemplate_A4_pdfbox3.0.5_updated.pdf");
         }
     }
 
     private static void drawLabels(PDDocument doc, PDPage page) throws IOException {
         try (PDPageContentStream cs = new PDPageContentStream(doc, page)) {
+            // Use new PDType1Font constructor for bold Helvetica
+            PDType1Font labelFont = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
+
             cs.beginText();
-            cs.setFont(PDType1Font.HELVETICA_BOLD, 12);
+            cs.setFont(labelFont, 12);
 
             cs.newLineAtOffset(40, 772);
             cs.showText("Full Name:");
@@ -172,7 +180,7 @@ public class CreateFormTemplatePdfBox3 {
     ) throws IOException {
         PDComboBox combo = new PDComboBox(acroForm);
         combo.setPartialName(name);
-        combo.setOptions(options);      // same list used for display/export
+        combo.setOptions(options);
         combo.setEditable(false);
 
         PDAnnotationWidget widget = new PDAnnotationWidget();
@@ -193,3 +201,4 @@ public class CreateFormTemplatePdfBox3 {
         acd.setBackground(new PDColor(bgRGB, PDDeviceRGB.INSTANCE));
         widget.setAppearanceCharacteristics(acd);
     }
+}
