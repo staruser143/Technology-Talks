@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: demo
+
+templates:
+  demo-template:
+    description: This is Demo template
+    templateType: HTML
+    templateFile: first.ftl
+    field-mappings:
+      - source: name
+        target: name
+
+    pages:
+      - name: summary-page
+        content: this is summary page
+      - name: addendum-page
+        content: this is addendum page
+    mergesFiles:
+      - name: faq
+        file: faq.pdf
+      - name: errata
+        file: errata.pdf
+
+  app-template:
+    description: This is Application template
+    templateType: FORM_PDF
+    templateFile: first.pdf
+    field-mappings:
+      - source: firstName
+        target: firstNameField
+      - source: lastName
+        target: lastNameField
+      - source: address.city
+        target: cityField
+      - source: address.zipCode
+        target: zipCodeField
+    pages:
+      - name: summary-page
+        content: this is summary page
+      - name: addendum-page
+        content: this is addendum page
+    mergesFiles:
+      - name: faq
+        file: faq.pdf
+      - name: errata
+        file: errata.pdf
