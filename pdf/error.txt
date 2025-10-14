@@ -1,0 +1,10 @@
+ Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Handler dispatch failed: java.lang.NoSuchFieldError: COURIER_BOLD_OBLIQUE] with root cause
+
+java.lang.NoSuchFieldError: COURIER_BOLD_OBLIQUE
+        at com.openhtmltopdf.pdfboxout.fontstore.AbstractFontStore$BuiltinFontStore.addCourier(AbstractFontStore.java:55) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+        at com.openhtmltopdf.pdfboxout.fontstore.AbstractFontStore$BuiltinFontStore.createInitialFontMap(AbstractFontStore.java:43) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+        at com.openhtmltopdf.pdfboxout.fontstore.AbstractFontStore$BuiltinFontStore.<init>(AbstractFontStore.java:38) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+        at com.openhtmltopdf.pdfboxout.PdfBoxFontResolver.<init>(PdfBoxFontResolver.java:82) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+        at com.openhtmltopdf.pdfboxout.PdfBoxRenderer.<init>(PdfBoxRenderer.java:204) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+        at com.openhtmltopdf.pdfboxout.PdfRendererBuilder.buildPdfRenderer(PdfRendererBuilder.java:69) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+        at com.openhtmltopdf.pdfboxout.PdfRendererBuilder.run(PdfRendererBuilder.java:44) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
