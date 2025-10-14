@@ -8,3 +8,22 @@ java.lang.NoSuchFieldError: COURIER_BOLD_OBLIQUE
         at com.openhtmltopdf.pdfboxout.PdfBoxRenderer.<init>(PdfBoxRenderer.java:204) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
         at com.openhtmltopdf.pdfboxout.PdfRendererBuilder.buildPdfRenderer(PdfRendererBuilder.java:69) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
         at com.openhtmltopdf.pdfboxout.PdfRendererBuilder.run(PdfRendererBuilder.java:44) ~[openhtmltopdf-pdfbox-1.0.10.jar:na]
+
+
+I have these in my pom.xml,
+<dependency>
+    <groupId>org.apache.pdfbox</groupId>
+    <artifactId>pdfbox</artifactId>
+    <version>3.0.1</version>
+    <scope>compile</scope>
+</dependency>
+<dependency>
+<groupId>com.openhtmltopdf</groupId>
+<artifactId>openhtmltopdf-pdfbox</artifactId>
+<version>1.0.10</version>
+</dependency>
+<dependency>
+<groupId>com.openhtmltopdf</groupId>
+<artifactId>openhtmltopdf-core</artifactId>
+<version>1.0.10</version>
+</dependency>
