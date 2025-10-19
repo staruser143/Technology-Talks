@@ -1,0 +1,20 @@
+{
+  "source": "applicantList",
+  "criteriaField": "demographic.relationshipType",
+  "criteriaValues": {
+    "Primary": {
+      "fields": {
+        "demographic.FName": "PrimaryApplicant.FName.{index}",
+        "demographic.LName": "PrimaryApplicant.LName.{index}",
+        "address[?addressType==\"Home\"].City": "PrimaryApplicant.HomeAddress.City.{index}",
+        "subscribedPlans[].Name": "PrimaryApplicant.Plan.Name.{index}.{planIndex}"
+      }
+    },
+    "Spouse": {
+      "fields": {
+        "demographic.FName": "Spouse.FName.{index}",
+        "address[?addressType==\"Billing\"].City": "Spouse.BillingAddress.City.{index}"
+      }
+    }
+  }
+}
