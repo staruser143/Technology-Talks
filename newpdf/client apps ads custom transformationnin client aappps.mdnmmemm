@@ -1,0 +1,324 @@
+Excellent question! To allow **Spring Boot client applications** to **plug in custom transformations** without modifying the core library, you need a **plugin architecture** using **Spring’s dependency injection**.
+
+Here’s how to design it:
+
+---
+
+## ✅ Goals
+
+- Core library defines a **transform extension point**
+- Client apps register **custom transforms as Spring beans**
+- Transforms are **automatically discovered and registered**
+- Support both **simple** and **parameterized** transforms
+- **No code changes** needed in the core library
+
+---
+
+## 🧩 Step 1: Define Transform Extension Interfaces
+
+### In your **library** (`pdf-form-filler-lib`):
+
+#### `SimpleTransform.java`
+```java
+package com.yourcompany.pdffiller.transform;
+
+@FunctionalInterface
+public interface SimpleTransform {
+    String apply(String value);
+}
+```
+
+#### `ParameterizedTransform.java`
+```java
+package com.yourcompany.pdffiller.transform;
+
+@FunctionalInterface
+public interface ParameterizedTransform {
+    String apply(String value, String argument);
+}
+```
+
+> 💡 These are **functional interfaces** — easy for clients to implement.
+
+---
+
+## 🧱 Step 2: Update `TransformEngine` to Accept Plugins
+
+### In `TransformEngine.java` (library):
+
+```java
+package com.yourcompany.pdffiller;
+
+import com.yourcompany.pdffiller.transform.SimpleTransform;
+import com.yourcompany.pdffiller.transform.ParameterizedTransform;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Function;
+
+@Component
+public class TransformEngine {
+
+    private final Map<String, Function<String, String>> simpleTransforms = new ConcurrentHashMap<>();
+    private final Map<String, ParameterizedTransform> paramTransforms = new ConcurrentHashMap<>();
+
+    // Inject all custom transforms from client apps
+    @Autowired(required = false)
+    private List<SimpleTransformBean> simpleTransformBeans;
+
+    @Autowired(required = false)
+    private List<ParameterizedTransformBean> paramTransformBeans;
+
+    @PostConstruct
+    public void registerCustomTransforms() {
+        if (simpleTransformBeans != null) {
+            for (SimpleTransformBean bean : simpleTransformBeans) {
+                simpleTransforms.put(bean.getName(), bean.getTransform());
+            }
+        }
+        if (paramTransformBeans != null) {
+            for (ParameterizedTransformBean bean : paramTransformBeans) {
+                paramTransforms.put(bean.getName(), bean.getTransform());
+            }
+        }
+    }
+
+    // ... rest of your existing logic (apply(), etc.)
+}
+```
+
+---
+
+## 📦 Step 3: Create Transform Bean Wrappers
+
+### In your **library**:
+
+#### `SimpleTransformBean.java`
+```java
+package com.yourcompany.pdffiller.transform;
+
+public class SimpleTransformBean {
+    private final String name;
+    private final SimpleTransform transform;
+
+    public SimpleTransformBean(String name, SimpleTransform transform) {
+        this.name = name;
+        this.transform = transform;
+    }
+
+    public String getName() { return name; }
+    public SimpleTransform getTransform() { return transform; }
+}
+```
+
+#### `ParameterizedTransformBean.java`
+```java
+package com.yourcompany.pdffiller.transform;
+
+public class ParameterizedTransformBean {
+    private final String name;
+    private final ParameterizedTransform transform;
+
+    public ParameterizedTransformBean(String name, ParameterizedTransform transform) {
+        this.name = name;
+        this.transform = transform;
+    }
+
+    public String getName() { return name; }
+    public ParameterizedTransform getTransform() { return transform; }
+}
+```
+
+---
+
+## 🧩 Step 4: Provide Registration Helpers (Optional but Nice)
+
+### In your **library**, add a utility class:
+
+#### `TransformRegistrar.java`
+```java
+package com.yourcompany.pdffiller.transform;
+
+import org.springframework.context.annotation.Bean;
+
+public final class TransformRegistrar {
+
+    public static Bean simple(String name, SimpleTransform transform) {
+        return new Bean(new SimpleTransformBean(name, transform));
+    }
+
+    public static Bean parameterized(String name, ParameterizedTransform transform) {
+        return new Bean(new ParameterizedTransformBean(name, transform));
+    }
+
+    // Wrapper to make it a Spring Bean
+    public static class Bean {
+        private final Object bean;
+
+        public Bean(Object bean) { this.bean = bean; }
+        public Object getBean() { return bean; }
+    }
+}
+```
+
+---
+
+## 🚀 Step 5: Client App Registers Custom Transforms
+
+### In a **Spring Boot client app**:
+
+#### Option A: Using `@Bean` methods
+```java
+@Configuration
+public class CustomTransformsConfig {
+
+    @Bean
+    public SimpleTransformBean taxIdMaskTransform() {
+        return new SimpleTransformBean("tax_id_mask", value -> {
+            if (value == null || value.length() < 2) return value;
+            return "XX-XXXXX" + value.substring(value.length() - 2);
+        });
+    }
+
+    @Bean
+    public ParameterizedTransformBean regexReplaceTransform() {
+        return new ParameterizedTransformBean("regex_replace", (value, arg) -> {
+            String[] parts = arg.split("->", 2);
+            if (parts.length != 2) return value;
+            return value.replaceAll(parts[0], parts[1]);
+        });
+    }
+}
+```
+
+#### Option B: Using the helper (cleaner)
+```java
+@Configuration
+public class CustomTransformsConfig {
+
+    @Bean
+    public Object taxIdMask() {
+        return TransformRegistrar.simple("tax_id_mask", value -> 
+            value == null || value.length() < 2 ? value : "XX-XXXXX" + value.substring(value.length() - 2)
+        ).getBean();
+    }
+
+    @Bean
+    public Object regexReplace() {
+        return TransformRegistrar.parameterized("regex_replace", (value, arg) -> {
+            String[] parts = arg.split("->", 2);
+            return parts.length == 2 ? value.replaceAll(parts[0], parts[1]) : value;
+        }).getBean();
+    }
+}
+```
+
+---
+
+## 📄 Step 6: Use in YAML Mapping (Client App)
+
+### `application.yml` or mapping file:
+```yaml
+fields:
+  - pdf_field: "Tax.ID.Masked"
+    json_path: "$.taxId"
+    transform: "tax_id_mask"
+
+  - pdf_field: "Cleaned.Text"
+    json_path: "$.rawText"
+    transform: "regex_replace:\\d+->[NUMBER]"
+```
+
+> ✅ The client app **owns the transform logic** — no changes to the library!
+
+---
+
+## 🔒 Safety & Best Practices
+
+| Concern | Solution |
+|--------|----------|
+| **Name collisions** | Use namespaced names (e.g., `myapp.tax_id_mask`) |
+| **Thread safety** | Ensure transforms are stateless |
+| **Error handling** | Wrap transforms in try-catch (in `TransformEngine`) |
+| **Discovery** | Use `@Autowired(required = false)` to handle zero plugins |
+
+---
+
+## 🧪 Testing Custom Transforms (Client App)
+
+### In client app test:
+```java
+@SpringBootTest
+class CustomTransformsTest {
+
+    @Autowired
+    private TransformEngine transformEngine;
+
+    @Test
+    void taxIdMask_transformsCorrectly() {
+        String result = transformEngine.apply("123456789", "tax_id_mask");
+        assertThat(result).isEqualTo("XX-XXXXX89");
+    }
+}
+```
+
+---
+
+## 🧩 Advanced: Context-Aware Transform Plugins
+
+For **context-aware transforms**, define:
+
+#### `ContextualTransform.java` (in library)
+```java
+@FunctionalInterface
+public interface ContextualTransform {
+    String apply(String currentValue, String fullJsonContext, String jsonPath);
+}
+```
+
+#### `ContextualTransformBean.java`
+```java
+public class ContextualTransformBean {
+    private final String name;
+    private final ContextualTransform transform;
+    // constructor, getters
+}
+```
+
+#### Client app:
+```java
+@Bean
+public ContextualTransformBean fullNameTransform() {
+    return new ContextualTransformBean("full_name", (current, json, path) -> {
+        // combine firstName + lastName from json
+    });
+}
+```
+
+---
+
+## ✅ Summary
+
+| Component | Location | Responsibility |
+|----------|----------|----------------|
+| **Transform interfaces** | Library | Define contract |
+| **TransformEngine** | Library | Discover and execute plugins |
+| **Custom transforms** | Client app | Implement business logic |
+| **Registration** | Client app | Expose as Spring beans |
+
+This gives you a **clean, extensible plugin system** where:
+
+- 📦 **Library** = stable core
+- 🔌 **Client apps** = custom logic
+- 🔄 **Zero coupling** between them
+
+This is the same pattern used by **Spring Security**, **Spring Data**, and other extensible Spring projects!
+
+Let me know if you'd like to add:
+- **Transform validation** (e.g., reject invalid names)
+- **Transform metadata** (description, examples)
+- **Dynamic transform reloading** (for development)
