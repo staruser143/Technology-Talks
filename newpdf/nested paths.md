@@ -1,0 +1,238 @@
+To support **nested JSON paths** (including objects and arrays within objects) in your YAML-to-PDF form-filling pipeline using Apache PDFBox, you need to enhance the JSON path resolution logic beyond simple dot-separated strings.
+
+Below is a robust, extensible solution that supports:
+
+- **Nested objects**: `user.profile.name`
+- **Arrays by index**: `addresses[0].street`
+- **Arrays with dynamic matching** (optional): `addresses[?(@.type=='home')].city`
+
+We’ll use **JsonPath** (a powerful Java library for navigating JSON) for reliable path evaluation.
+
+---
+
+### ✅ Step 1: Add JsonPath Dependency
+
+Update your `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>com.jayway.jsonpath</groupId>
+    <artifactId>json-path</artifactId>
+    <version>2.9.0</version>
+</dependency>
+```
+
+> This library supports full [JsonPath syntax](https://github.com/json-path/JsonPath).
+
+---
+
+### ✅ Step 2: Update YAML Mapping to Use JsonPath Expressions
+
+#### `mapping.yaml`
+```yaml
+fields:
+  - pdf_field: "FullName"
+    json_path: "$.user.name"                     # nested object
+    transform: "uppercase"
+
+  - pdf_field: "HomeStreet"
+    json_path: "$.addresses[?(@.type == 'home')].street"  # filter array
+
+  - pdf_field: "FirstPhone"
+    json_path: "$.phones[0]"                     # first item in array
+
+  - pdf_field: "City"
+    json_path: "$.primaryAddress.city"           # deep nesting
+```
+
+> Use `$` as root (standard JsonPath). You can also use dot-notation like `user.name` if you prefer, but JsonPath gives more power.
+
+---
+
+### ✅ Step 3: Update Java Code to Use JsonPath
+
+Replace the simple `jsonData.at(...)` logic with JsonPath evaluation.
+
+#### Updated Java Code (`PdfFormFiller.java`)
+
+```java
+import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
+
+// ... (other imports same as before)
+
+public class PdfFormFiller {
+
+    public static void main(String[] args) throws Exception {
+        // Load JSON as String (required by JsonPath)
+        String jsonText = new String(Files.readAllBytes(Paths.get("data.json")));
+
+        // Load YAML config
+        MappingConfig config = new Yaml(new Constructor(MappingConfig.class))
+                .load(new FileInputStream("mapping.yaml"));
+
+        // Load PDF
+        PDDocument document = PDDocument.load(new File("template.pdf"));
+        PDAcroForm form = document.getDocumentCatalog().getAcroForm();
+        if (form == null) {
+            throw new IllegalStateException("PDF has no form fields");
+        }
+
+        // Fill each field
+        for (FieldMapping mapping : config.fields) {
+            String rawValue = null;
+            try {
+                Object result = JsonPath.read(jsonText, mapping.json_path);
+                rawValue = stringifyJsonPathResult(result);
+            } catch (PathNotFoundException e) {
+                System.err.println("JsonPath not found: " + mapping.json_path);
+                rawValue = ""; // or skip
+            } catch (Exception e) {
+                System.err.println("Error evaluating path " + mapping.json_path + ": " + e.getMessage());
+                rawValue = "";
+            }
+
+            String transformed = applyTransform(rawValue, mapping.transform);
+            PDField field = form.getField(mapping.pdf_field);
+            if (field != null) {
+                field.setValue(transformed);
+            } else {
+                System.err.println("PDF field not found: " + mapping.pdf_field);
+            }
+        }
+
+        document.save("filled_form.pdf");
+        document.close();
+    }
+
+    // Convert JsonPath result to string (handles null, primitives, lists, etc.)
+    private static String stringifyJsonPathResult(Object obj) {
+        if (obj == null) return "";
+        if (obj instanceof List) {
+            List<?> list = (List<?>) obj;
+            if (list.isEmpty()) return "";
+            // For simplicity, take first match (common in form filling)
+            return stringifyJsonPathResult(list.get(0));
+        }
+        if (obj instanceof Map) {
+            // Rare in form data, but serialize if needed
+            return obj.toString();
+        }
+        return obj.toString();
+    }
+
+    // Same as before
+    private static String applyTransform(String value, String transformSpec) {
+        if (transformSpec == null || transformSpec.isEmpty()) return value;
+
+        if ("uppercase".equals(transformSpec)) {
+            return value.toUpperCase();
+        } else if ("lowercase".equals(transformSpec)) {
+            return value.toLowerCase();
+        } else if (transformSpec.startsWith("date:")) {
+            String pattern = transformSpec.substring(5);
+            try {
+                LocalDate date = LocalDate.parse(value);
+                return date.format(DateTimeFormatter.ofPattern(pattern));
+            } catch (Exception e) {
+                return "INVALID_DATE";
+            }
+        } else if (transformSpec.startsWith("currency:")) {
+            String localeTag = transformSpec.substring(9);
+            try {
+                Number number = new BigDecimal(value);
+                java.util.Locale locale = java.util.Locale.forLanguageTag(localeTag);
+                return java.text.NumberFormat.getCurrencyInstance(locale).format(number);
+            } catch (Exception e) {
+                return "INVALID_CURRENCY";
+            }
+        } else if (transformSpec.startsWith("boolean:")) {
+            String[] parts = transformSpec.substring(8).split("\\|");
+            boolean boolVal = Boolean.parseBoolean(value);
+            return boolVal ? parts[0] : (parts.length > 1 ? parts[1] : "");
+        }
+
+        return value;
+    }
+
+    // Config classes (unchanged)
+    public static class MappingConfig {
+        public List<FieldMapping> fields;
+    }
+
+    public static class FieldMapping {
+        public String pdf_field;
+        public String json_path;   // Now interpreted as JsonPath expression
+        public String transform;
+    }
+}
+```
+
+---
+
+### 📦 Example `data.json` with Nested Structures
+
+```json
+{
+  "user": {
+    "name": "alice smith",
+    "age": 32
+  },
+  "addresses": [
+    {
+      "type": "home",
+      "street": "123 Main St",
+      "city": "Springfield"
+    },
+    {
+      "type": "work",
+      "street": "456 Office Ave",
+      "city": "Metropolis"
+    }
+  ],
+  "phones": ["555-1234", "555-5678"],
+  "primaryAddress": {
+    "street": "123 Main St",
+    "city": "Springfield",
+    "zip": "12345"
+  }
+}
+```
+
+---
+
+### 🔍 Supported JsonPath Examples
+
+| JsonPath Expression                          | Result (from above JSON)     |
+|---------------------------------------------|------------------------------|
+| `$.user.name`                               | `"alice smith"`              |
+| `$.addresses[0].street`                     | `"123 Main St"`              |
+| `$.addresses[?(@.type == 'home')].city`     | `"Springfield"`              |
+| `$.phones[1]`                               | `"555-5678"`                 |
+| `$.primaryAddress.city`                     | `"Springfield"`              |
+
+> 💡 **Tip**: If a path returns multiple matches (e.g., a filter that matches 2 addresses), the code above takes the **first match** — which is typical for form filling.
+
+---
+
+### ✅ Benefits of This Approach
+
+- ✅ Handles **arbitrarily deep nesting**
+- ✅ Supports **array indexing and filtering**
+- ✅ Uses a **standard, well-tested library** (JsonPath)
+- ✅ Keeps YAML clean and expressive
+- ✅ Integrates smoothly with your existing transform logic
+
+---
+
+### 🚀 Optional Enhancements
+
+- Allow **default values** in YAML if path is missing:
+  ```yaml
+  - pdf_field: "Notes"
+    json_path: "$.notes"
+    default: "N/A"
+  ```
+- Support **multiple values** (e.g., join array with comma): add a `multi: true` flag.
+
+Let me know if you'd like those!
