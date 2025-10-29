@@ -1,0 +1,9 @@
+   : Processing applicants and generating PDF
+Condition failed for 'relationship == 'Primary'': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Primary'': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Primary'': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Primary'': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Dependent' and age < 18': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Dependent' and age < 18': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Dependent' and age < 18': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
+Condition failed for 'relationship == 'Dependent' and age < 18': Cannot invoke "javax.script.ScriptEngine.eval(String, javax.script.Bindings)" because "com.hello.main.utils.ConditionEvaluator.engine" is null
