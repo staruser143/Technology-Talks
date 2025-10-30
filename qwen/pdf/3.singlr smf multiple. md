@@ -1,0 +1,279 @@
+Great question! Your **AcroForm templates use index-based field naming** (e.g., `applicant.fname.1`, `dependent.fname.1`, `dependent.fname.2`, etc.), which is a common pattern for handling **repeating sections** (like dependents, line items, etc.) in PDF forms.
+
+To support this **natively in your generic merging library**, you need to:
+
+1. **Detect when a mapping targets a repeating section** (e.g., `dependent`).
+2. **Iterate over source array data** (e.g., `dependents: [ {...}, {...} ]`).
+3. **Generate target field names dynamically** using a pattern like `{prefix}.{field}.{index}`.
+4. **Map each array element to its corresponding indexed field**.
+
+---
+
+## ✅ Solution: Extend `FieldMapping` with **Repetition Support**
+
+### 🔧 Step 1: Enhance YAML Schema
+
+Add new properties to `FieldMapping`:
+
+```yaml
+mappings:
+  # Single-value (non-repeating) — unchanged
+  - sourceField: "$.applicant.firstName"
+    targetField: "applicant.fname.1"
+
+  # Repeating section — new syntax
+  - sourceArray: "$.dependents"               # JSONPath to array
+    itemMappings:
+      - sourceField: "$.firstName"
+        targetFieldTemplate: "dependent.fname.{index}"
+      - sourceField: "$.lastName"
+        targetFieldTemplate: "dependent.lname.{index}"
+    maxRepetitions: 5                         # Optional: cap to avoid overflow
+```
+
+> 💡 **Why `sourceArray` + `itemMappings`?**  
+> Because one array (`dependents`) produces **multiple target fields per item** (`fname`, `lname`, etc.).
+
+---
+
+### 🧩 Step 2: Update `FieldMapping.java`
+
+```java
+public class FieldMapping {
+    // For single-value fields (legacy or simple)
+    private String sourceField;
+    private String targetField;
+
+    // For repeating sections
+    private String sourceArray;                 // JSONPath to array
+    private List<ItemMapping> itemMappings;     // per-item field mappings
+    private Integer maxRepetitions;             // optional safety cap
+
+    private List<FilterCondition> filters = new ArrayList<>();
+    private List<TransformSpec> transforms = new ArrayList<>(); // applies to whole mapping (optional)
+
+    // Helper to detect mode
+    public boolean isRepeating() {
+        return sourceArray != null && itemMappings != null && !itemMappings.isEmpty();
+    }
+
+    // Getters/setters...
+}
+```
+
+### New: `ItemMapping.java`
+
+```java
+public class ItemMapping {
+    private String sourceField;          // relative JSONPath (e.g., "$.firstName")
+    private String targetFieldTemplate;  // e.g., "dependent.fname.{index}"
+    private List<TransformSpec> transforms = new ArrayList<>();
+
+    // getters/setters
+}
+```
+
+> 🔸 `sourceField` in `ItemMapping` is **relative to each array item**.
+> 🔸 `{index}` in `targetFieldTemplate` will be replaced with `1`, `2`, `3`, ...
+
+---
+
+### 🧠 Step 3: Update `DataMapper.mapData(...)`
+
+Handle both **single-value** and **repeating** mappings:
+
+```java
+public Map<String, Object> mapData(Object jsonData, MergeConfig config) {
+    Map<String, Object> result = new HashMap<>();
+
+    for (FieldMapping mapping : config.getMappings()) {
+        // Apply global filters first
+        if (!passesGlobalFilters(jsonData, mapping.getFilters())) {
+            continue;
+        }
+
+        if (mapping.isRepeating()) {
+            handleRepeatingMapping(jsonData, mapping, result);
+        } else {
+            handleSingleValueMapping(jsonData, mapping, result);
+        }
+    }
+
+    return result;
+}
+```
+
+#### 🔹 Handle Single-Value (unchanged)
+
+```java
+private void handleSingleValueMapping(Object jsonData, FieldMapping mapping, Map<String, Object> result) {
+    Object rawValue = readJsonPathSafe(jsonData, mapping.getSourceField());
+    if (rawValue == null) return;
+
+    Object transformed = applyTransformations(rawValue, mapping.getTransforms());
+    result.put(mapping.getTargetField(), safeToString(transformed));
+}
+```
+
+#### 🔸 Handle Repeating Sections
+
+```java
+private void handleRepeatingMapping(Object jsonData, FieldMapping mapping, Map<String, Object> result) {
+    Object arrayObj = readJsonPathSafe(jsonData, mapping.getSourceArray());
+    if (!(arrayObj instanceof List)) {
+        // Not an array → skip
+        return;
+    }
+
+    List<?> items = (List<?>) arrayObj;
+    int maxIndex = mapping.getMaxRepetitions() != null 
+                   ? Math.min(items.size(), mapping.getMaxRepetitions())
+                   : items.size();
+
+    for (int i = 0; i < maxIndex; i++) {
+        Object item = items.get(i);
+        int pdfIndex = i + 1; // PDF uses 1-based indexing
+
+        for (ItemMapping itemMapping : mapping.getItemMappings()) {
+            // Evaluate sourceField relative to current item
+            Object rawValue = readJsonPathSafe(item, itemMapping.getSourceField());
+            if (rawValue == null) continue;
+
+            Object transformed = applyTransformations(rawValue, itemMapping.getTransforms());
+            String targetField = itemMapping.getTargetFieldTemplate().replace("{index}", String.valueOf(pdfIndex));
+            result.put(targetField, safeToString(transformed));
+        }
+    }
+}
+```
+
+> ✅ **Key Insight**:  
+> We evaluate `itemMapping.getSourceField()` **against each array item** (not the root JSON).  
+> So `$.firstName` inside a `dependents` loop correctly reads `dependents[0].firstName`.
+
+---
+
+### 📄 Example YAML with Repetition
+
+```yaml
+templateType: PDF
+templatePath: classpath:form_with_dependents.pdf
+outputPath: /tmp/output.pdf
+mappings:
+  # Single applicant
+  - sourceField: "$.applicant.firstName"
+    targetField: "applicant.fname.1"
+  - sourceField: "$.applicant.lastName"
+    targetField: "applicant.lname.1"
+
+  # Dependents (repeating)
+  - sourceArray: "$.dependents"
+    maxRepetitions: 3
+    itemMappings:
+      - sourceField: "$.firstName"
+        targetFieldTemplate: "dependent.fname.{index}"
+      - sourceField: "$.lastName"
+        targetFieldTemplate: "dependent.lname.{index}"
+      - sourceField: "$.dob"
+        targetFieldTemplate: "dependent.dob.{index}"
+        transforms:
+          - type: date
+            params:
+              inputFormat: "yyyy-MM-dd"
+              outputFormat: "MM/dd/yyyy"
+```
+
+---
+
+### 🧪 Input JSON
+
+```json
+{
+  "applicant": {
+    "firstName": "John",
+    "lastName": "Doe"
+  },
+  "dependents": [
+    {
+      "firstName": "Alice",
+      "lastName": "Doe",
+      "dob": "2015-04-10"
+    },
+    {
+      "firstName": "Bob",
+      "lastName": "Doe",
+      "dob": "2018-11-22"
+    }
+  ]
+}
+```
+
+### ✅ Output Field Map
+
+| Target Field             | Value           |
+|--------------------------|-----------------|
+| `applicant.fname.1`      | `John`          |
+| `applicant.lname.1`      | `Doe`           |
+| `dependent.fname.1`      | `Alice`         |
+| `dependent.lname.1`      | `Doe`           |
+| `dependent.dob.1`        | `04/10/2015`    |
+| `dependent.fname.2`      | `Bob`           |
+| `dependent.lname.2`      | `Doe`           |
+| `dependent.dob.2`        | `11/22/2018`    |
+
+> ⚠️ `dependent.*.3` is **not generated** because only 2 dependents exist (and `maxRepetitions: 3` allows up to 3).
+
+---
+
+### 🛡 Optional: Handle Missing Fields Gracefully
+
+If your PDF has 5 dependent slots but only 2 dependents in JSON:
+- **Leave fields 3–5 blank** → already handled (they won’t appear in `result` map).
+- **Explicitly clear them?** → Not needed; PDFBox won’t touch unmapped fields.
+
+> ✅ **Best Practice**: Design PDF with empty default values.
+
+---
+
+### 🧩 Bonus: Support Filters per Item (Advanced)
+
+Want to **skip inactive dependents**?
+
+Extend `ItemMapping` with `filters`:
+
+```yaml
+itemMappings:
+  - sourceField: "$.firstName"
+    targetFieldTemplate: "dependent.fname.{index}"
+    filters:
+      - field: "$.active"
+        operator: EQ
+        value: true
+```
+
+Then in `handleRepeatingMapping`, before processing an item:
+
+```java
+if (!passesFilters(item, itemMapping.getFilters())) {
+    continue; // skip this item
+}
+```
+
+(Implement `passesFilters` similarly to global version.)
+
+---
+
+### ✅ Summary
+
+| Requirement                        | Solved By |
+|-----------------------------------|----------|
+| Index-based PDF fields            | `targetFieldTemplate: "xxx.{index}"` |
+| Map array → repeating fields      | `sourceArray` + `itemMappings` |
+| 1-based indexing (PDF standard)   | `i + 1` |
+| Limit repetitions                 | `maxRepetitions` |
+| Per-item transforms/filters       | Add to `ItemMapping` |
+| Backward compatibility            | Keep `sourceField`/`targetField` for single values |
+
+This design keeps your library **generic**, **YAML-driven**, and **fully compatible** with real-world AcroForm templates.
+
+Let me know if you'd like the full updated `FieldMapping` class or unit tests!
