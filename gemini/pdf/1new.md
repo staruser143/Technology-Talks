@@ -1,0 +1,145 @@
+Yes, you can absolutely **filter and map data** from a YAML specification using **JSONata4Java**.
+
+The process involves two main steps:
+
+1.  **YAML to JSON Structure:** Convert the YAML data into a JSON tree structure (like Jackson's `JsonNode`), which is the input format for JSONata4Java.
+2.  **JSONata Expression:** Write a JSONata expression that performs both the filtering and the mapping in a single, powerful query.
+
+-----
+
+## 1\. Convert YAML to `JsonNode` (The Prerequisite)
+
+Since JSONata is designed for JSON, you must first convert your YAML input into a `JsonNode` object using a library like **Jackson** with its YAML data format module.
+
+### Java Code for Conversion
+
+```java
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import java.io.File;
+
+public class YamlConverter {
+    public static JsonNode convertYamlToJsonNode(File yamlFile) throws Exception {
+        // 1. Create a YAML-aware ObjectMapper
+        ObjectMapper yamlReader = new ObjectMapper(new YAMLFactory());
+        
+        // 2. Read the YAML file into a generic Object (which Jackson internally handles as a tree)
+        Object obj = yamlReader.readValue(yamlFile, Object.class);
+        
+        // 3. Use a standard ObjectMapper to convert the resulting Object into a JsonNode
+        ObjectMapper jsonMapper = new new ObjectMapper();
+        return jsonMapper.valueToTree(obj);
+    }
+}
+```
+
+-----
+
+## 2\. JSONata Expression for Filtering and Mapping
+
+The core of the logic is the JSONata expression itself, which uses **predicates** for filtering and **object constructors** for mapping.
+
+### Example YAML Source Data
+
+Assume your YAML contains a list of products:
+
+```yaml
+products:
+  - id: 101
+    name: "Widget Pro"
+    category: "Hardware"
+    price: 15.99
+    inStock: true
+  - id: 202
+    name: "License Basic"
+    category: "Software"
+    price: 9.99
+    inStock: false
+  - id: 303
+    name: "Dongle USB"
+    category: "Hardware"
+    price: 4.50
+    inStock: true
+```
+
+### JSONata Expression
+
+You want to:
+
+1.  **Filter:** Select only the products where `category` is "Hardware" AND `inStock` is `true`.
+2.  **Map:** Transform the selected fields into a new structure with keys: `ItemCode`, `ItemName`, and `Cost`.
+
+The JSONata expression would be:
+
+```jsonata
+products[category = 'Hardware' and inStock = true].{
+  "ItemCode": id,
+  "ItemName": name,
+  "Cost": price
+}
+```
+
+  * `products[...]` **filters** the array.
+  * `[category = 'Hardware' and inStock = true]` is the **predicate** (the specific criteria).
+  * `.{ ... }` **maps** (transforms) the fields of the resulting filtered array into a new object structure.
+
+-----
+
+## 3\. Execute with JSONata4Java
+
+Finally, you execute the expression against the `JsonNode` you created in step 1.
+
+### Java Code for Execution
+
+```java
+import com.ibm.jsonata4java.EvaluationException;
+import com.ibm.jsonata4java.Expression;
+// Assuming you have the JsonNode from the YamlConverter
+
+public class JsonataProcessor {
+    public static JsonNode filterAndMap(JsonNode sourceNode, String expressionString) 
+            throws EvaluationException {
+
+        // 1. Compile the JSONata expression
+        Expression expression = Expression.jsonata(expressionString);
+        
+        // 2. Evaluate the expression against the JsonNode (the YAML data)
+        JsonNode resultNode = expression.evaluate(sourceNode);
+        
+        return resultNode;
+    }
+
+    public static void main(String[] args) throws Exception {
+        // --- Step 1: Get JsonNode from YAML file ---
+        // Assuming your YAML file is named "data.yaml"
+        File yamlFile = new File("data.yaml"); 
+        JsonNode yamlAsJsonNode = YamlConverter.convertYamlToJsonNode(yamlFile);
+
+        // --- Step 2 & 3: Define and Execute JSONata ---
+        String jsonataExpression = "products[category = 'Hardware' and inStock = true].{\"ItemCode\": id, \"ItemName\": name, \"Cost\": price}";
+
+        JsonNode finalResult = filterAndMap(yamlAsJsonNode, jsonataExpression);
+
+        // Print the result (which is JSON)
+        System.out.println(finalResult.toPrettyString());
+    }
+}
+```
+
+### Expected JSON Output
+
+```json
+[
+  {
+    "ItemCode": 101,
+    "ItemName": "Widget Pro",
+    "Cost": 15.99
+  },
+  {
+    "ItemCode": 303,
+    "ItemName": "Dongle USB",
+    "Cost": 4.50
+  }
+]
+```
