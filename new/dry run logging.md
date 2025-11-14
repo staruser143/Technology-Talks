@@ -1,0 +1,207 @@
+**Dry-run logging** is a **safe, non-destructive simulation mode** where your application *pretends* to execute its normal workflow (e.g., filling a PDF) but **doesn’t actually perform any side effects** (like writing files, updating databases, or sending emails). Instead, it **logs exactly what it *would* have done**.
+
+---
+
+### 🔍 Why Use Dry-Run Logging?
+
+| Scenario | Problem Without Dry-Run | Solution With Dry-Run |
+|--------|------------------------|------------------------|
+| **Testing config changes** | Risk corrupting real PDFs | Test safely with real data |
+| **Debugging mappings** | Hard to see why a field is blank | See value resolution step-by-step |
+| **Auditing** | Can’t verify logic before go-live | Preview output before committing |
+| **CI/CD pipelines** | Accidentally overwrite production files | Validate mappings in build stage |
+
+---
+
+### 🛠️ How Dry-Run Works in Your Field Mapper
+
+Instead of **actually saving** `output-filled.pdf`, your code would:
+
+1. **Parse** YAML config ✅  
+2. **Read** JSON input ✅  
+3. **Evaluate** conditions ✅  
+4. **Apply** transforms ✅  
+5. **Log** what *would* be written to each PDF field ❌ (skip actual PDF write)  
+6. **Skip** file save ✅  
+
+---
+
+### 💡 Example: Dry-Run Log Output
+
+Given this mapping:
+```yaml
+- source: "user.email"
+  target: "emailField"
+  transform: "maskEmail"
+  condition:
+    type: "notNull"
+```
+
+And this JSON:
+```json
+{ "user": { "email": "alice@example.com" } }
+```
+
+A dry-run log might show:
+```
+[DRY-RUN] ✅ Condition passed: notNull → true
+[DRY-RUN] 🔁 Transformed: "alice@example.com" → "a***e@example.com"
+[DRY-RUN] 📝 Would set PDF field 'emailField' = 'a***e@example.com'
+```
+
+If the email were null:
+```
+[DRY-RUN] ⏭️ Skipped mapping for 'emailField' (condition failed: notNull)
+```
+
+---
+
+### ✅ How to Add Dry-Run to Your Implementation
+
+#### Step 1: Add a flag to your mapper
+
+```java
+public class PdfFieldMapper {
+    private boolean dryRun = false;
+
+    public PdfFieldMapper dryRun(boolean enabled) {
+        this.dryRun = enabled;
+        return this;
+    }
+    
+    // ... rest of the class
+}
+```
+
+#### Step 2: Skip PDF save + emit logs in dry-run mode
+
+```java
+public void mapJsonToPdf(String yamlConfigPath, String jsonInput, 
+                        String pdfTemplatePath, String outputPath) throws Exception {
+    
+    // ... [config loading, JSON parsing, etc.] ...
+
+    System.out.println("🔍 Dry-run mode: simulating field mappings (no PDF saved)");
+
+    for (FieldMapping mapping : config.getMappings()) {
+        // ... [same logic to get rawValue, evaluate condition, transform] ...
+
+        if (!ConditionEvaluator.evaluate(...)) {
+            logDryRun("⏭️ Skipped field '" + mapping.getTarget() + "' (condition failed)");
+            continue;
+        }
+
+        String finalValue = /* ... resolve with default ... */;
+
+        if (dryRun) {
+            logDryRun("📝 Would set PDF field '" + mapping.getTarget() + "' = '" + finalValue + "'");
+        } else {
+            // Actual PDF update
+            PDField field = form.getField(mapping.getTarget());
+            if (field != null) {
+                field.setValue(finalValue);
+            }
+        }
+    }
+
+    if (!dryRun) {
+        document.save(outputPath);
+        System.out.println("✅ PDF saved to: " + outputPath);
+    } else {
+        System.out.println("🎯 Dry-run complete. No PDF was written.");
+    }
+}
+
+private void logDryRun(String msg) {
+    System.out.println("[DRY-RUN] " + msg);
+}
+```
+
+#### Step 3: Use it in `Main.java`
+
+```java
+public class Main {
+    public static void main(String[] args) throws Exception {
+        String json = "...";
+
+        boolean isDryRun = args.length > 0 && "--dry-run".equals(args[0]);
+
+        new PdfFieldMapper()
+            .dryRun(isDryRun)
+            .mapJsonToPdf("config.yaml", json, "template.pdf", "output.pdf");
+    }
+}
+```
+
+Run it:
+```bash
+# Simulation only
+java Main --dry-run
+
+# Real execution
+java Main
+```
+
+---
+
+### 🧪 Advanced Dry-Run Features
+
+| Feature | Benefit |
+|-------|--------|
+| **Export dry-run as JSON** | Machine-readable report for CI pipelines |
+| **Highlight mismatches** | Compare expected vs actual in tests |
+| **Performance metrics** | Time per transform, memory usage |
+| **Field coverage report** | "% of PDF fields populated" |
+
+Example JSON dry-run output:
+```json
+{
+  "dryRun": true,
+  "mappings": [
+    {
+      "target": "emailField",
+      "sourceValue": "alice@example.com",
+      "transformedValue": "a***e@example.com",
+      "conditionPassed": true,
+      "action": "SET"
+    },
+    {
+      "target": "vipBadge",
+      "sourceValue": 800,
+      "conditionPassed": false,
+      "reason": "greaterThan(1000) failed",
+      "action": "SKIPPED"
+    }
+  ]
+}
+```
+
+---
+
+### ✅ Best Practices
+
+1. **Always log source → transformed value**  
+2. **Explain why a condition failed**  
+3. **Never write files in dry-run** (not even temp files)  
+4. **Use distinct log prefix** like `[DRY-RUN]`  
+5. **Make it a command-line flag** (`--dry-run`)  
+
+---
+
+### Real-World Use Case
+
+> A bank uses dry-run mode every time they update their **loan agreement PDF template**.  
+> Before deploying to production, they:  
+> 1. Run dry-run with 100 sample loan JSONs  
+> 2. Verify all customer names, amounts, and dates appear correctly  
+> 3. Ensure sensitive fields (like SSN) are **never** logged in plain text  
+> 4. Only after validation → run real mapping  
+
+---
+
+Would you like me to:
+- Add **JSON-formatted dry-run output** to your code?
+- Include **sensitive-field masking** in logs (e.g., never log full SSN)?
+- Generate a **field coverage summary**?
+
+Just say the word — this is a powerful addition for robust systems! 🧪✨
