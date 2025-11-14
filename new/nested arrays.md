@@ -1,0 +1,360 @@
+Great question! Mapping **nested arrays** (e.g., a list of items in JSON → repeated fields or tables in PDF) is one of the **most challenging but common** requirements in document generation.
+
+PDFs don’t natively support dynamic tables like HTML, so you need a **strategy**. Let’s break it down.
+
+---
+
+## 🎯 Problem: JSON with Arrays → PDF with Repeating Fields
+
+### Example JSON:
+```json
+{
+  "customer": { "name": "Alice" },
+  "order": {
+    "items": [
+      { "sku": "A100", "desc": "Laptop", "price": 1200.00 },
+      { "sku": "B200", "desc": "Mouse", "price": 25.99 },
+      { "sku": "C300", "desc": "Keyboard", "price": 89.50 }
+    ]
+  }
+}
+```
+
+### Goal: Populate a PDF invoice with a **line-item table**
+
+But PDF form fields are **static** — you can’t add new fields at runtime.
+
+---
+
+## ✅ Strategy Options
+
+| Approach | How It Works | Best For |
+|--------|-------------|--------|
+| **1. Predefined Repeating Fields** | PDF has `item_1_sku`, `item_1_desc`, ..., `item_10_sku` | Small, bounded lists (e.g., ≤10 items) |
+| **2. Dynamic PDF Generation** | Generate PDF from scratch (not fillable form) | Complex layouts, unbounded data |
+| **3. Hybrid: Fill + Stamp** | Fill base form, then **overlay** table as image/text | Medium complexity, high fidelity |
+
+We’ll focus on **Option 1** (most common for form-filling systems) and show how to extend your YAML config to support it.
+
+---
+
+## 🔧 Step 1: Design YAML for Array Mapping
+
+### Idea: Use **collection mapping** with an `each` block
+
+```yaml
+mappings:
+  - source: "customer.name"
+    target: "customerName"
+
+  # Array mapping
+  - collection:
+      source: "order.items"           # JSON path to array
+      maxItems: 10                    # safety limit
+      itemMappings:
+        - source: "sku"
+          targetPrefix: "item_"
+          targetSuffix: "_sku"
+
+        - source: "desc"
+          targetPrefix: "item_"
+          targetSuffix: "_desc"
+          transform: "toUpperCase"
+
+        - source: "price"
+          targetPrefix: "item_"
+          targetSuffix: "_price"
+          transform:
+            name: "formatCurrency"
+            args: { currencySymbol: "$" }
+```
+
+> This will generate:
+> - `item_1_sku`, `item_1_desc`, `item_1_price`
+> - `item_2_sku`, `item_2_desc`, `item_2_price`
+> - ...
+
+---
+
+## 📦 Step 2: Update Java Model
+
+### `FieldMapping.java` (enhanced)
+```java
+public class FieldMapping {
+    // Existing fields for scalar mappings
+    private String source;
+    private String target;
+    private Object transform;
+    private Condition condition;
+    private String defaultValue;
+
+    // NEW: for array/collection mappings
+    private CollectionMapping collection;
+
+    // Helper to check type
+    public boolean isCollectionMapping() {
+        return collection != null;
+    }
+
+    // Getters...
+}
+```
+
+### `CollectionMapping.java`
+```java
+public class CollectionMapping {
+    private String source;            // JSON path to array, e.g., "order.items"
+    private Integer maxItems;         // optional safety cap
+    private String targetPrefix;      // optional global prefix
+    private String targetSuffix;      // optional global suffix
+    private List<ItemFieldMapping> itemMappings;
+
+    // Getters...
+}
+```
+
+### `ItemFieldMapping.java`
+```java
+public class ItemFieldMapping {
+    private String source;            // field inside each item, e.g., "sku"
+    private String targetPrefix;      // per-field prefix (overrides global)
+    private String targetSuffix;      // per-field suffix (overrides global)
+    private Object transform;
+    private Condition condition;
+    private String defaultValue;
+
+    // Getters...
+}
+```
+
+---
+
+## ⚙️ Step 3: Update Mapping Engine to Handle Arrays
+
+### In `PdfFieldMapper.java` (inside mapping loop):
+
+```java
+for (FieldMapping mapping : config.getMappings()) {
+    if (mapping.isCollectionMapping()) {
+        processCollectionMapping(mapping.getCollection(), jsonContext, form, dryRun);
+    } else {
+        processScalarMapping(mapping, jsonContext, form, dryRun);
+    }
+}
+```
+
+### New method: `processCollectionMapping`
+
+```java
+private void processCollectionMapping(
+        CollectionMapping coll, 
+        DocumentContext jsonContext, 
+        PDAcroForm form,
+        boolean dryRunMode) throws Exception {
+    
+    // Read array from JSON
+    List<?> items = jsonContext.read("$." + coll.getSource());
+    if (items == null) items = Collections.emptyList();
+
+    int limit = (coll.getMaxItems() != null) ? 
+                Math.min(items.size(), coll.getMaxItems()) : 
+                items.size();
+
+    for (int i = 0; i < limit; i++) {
+        Object item = items.get(i);
+        int index = i + 1; // 1-based indexing for PDF fields
+
+        for (ItemFieldMapping itemMap : coll.getItemMappings()) {
+            // Build full JSON path: order.items[0].sku
+            String itemJsonPath = "$." + coll.getSource() + "[" + i + "]." + itemMap.getSource();
+            Object rawValue = null;
+            try {
+                rawValue = JsonPath.parse(item).read(itemMap.getSource());
+            } catch (Exception e) {
+                rawValue = null;
+            }
+
+            // Evaluate condition
+            boolean conditionPassed = ConditionEvaluator.evaluate(
+                itemMap.getCondition(), 
+                JsonPath.parse(item), 
+                rawValue
+            );
+
+            if (!conditionPassed) {
+                logDryRun(dryRunMode, "⏭️ Skipped item[" + index + "]." + itemMap.getSource());
+                continue;
+            }
+
+            // Transform
+            Object transformed = DataTransformer.applyTransform(rawValue, itemMap.getTransform());
+            String finalValue = (transformed != null) ? transformed.toString() : "";
+            if (finalValue.trim().isEmpty() && itemMap.getDefaultValue() != null) {
+                finalValue = itemMap.getDefaultValue();
+            }
+
+            // Build PDF field name
+            String prefix = itemMap.getTargetPrefix() != null ? 
+                            itemMap.getTargetPrefix() : 
+                            coll.getTargetPrefix();
+            String suffix = itemMap.getTargetSuffix() != null ? 
+                            itemMap.getTargetSuffix() : 
+                            coll.getTargetSuffix();
+            
+            String targetField = prefix + index + suffix;
+
+            if (dryRunMode) {
+                String safeValue = SensitiveFieldDetector.isSensitive(targetField) ?
+                    SensitiveFieldDetector.maskValue(finalValue, targetField.contains("email")) :
+                    finalValue;
+                logDryRun(true, "✅ " + targetField + " = '" + safeValue + "'");
+            } else {
+                PDField field = form.getField(targetField);
+                if (field != null) {
+                    field.setValue(finalValue);
+                } else {
+                    System.err.println("⚠️ PDF field not found: " + targetField);
+                }
+            }
+        }
+    }
+}
+```
+
+> 🔍 **Note**: We use `JsonPath.parse(item).read(...)` to safely extract nested values from each array item.
+
+---
+
+## 🖨️ Step 4: Prepare Your PDF Template
+
+Your PDF must have **predefined fields** like:
+
+```
+item_1_sku     item_1_desc     item_1_price
+item_2_sku     item_2_desc     item_2_price
+...
+item_10_sku    item_10_desc    item_10_price
+```
+
+You can create these in:
+- **Adobe Acrobat Pro** (Prepare Form → add text fields)
+- **LibreOffice Draw** → export as PDF with form fields
+- **PDFtk** or **iText** (programmatically)
+
+> 💡 Tip: Make extra fields (e.g., up to 20) and hide unused ones via JavaScript in PDF — or just leave them blank.
+
+---
+
+## 🧪 Example: Full Workflow
+
+### JSON:
+```json
+{
+  "order": {
+    "items": [
+      { "sku": "X1", "desc": "Widget", "price": 19.99 },
+      { "sku": "Y2", "desc": "Gadget", "price": 29.99 }
+    ]
+  }
+}
+```
+
+### YAML:
+```yaml
+mappings:
+  - collection:
+      source: "order.items"
+      maxItems: 5
+      itemMappings:
+        - source: "sku"
+          targetPrefix: "item_"
+          targetSuffix: "_sku"
+        - source: "desc"
+          targetPrefix: "item_"
+          targetSuffix: "_desc"
+        - source: "price"
+          targetPrefix: "item_"
+          targetSuffix: "_price"
+          transform: "formatCurrency"
+```
+
+### Resulting PDF fields set:
+- `item_1_sku` = `"X1"`
+- `item_1_desc` = `"Widget"`
+- `item_1_price` = `"$19.99"`
+- `item_2_sku` = `"Y2"`
+- `item_2_desc` = `"Gadget"`
+- `item_2_price` = `"$29.99"`
+
+Fields `item_3_*` to `item_5_*` remain untouched (or blank).
+
+---
+
+## ⚠️ Limitations & Workarounds
+
+| Challenge | Solution |
+|--------|--------|
+| **Unbounded arrays** (>20 items) | Use **Option 2**: Generate PDF from scratch with iText or Apache PDFBox (draw table dynamically) |
+| **Complex layouts** (borders, alignment) | Pre-design table in PDF, leave only data cells as form fields |
+| **Conditional rows** | Use `condition` in `ItemFieldMapping` to skip items |
+| **Sum/total calculations** | Add a scalar mapping: `source: "order.items[*].price"` → use JsonPath aggregation |
+
+> 💡 **JsonPath tip**: Get total price with:
+> ```yaml
+> - source: "order.items[*].price"
+>   target: "total"
+>   transform: "sumAndFormat"
+> ```
+
+---
+
+## 🔜 Advanced: Automatic Table Generation (Option 2)
+
+If you outgrow form fields, switch to **programmatic PDF generation**:
+
+```java
+try (PDDocument doc = new PDDocument()) {
+    PDPage page = new PDPage();
+    doc.addPage(page);
+    PDPageContentStream cs = new PDPageContentStream(doc, page);
+
+    // Draw table rows dynamically using PDFBox graphics
+    List<Item> items = ...;
+    float y = 700;
+    for (Item item : items) {
+        cs.beginText();
+        cs.newLineAtOffset(50, y);
+        cs.showText(item.getSku());
+        cs.newLineAtOffset(150, 0);
+        cs.showText(item.getDescription());
+        // etc.
+        cs.endText();
+        y -= 20; // next line
+    }
+    cs.close();
+    doc.save("invoice.pdf");
+}
+```
+
+But this **replaces** your form-filling approach — use only when necessary.
+
+---
+
+## ✅ Summary
+
+| You Need | Use |
+|--------|------|
+| ≤10–20 items, simple layout | **Predefined fields + collection mapping** (Option 1) |
+| Dynamic rows, rich formatting | **Generate PDF from scratch** (Option 2) |
+| Best of both | **Fill base form + overlay table as image** (Option 3) |
+
+Your YAML-based engine now supports **nested arrays** cleanly and safely!
+
+---
+
+Would you like:
+- A **complete working example** with sample PDF?
+- Support for **JsonPath aggregations** (sum, count)?
+- **Pagination** for long item lists?
+
+Just ask — I’ll help you implement it! 📋🖨️
