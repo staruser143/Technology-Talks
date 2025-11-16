@@ -1,0 +1,34 @@
+{
+  "applicationId": "APP-1001",
+  "applicants": [
+    {
+      "type": "PRIMARY",
+      "demographics": { "firstName": "John", "lastName": "Doe", "dob": "1980-05-15" },
+      "addresses": [
+        { "type": "HOME", "street": "123 Main St" },
+        { "type": "MAILING", "street": "PO Box 123" }
+      ],
+      "currentCoverages": [
+        {
+          "isActive": true,
+          "medical": { "planName": "Gold HMO" },
+          "dental": { "planName": "Basic Dental" },
+          "planDetails": {
+            "products": [
+              { "productType": "MEDICAL", "plans": [{ "name": "Gold HMO" }] },
+              { "productType": "DENTAL", "plans": [{ "name": "Basic Dental" }] }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "type": "DEPENDENT",
+      "demographics": { "firstName": "Jane", "lastName": "Doe", "dob": "2015-03-10" },
+      "addresses": [ { "type": "HOME", "street": "123 Main St" } ],
+      "currentCoverages": [
+        { "isActive": true, "medical": { "planName": "Child Gold" }, ... }
+      ]
+    }
+  ]
+}
