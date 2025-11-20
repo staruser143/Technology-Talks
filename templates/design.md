@@ -1,4 +1,6 @@
- **template variability** and **field reuse** across multiple PDF AcroForm templates in a healthcare enrollment context. The key goals you mentioned—avoiding duplication, reducing maintenance, and making the mapping specification simple—point toward a **modular, hierarchical design**.
+ We have **template variability** and **field reuse** across multiple PDF AcroForm templates in a healthcare enrollment context.
+ 
+ The key goals **avoiding duplication, reducing maintenance**, and making the mapping specification simple—point toward a **modular, hierarchical design**.
 
 Here’s a structured approach you can follow:
 
@@ -61,7 +63,7 @@ templates:
 
 ### ✅ **3. Introduce a Mapping Engine**
 
-Instead of hardcoding logic, create a **mapping engine** that:
+Instead of hardcoding logic, we create a **mapping engine** that:
 
 *   Reads the layered specification.
 *   Resolves inheritance and overrides.
@@ -95,7 +97,7 @@ Since healthcare enrollment forms change frequently:
 
 ### ✅ **6. Optional: Use a DSL or Schema**
 
-If complexity grows, consider:
+If complexity grows, we can consider:
 
 *   A **Domain-Specific Language (DSL)** for mappings.
 *   Or a **schema-driven approach** (e.g., JSON Schema) to validate mappings.
