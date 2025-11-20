@@ -1,0 +1,123 @@
+That's a common challenge when using a templating engine like **FreeMarker** for complex, dynamic layouts, especially when the final output is PDF (which often relies on structured HTML/CSS for conversion).
+
+Creating a separate template for every layout variation (2-column, 3-column, multi-level tables, etc.) is the **brute-force approach** that leads to high maintenance and redundancy.
+
+Here are **better ways to handle dynamic layouts and data** in FreeMarker, focusing on **reusability** and **data-driven design**:
+
+## 1\. Modularization with Macros and Includes 🧱
+
+The most significant improvement is breaking down your templates into **reusable components** using **Macros** and **Includes**.
+
+  * **FreeMarker Macros (`<#macro ...>`)**: Think of these as reusable functions or components. You can pass layout parameters and data to them. This is the **key** to DRY (Don't Repeat Yourself) templating.
+
+      * **Example**: Instead of creating `twoColumnTable.ftlh` and `threeColumnTable.ftlh`, create a single `table.ftlh` macro that accepts the **number of columns** and the **data list** as arguments. The macro uses a loop and conditional logic to render the appropriate structure.
+
+    <!-- end list -->
+
+    ```html
+    <#-- In layout_macros.ftlh -->
+    <#macro customTable dataList columns>
+      <table class="layout-table-${columns}-cols">
+        <#-- Dynamic logic to render headers based on dataList -->
+        <thead>...</thead>
+        <#list dataList as row>
+          <tr>
+            <#-- Loop for the specified number of columns -->
+            <#list 1..columns as i>
+              <td>${row["column" + i]}</td>
+            </#list>
+          </tr>
+        </#list>
+      </table>
+    </#macro>
+    ```
+
+  * **Includes (`<#include ...>`)**: Use these for sections that appear in many templates (e.g., page header, footer, or standard address block).
+
+## 2\. Data-Driven Layout Logic (Conditionals) ⚙️
+
+Instead of having the template determine the layout based on its name, let the **data model** drive the layout choice within a single template.
+
+  * **Pass a Layout Key**: In your data model, include a field like `layoutType` (e.g., `"2_COLUMN_SUMMARY"`, `"FULL_DETAIL_REPORT"`).
+
+    ```java
+    // Java Model
+    Map<String, Object> dataModel = new HashMap<>();
+    dataModel.put("layoutType", "3_COLUMN_SUMMARY");
+    dataModel.put("reportData", ...);
+    ```
+
+  * **Use Conditionals in the Template**: Your main template uses `if`/`elseif` to select the macro or rendering path.
+
+    ```html
+    <#import "layout_macros.ftlh" as layouts>
+
+    <#if layoutType == "2_COLUMN_SUMMARY">
+      <h2>Summary View</h2>
+      <@layouts.customTable dataList=reportData columns=2/>
+
+    <#elseif layoutType == "3_COLUMN_DETAIL">
+      <h2>Detailed View</h2>
+      <@layouts.customTable dataList=reportData columns=3/>
+
+    <#elseif layoutType == "MULTI_LEVEL_TABLE">
+      <#-- For very unique structures, call a dedicated, separate macro -->
+      <@layouts.multiLevelTable dataList=reportData/>
+
+    <#else>
+      <p>Error: Unknown layout type: ${layoutType}</p>
+    </#if>
+    ```
+
+## 3\. Dynamic Sub-Template Loading 📂
+
+For highly diverse, non-table content sections, you can dynamically load the appropriate sub-template based on the data model.
+
+  * **Define the Sub-Template Name in Data**: The data structure for a list of content blocks could contain the name of the template to render that block.
+
+    ```java
+    // Java Model
+    List<Map<String, Object>> contentBlocks = new ArrayList<>();
+    // Block 1 will use a 'text_block.ftlh'
+    contentBlocks.add(Map.of("templateName", "text_block.ftlh", "content", "A standard paragraph.")); 
+    // Block 2 will use a 'image_gallery.ftlh'
+    contentBlocks.add(Map.of("templateName", "image_gallery.ftlh", "images", List.of(...)));
+    ```
+
+  * **Loop and Include Dynamically**: Use the `templateName` variable with the `include` directive.
+
+    ```html
+    <#list contentBlocks as block>
+      <#-- The 'include' directive can take an expression! -->
+      <#include block.templateName data=block /> 
+      <hr>
+    </#list>
+    ```
+
+## 4\. Addressing Multi-Level Tables 🌳
+
+For deeply nested or multi-level tables (e.g., a table within a table cell, or grouping rows), **recursion** is the most elegant solution.
+
+  * **Recursive Macro**: Create a macro that calls itself to handle the nesting. This is perfect for rendering hierarchical data (like a file system, an organizational chart, or grouped data tables).
+
+    ```html
+    <#-- Macro for a potentially nested list/table -->
+    <#macro renderNode node>
+      <tr>
+        <td>${node.name}</td>
+        <td>${node.value}</td>
+      </tr>
+      <#-- Check if this node has children -->
+      <#if node.children?? && node.children?size > 0>
+        <#list node.children as child>
+          <@renderNode child/> <#-- SELF-CALL (RECURSION) -->
+        </#list>
+      </#if>
+    </#macro>
+
+    <table>
+      <@renderNode treeRoot/>
+    </table>
+    ```
+
+By implementing **Macros**, **Data-Driven Logic**, and **Dynamic Includes**, you can drastically reduce the number of templates you need to maintain, moving from a template-per-layout system to a **component-based, single-template** system.
