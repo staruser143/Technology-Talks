@@ -1,0 +1,156 @@
+Below is the **JSONata-based version** of the medical enrollment mapping.
+This mirrors the same behavior as the JSONPath/YAML version — **including dynamic dependents**, masking SSN, extracting nested fields, and gracefully handling missing dependents.
+
+JSONata is extremely well-suited for this case because:
+
+* It handles **optional values cleanly** (no errors if a dependent doesn't exist).
+* It supports **functional transformations** inline.
+* It supports **iteration, filtering, and safe indexing** naturally.
+* It can produce a **single flattened object** for AcroForm PDFs very elegantly.
+
+---
+
+# ✅ **Medical Enrollment Mapping Using JSONata**
+
+Below is a JSONata script that transforms an input enrollment JSON into a **flat object** for PDF merging.
+
+```jsonata
+{
+  /* ------------------------
+     Subscriber
+     ------------------------ */
+  "subscriberFirstName": subscriber.name.first,
+  "subscriberLastName": subscriber.name.last,
+  "subscriberDOB": subscriber.dob,
+  "subscriberSSN": maskSSN(subscriber.ssn),
+  "subscriberGender": subscriber.gender,
+  "subscriberPhone": contacts.phone,
+  "subscriberEmail": contacts.email,
+
+  /* ------------------------
+     Address
+     ------------------------ */
+  "addressLine1": address.line1,
+  "addressLine2": address.line2,
+  "city": address.city,
+  "state": address.state,
+  "zip": address.zip,
+
+  /* ------------------------
+     Coverage
+     ------------------------ */
+  "planName": coverage.planName,
+  "planStartDate": formatDate(coverage.startDate),
+
+  /* ------------------------
+     Dependents (Dynamic)
+     Support up to 3 dependents
+     Missing ones automatically evaluate to null/empty
+     ------------------------ */
+
+  /* Dependent #1 */
+  "dependent1FirstName": dependents[0].name.first,
+  "dependent1LastName": dependents[0].name.last,
+  "dependent1DOB": dependents[0].dob,
+  "dependent1Relationship": dependents[0].relationship,
+
+  /* Dependent #2 */
+  "dependent2FirstName": dependents[1].name.first,
+  "dependent2LastName": dependents[1].name.last,
+  "dependent2DOB": dependents[1].dob,
+  "dependent2Relationship": dependents[1].relationship,
+
+  /* Dependent #3 */
+  "dependent3FirstName": dependents[2].name.first,
+  "dependent3LastName": dependents[2].name.last,
+  "dependent3DOB": dependents[2].dob,
+  "dependent3Relationship": dependents[2].relationship
+}
+
+/* ------------------------
+   Helper Functions
+   These are defined once
+   and reused inside expressions
+   ------------------------ */
+(
+  /* Mask SSN → ***-**-1234 */
+  maskSSN := function($ssn) {
+    $exists($ssn) ? ("***-**-" & $substring($ssn, -4)) : ""
+  };
+
+  /* Convert yyyy-MM-dd → MM/dd/yyyy */
+  formatDate := function($d) {
+    $exists($d) ? (
+      $year := $substring($d, 0, 4);
+      $month := $substring($d, 5, 7);
+      $day := $substring($d, 8, 10);
+      $month & "/" & $day & "/" & $year
+    ) : ""
+  };
+)
+```
+
+---
+
+# 🔍 **Why JSONata Handles Dynamic Dependents Perfectly**
+
+In JSONata:
+
+```jsonata
+dependents[0].name.first
+```
+
+If `dependents[0]` does **not exist**, the expression simply evaluates to `null`, not an error.
+This means:
+
+* 0 dependents → all dependent fields become `null` or empty
+* 1 dependent → only dependent1 fields get filled
+* 3 dependents → all 3 fill cleanly
+
+No transforms, no safeIndex, no special functions required.
+
+This is a major advantage compared to JSONPath which throws exceptions on missing index.
+
+---
+
+# ⭐ **JSONPath Version vs JSONata Version — Comparison**
+
+| Feature                 | JSONPath                     | JSONata                           |
+| ----------------------- | ---------------------------- | --------------------------------- |
+| Nested field extraction | Good                         | Excellent                         |
+| Dynamic dependents      | Requires helpers (safeIndex) | Native, automatic                 |
+| Transformations         | Needs Java layer             | Built-in scripting                |
+| Complex logic           | Difficult                    | Very elegant                      |
+| Conditional evaluation  | Heavy                        | Natural (`? :`)                   |
+| Array filtering         | Good                         | Great (SQL-like functional style) |
+| Output flattened object | Requires code                | Native JSONata object literal     |
+
+---
+
+# 🚀 **JSONata Advantages for Your Usecase**
+
+### ✔ Best-in-class for mapping JSON → JSON
+
+### ✔ Perfect for transforming nested enrollment data
+
+### ✔ Cleanest handling of optional and dynamic fields
+
+### ✔ Supports inline functions (masking, date extraction, criteria-based selection)
+
+### ✔ Reduces Java code complexity
+
+### ✔ Result is a single flat object ready for PDF AcroForm
+
+---
+
+# 👉 Want More?
+
+I can also generate:
+
+🔹 A **JSONata mapping** that supports **unlimited dependents** (loops)
+🔹 JSONata mapping that produces **"dependent_N_" keys dynamically**
+🔹 JSONata with **criteria-based dependent selection** (e.g., spouse, children only)
+🔹 Full Java integration code for JSONata execution
+🔹 Benchmark comparison of JSONPath vs JSONata vs custom Java transforms
+
+Just tell me which one you want next.
