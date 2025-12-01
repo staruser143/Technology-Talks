@@ -1,0 +1,306 @@
+Here's a healthcare-specific design that leverages composition patterns for your multi-dimensional complexity:
+
+1. Multi-Dimensional Template Architecture
+
+Core Dimensions:
+
+· Product Type: Medical, Dental, Vision
+· Market Segment: Individual, Small Group, Large Group, Medicare
+· Geographic: Federal, State-specific, County-specific
+· Plan Attributes: HMO, PPO, EPO, HDHP
+
+2. Hierarchical Composition Strategy
+
+```
+templates/
+├── base/
+│   ├── base_enrollment.yaml          # Universal enrollment fields
+│   └── base_eligibility.yaml         # Common eligibility rules
+├── products/
+│   ├── medical/
+│   │   ├── base_medical.yaml
+│   │   ├── hmo_medical.yaml
+│   │   └── ppo_medical.yaml
+│   ├── dental/
+│   │   ├── base_dental.yaml
+│   │   └── ortho_dental.yaml
+│   └── vision/
+│       ├── base_vision.yaml
+│       └── premium_vision.yaml
+├── markets/
+│   ├── individual/
+│   │   ├── base_individual.yaml
+│   │   └── aca_individual.yaml
+│   ├── small_group/
+│   │   ├── base_small_group.yaml
+│   │   └── shop_small_group.yaml
+│   ├── large_group/
+│   │   └── base_large_group.yaml
+│   └── medicare/
+│       ├── medicare_advantage.yaml
+│       └── medicare_supplement.yaml
+├── states/
+│   ├── ca/                           # California specific
+│   │   ├── ca_required.yaml
+│   │   ├── ca_medical.yaml
+│   │   └── ca_individual.yaml
+│   ├── tx/                           # Texas specific
+│   └── ny/                           # New York specific
+└── specific/
+    ├── templates/                    # Final composed templates
+    └── overrides/                    # One-off customizations
+```
+
+3. Smart Template Composition
+
+```yaml
+# templates/specific/ca_individual_medical_hmo.yaml
+_metadata:
+  description: "California Individual Market Medical HMO Plan"
+  dimensions:
+    product: "medical"
+    market: "individual" 
+    state: "CA"
+    plan_type: "hmo"
+
+includes:
+  - "base/base_enrollment"
+  - "products/medical/base_medical"
+  - "products/medical/hmo_medical"
+  - "markets/individual/base_individual"
+  - "markets/individual/aca_individual"
+  - "states/ca/ca_required"
+  - "states/ca/ca_medical"
+  - "states/ca/ca_individual"
+
+overrides:
+  # California-specific overrides
+  premium_calculation: "california.standard_premium_calc"
+  community_rating: "ca_community_rating_rules"
+  
+additions:
+  ca_specific_fields:
+    covered_children_age_limit: "until_age_26"
+    mental_health_parity: "required"
+    essential_health_benefits: "ca_ehb_bundle"
+```
+
+4. Dimension-Aware Template Resolver
+
+```python
+class HealthcareTemplateResolver:
+    def __init__(self, template_registry):
+        self.registry = template_registry
+        
+    def resolve_for_context(self, context):
+        """
+        Context: {
+            'product': 'medical',
+            'market': 'individual', 
+            'state': 'CA',
+            'plan_type': 'hmo',
+            'year': 2024
+        }
+        """
+        # Auto-discover appropriate templates based on context
+        template_components = self.discover_components(context)
+        return self.compose_template(template_components, context)
+    
+    def discover_components(self, context):
+        components = []
+        
+        # Base enrollment (always included)
+        components.append("base/base_enrollment")
+        
+        # Product type
+        components.append(f"products/{context['product']}/base_{context['product']}")
+        if context.get('plan_type'):
+            components.append(f"products/{context['product']}/{context['plan_type']}_{context['product']}")
+        
+        # Market segment
+        components.append(f"markets/{context['market']}/base_{context['market']}")
+        
+        # State requirements
+        components.append(f"states/{context['state'].lower()}/{context['state'].lower()}_required")
+        
+        # State-specific product/market variations
+        state_specific = f"states/{context['state'].lower()}/{context['state'].lower()}_{context['product']}"
+        if self.registry.exists(state_specific):
+            components.append(state_specific)
+            
+        return components
+```
+
+5. Healthcare-Specific Field Categorization
+
+```yaml
+# categories/member_demographics.yaml
+member_demographics:
+  personal_info:
+    member_name:
+      first_name: "member.name.first"
+      middle_name: "member.name.middle" 
+      last_name: "member.name.last"
+      suffix: "member.name.suffix"
+    demographic:
+      date_of_birth: "member.demographics.dob"
+      gender: "member.demographics.gender"
+      ssn: "member.demographics.ssn"
+  
+  contact_info:
+    address: "member.contact.address"
+    phone: "member.contact.phone"
+    email: "member.contact.email"
+
+# categories/plan_selection.yaml  
+plan_selection:
+  product_type: "enrollment.product.type"
+  plan_id: "enrollment.plan.id"
+  effective_date: "enrollment.coverage.effective_date"
+  termination_date: "enrollment.coverage.termination_date"
+  
+# categories/aca_requirements.yaml
+aca_requirements:
+  metal_tier: "plan.characteristics.metal_tier"
+  essential_health_benefits: "plan.benefits.ehb"
+  cost_sharing: "plan.cost_sharing.levels"
+```
+
+6. State-Specific Variation Handling
+
+```yaml
+# states/ca/ca_required.yaml
+state_requirements:
+  california_specific:
+    # CA mandates
+    dependent_coverage_age: "until_age_26"
+    infertility_coverage: "required"
+    autism_behavioral_health: "mandated"
+    translation_services: "required"
+    
+  reporting:
+    dmhc_reporting: "ca_dmhc_requirements"
+    covered_california: "aca_exchange_rules"
+
+# states/tx/tx_required.yaml  
+state_requirements:
+  texas_specific:
+    balance_billing_protections: "specific_rules"
+    surprise_billing: "texas_mediation"
+    
+# states/ny/ny_required.yaml
+state_requirements:
+  new_york_specific:
+    community_rating: "age_band_3_to_1"
+    essential_health_benefits: "ny_state_specific"
+    abortion_coverage: "optional_rider"
+```
+
+7. Market Segment Specializations
+
+```yaml
+# markets/individual/aca_individual.yaml
+aca_individual:
+  eligibility:
+    citizenship_status: "applicant.citizenship.verified"
+    incarceration_status: "applicant.incarceration"
+    tax_household: "applicant.tax_household.size"
+    
+  financial_assistance:
+    aptc_eligibility: "financial.assistance.aptc"
+    csr_eligibility: "financial.assistance.csr"
+    fpl_percentage: "financial.assistance.fpl_percentage"
+
+# markets/small_group/shop_small_group.yaml
+shop_small_group:
+  employer_info:
+    fein: "employer.identification.fein"
+    business_size: "employer.business.size"
+    employee_count: "employer.employee.count"
+    
+  contribution_rules:
+    employer_contribution: "employer.contribution.percentage"
+    minimum_participation: "employer.participation.requirement"
+```
+
+8. Product-Specific Field Groups
+
+```yaml
+# products/medical/hmo_medical.yaml
+hmo_medical:
+  network_requirements:
+    pcp_requirement: "plan.network.requires_pcp"
+    referral_required: "plan.network.referrals_required"
+    service_area: "plan.network.service_area"
+    
+  benefits:
+    preventive_care: "plan.benefits.preventive_100"
+    specialist_visits: "plan.benefits.specialist_copay"
+    emergency_services: "plan.benefits.emergency_copay"
+
+# products/dental/ortho_dental.yaml  
+ortho_dental:
+  orthodontics:
+    age_limits: "plan.benefits.ortho.age_limit"
+    lifetime_maximum: "plan.benefits.ortho.lifetime_max"
+    waiting_period: "plan.benefits.ortho.waiting_period"
+```
+
+9. Dynamic Template Generation
+
+```python
+class HealthcareTemplateFactory:
+    def create_enrollment_template(self, product, market, state, plan_attributes):
+        # Generate template ID based on dimensions
+        template_id = f"{state}_{market}_{product}_{plan_attributes.get('plan_type', 'standard')}"
+        
+        if not self.registry.exists(template_id):
+            # Auto-generate template composition
+            template_def = {
+                'includes': self.calculate_components(product, market, state, plan_attributes),
+                'metadata': {
+                    'product': product,
+                    'market': market,
+                    'state': state,
+                    'plan_attributes': plan_attributes
+                }
+            }
+            self.registry.register_template(template_id, template_def)
+        
+        return template_id
+```
+
+10. Validation and Compliance
+
+```yaml
+# compliance/state_rules.yaml
+california:
+  required_fields:
+    - "translation_services_acknowledgment"
+    - "dmhc_licensing_disclosure"
+    - "surprise_billing_protections"
+    
+new_york:
+  required_fields:
+    - "community_rating_disclosure"
+    - "abortion_coverage_option"
+    - "ny_state_network_adequacy"
+
+# compliance/federal_rules.yaml  
+aca_federal:
+  required_fields:
+    - "essential_health_benefits_summary"
+    - "summary_of_benefits_coverage"
+    - "metal_tier_disclosure"
+```
+
+Benefits of This Approach:
+
+1. Massive Reuse: Common fields defined once, used across multiple templates
+2. Clear Separation: Product logic separate from market rules separate from state requirements
+3. Maintainability: Change California rules in one place, affects all CA templates
+4. Scalability: Easy to add new states, products, or market segments
+5. Compliance: Ensures all required fields for each jurisdiction
+6. Consistency: Same field mappings across similar products/markets
+
+This design handles your multi-dimensional complexity while maximizing reuse and maintaining clear separation of concerns.
