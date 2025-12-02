@@ -1,0 +1,475 @@
+Absolutely—**a schema‑driven YAML config** pairs very well with Freemarker to render layouts and content at runtime. The idea is:
+
+1.  **Define a YAML schema** (what layouts, zones/slots, components, and rules look like).
+2.  **Validate YAML** against a **JSON Schema** at load time (so configs are safe and predictable).
+3.  **Normalize** the YAML to a simple `Map` (resolve conditions/flags, data paths).
+4.  **Pass** `{ model, config }` to a **generic Freemarker template** that renders using your registry of components and layouts.
+
+Below is a full, production‑ready pattern.
+
+***
+
+## 1) YAML: Config (data‑driven layout)
+
+**`layout-page.yaml`**
+
+```yaml
+apiVersion: layout.v1
+metadata:
+  id: "featured-products"
+  title: "Featured Products"
+  version: 3
+  locale: "en-IN"
+
+features:
+  showHeader: true
+  showFooter: true
+
+layout:
+  type: grid
+  columns: 3
+  # Optional zones for slot routing
+  zones:
+    header:
+      - component: banner
+        dataPath: header
+        conditions:
+          requiredField: "title"
+    footer:
+      - component: banner
+        dataPath: footer
+        conditions:
+          requiredField: "note"
+
+  # Main content rules
+  rules:
+    - component: banner
+      dataPath: promo
+      conditions:
+        requiredField: "title"
+    - component: product-card
+      dataPath: products
+      conditions:
+        minItems: 1
+      variant: compact  # choose a variant at runtime
+
+# You can add visibility flags or AB experiments here
+visibility:
+  showPromoBanner: true
+  showRating: false
+```
+
+> **Notes**
+>
+> *   `dataPath` should be **simple keys** (e.g., `products`) resolved in the backend. Avoid JSONPath inside templates—do that in code to keep Freemarker logic shallow.
+> *   `conditions` are **limited, declarative keys** (e.g., `minItems`, `requiredField`) that templates can check easily. Complex business logic should be computed in backend as booleans (e.g., `enabled`).
+
+***
+
+## 2) JSON Schema: Validate your YAML upfront
+
+**`layout-page.schema.json`** (excerpt)
+
+```json
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Layout Page Config",
+  "type": "object",
+  "required": ["apiVersion", "metadata", "layout"],
+  "properties": {
+    "apiVersion": { "type": "string", "pattern": "^layout\\.v\\d+$" },
+    "metadata": {
+      "type": "object",
+      "required": ["id", "title"],
+      "properties": {
+        "id": { "type": "string" },
+        "title": { "type": "string" },
+        "version": { "type": "integer" },
+        "locale": { "type": "string" }
+      }
+    },
+    "features": {
+      "type": "object",
+      "properties": {
+        "showHeader": { "type": "boolean" },
+        "showFooter": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "visibility": { "type": "object", "additionalProperties": { "type": "boolean" } },
+    "layout": {
+      "type": "object",
+      "required": ["type", "rules"],
+      "properties": {
+        "type": { "type": "string", "enum": ["grid", "list", "single"] },
+        "columns": { "type": "integer", "minimum": 1, "maximum": 12 },
+        "zones": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": { "$ref": "#/$defs/rule" }
+          }
+        },
+        "rules": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/rule" },
+          "minItems": 1
+        }
+      }
+    }
+  },
+  "$defs": {
+    "rule": {
+      "type": "object",
+      "required": ["component", "dataPath"],
+      "properties": {
+        "component": { "type": "string" },
+        "dataPath": { "type": "string" },
+        "variant": { "type": "string" },
+        "conditions": {
+          "type": "object",
+          "properties": {
+            "requiredField": { "type": "string" },
+            "minItems": { "type": "integer", "minimum": 0 }
+          },
+          "additionalProperties": false
+        },
+        "enabled": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
+```
+
+> Validating config at startup or publish time gives you **strong guarantees** and prevents runtime surprises.
+
+***
+
+## 3) Java/Kotlin: Load + Validate + Normalize YAML
+
+Use SnakeYAML (for YAML), Jackson (optional), and a JSON Schema validator (e.g., everit or networknt).
+
+### Maven deps (examples)
+
+```xml
+<dependency>
+  <groupId>org.yaml</groupId>
+  <artifactId>snakeyaml</artifactId>
+  <version>2.2</version>
+</dependency>
+<dependency>
+  <groupId>com.networknt</groupId>
+  <artifactId>json-schema-validator</artifactId>
+  <version>1.0.86</version>
+</dependency>
+<dependency>
+  <groupId>org.freemarker</groupId>
+  <artifactId>freemarker</artifactId>
+  <version>2.3.32</version>
+</dependency>
+```
+
+### Loader & Validator (Java)
+
+```java
+import freemarker.template.*;
+import org.yaml.snakeyaml.Yaml;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import com.networknt.schema.*;
+
+import java.io.*;
+import java.util.*;
+
+public class LayoutRenderer {
+
+  private final Configuration fm;
+
+  public LayoutRenderer() throws Exception {
+    fm = new Configuration(Configuration.VERSION_2_3_32);
+    fm.setClassLoaderForTemplateLoading(
+      Thread.currentThread().getContextClassLoader(), "");
+    fm.setDefaultEncoding("UTF-8");
+    fm.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
+  }
+
+  @SuppressWarnings("unchecked")
+  public Map<String, Object> loadYaml(String yamlPath) throws IOException {
+    // SnakeYAML -> Map
+    Yaml yaml = new Yaml();
+    try (InputStream in = getClass().getClassLoader().getResourceAsStream(yamlPath)) {
+      return yaml.load(in);
+    }
+  }
+
+  public void validateAgainstSchema(Map<String, Object> config, String schemaPath) throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V202012);
+
+    try (InputStream sIn = getClass().getClassLoader().getResourceAsStream(schemaPath)) {
+      JsonSchema schema = factory.getSchema(mapper.readTree(sIn));
+      Set<ValidationMessage> errors = schema.validate(mapper.valueToTree(config));
+      if (!errors.isEmpty()) {
+        throw new IllegalArgumentException("Config validation failed: " + errors);
+      }
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  public Map<String, Object> normalizeConfig(Map<String, Object> cfg, Map<String, Object> model) {
+    // Example normalization: compute 'enabled' based on simple conditions
+    Map<String, Object> layout = (Map<String, Object>) cfg.get("layout");
+    List<Map<String, Object>> rules = (List<Map<String, Object>>) layout.get("rules");
+
+    for (Map<String, Object> rule : rules) {
+      Map<String, Object> cond = (Map<String, Object>) rule.getOrDefault("conditions", Map.of());
+      String dataPath = (String) rule.get("dataPath");
+
+      Object data = model.get(dataPath);
+      boolean enabled = true;
+
+      if (cond.containsKey("requiredField")) {
+        String field = (String) cond.get("requiredField");
+        if (!(data instanceof Map) || !((Map<?, ?>) data).containsKey(field)) {
+          enabled = false;
+        }
+      }
+      if (cond.containsKey("minItems")) {
+        int min = (int) cond.get("minItems");
+        if (!(data instanceof List) || ((List<?>) data).size() < min) {
+          enabled = false;
+        }
+      }
+      rule.put("enabled", enabled);
+    }
+
+    return cfg;
+  }
+
+  public String render(Map<String, Object> model, Map<String, Object> config) throws Exception {
+    Template tpl = fm.getTemplate("templates/pages/dynamic-page.ftl");
+    Map<String, Object> dataModel = new HashMap<>();
+    dataModel.put("model", model);
+    dataModel.put("config", config);
+    dataModel.put("site", Map.of("title", "Store", "org", "Acme Inc."));
+    dataModel.put("lang", config.getOrDefault("metadata", Map.of()));
+
+    try (StringWriter out = new StringWriter()) {
+      tpl.process(dataModel, out);
+      return out.toString();
+    }
+  }
+}
+```
+
+> In **`normalizeConfig`**, you precompute `enabled` flags so the Freemarker side remains simple.
+
+***
+
+## 4) Freemarker: Use the YAML‑driven config
+
+**Helpers** (`templates/base/helpers.ftl`)
+
+```ftl
+<#-- Null-safe get -->
+<#function get obj key defaultVal>
+  <#if obj?has_content && obj[key]?has_content>
+    <#return obj[key]>
+  <#else>
+    <#return defaultVal>
+  </#if>
+</#function>
+
+<#-- Component loader with fallback -->
+<#macro renderComponent name props>
+  <#assign path = "templates/components/" + name + ".ftl" />
+  <#attempt>
+    <#include path>
+    <@component props=props />
+  <#recover>
+    <div class="component-missing">Missing component: ${name}</div>
+  </#recover>
+</#macro>
+```
+
+**Layout resolver** (`templates/layouts/layout-resolver.ftl`)
+
+```ftl
+<#import "../base/helpers.ftl" as H />
+
+<#macro resolveLayout config model>
+  <#assign layout = config.layout />
+  <#switch layout.type!'list'>
+    <#case 'grid'>
+      <#include "grid.ftl">
+      <@layout config=layout model=model />
+      <#break>
+    <#case 'single'>
+      <#include "single.ftl">
+      <@layout config=layout model=model />
+      <#break>
+    <#default>
+      <#include "list.ftl">
+      <@layout config=layout model=model />
+  </#switch>
+</#macro>
+```
+
+**Grid layout** (`templates/layouts/grid.ftl`)
+
+```ftl
+<#import "../base/helpers.ftl" as H />
+
+<#macro layout config model>
+  <div class="grid grid-cols-${config.columns!3}">
+    <#list config.rules?filter(r -> r.enabled?boolean) as rule>
+      <#assign items = H.get(model, rule.dataPath, []) />
+      <#if items?is_sequence>
+        <#list items as item>
+          <div class="grid-item">
+            <@H.renderComponent name=(rule.variant?has_content?then(rule.component + "-" + rule.variant, rule.component)) props=item />
+          </div>
+        </#list>
+      <#else>
+        <div class="grid-item">
+          <@H.renderComponent name=(rule.variant?has_content?then(rule.component + "-" + rule.variant, rule.component)) props=items />
+        </div>
+      </#if>
+    </#list>
+  </div>
+</#macro>
+```
+
+**Entry page** (`templates/pages/dynamic-page.ftl`)
+
+```ftl
+<#include "../base/base.ftl">
+<#import "../base/helpers.ftl" as H />
+<#import "../layouts/layout-resolver.ftl" as L />
+
+<#block title>${H.get(config.metadata, 'title', 'Dynamic Page')}</#block>
+
+<#block content>
+  <#assign vis = config.visibility!{} />
+  <#assign features = config.features!{} />
+
+  <#-- Header zone -->
+  <#if features.showHeader?boolean && config.layout.zones?has_content && config.layout.zones.header?has_content>
+    <#list config.layout.zones.header as rule>
+      <#if rule.enabled?boolean>
+        <@H.renderComponent name=rule.component props=H.get(model, rule.dataPath, {}) />
+      </#if>
+    </#list>
+  </#if>
+
+  <@L.resolveLayout config=config model=model />
+
+  <#-- Footer zone -->
+  <#if features.showFooter?boolean && config.layout.zones?has_content && config.layout.zones.footer?has_content>
+    <#list config.layout.zones.footer as rule>
+      <#if rule.enabled?boolean>
+        <@H.renderComponent name=rule.component props=H.get(model, rule.dataPath, {}) />
+      </#if>
+    </#list>
+  </#if>
+</#block>
+```
+
+***
+
+## 5) Example Components
+
+**`templates/components/product-card.ftl`**
+
+```ftl
+<#macro component props>
+  <article class="product-card" data-id="${props.id!}">
+    ${props.imageUrl!
+    <h3>${props.name!'Unnamed'}</h3>
+    <div class="meta">
+      <span class="price">${props.price!?string.currency}</span>
+      <#if (props.rating?has_content) && (props.showRating?boolean)>
+        <span class="rating">${props.rating}/5</span>
+      </#if>
+    </div>
+  </article>
+</#macro>
+```
+
+**Variant example**: `templates/components/product-card-compact.ftl`
+
+```ftl
+<#macro component props>
+  <article class="product-card compact" data-id="${props.id!}">
+    <h4>${props.name!'Unnamed'}</h4>
+    <span class="price">${props.price!?string.currency}</span>
+  </article>
+</#macro>
+```
+
+***
+
+## 6) Data Model (from backend)
+
+```json
+{
+  "promo": { "title": "Holiday Sale", "message": "Up to 50% off!", "style": "success" },
+  "products": [
+    { "id": "P001", "name": "Widget A", "imageUrl": "/img/a.png", "price": 1999, "rating": 4.5, "showRating": false },
+    { "id": "P002", "name": "Widget B", "imageUrl": "/img/b.png", "price": 2999, "rating": 4.2, "showRating": false }
+  ],
+  "header": { "title": "Welcome" },
+  "footer": { "note": "Terms apply." }
+}
+```
+
+> You can inject visibility flags (e.g., `showRating`) per item during normalization based on `config.visibility`.
+
+***
+
+## 7) Operational Best Practices
+
+*   **Validation & Governance**
+    *   Validate YAML via JSON Schema **on publish** and **on startup**.
+    *   Version configs (`metadata.version`) and support migrations.
+*   **Normalization**
+    *   Resolve `dataPath` (arrays, filters) **in backend**; pass clean structures to templates.
+    *   Compute `rule.enabled` from conditions & business rules; avoid complex Freemarker logic.
+*   **Component Registry**
+    *   Naming convention: file = `components/{component}(-{variant}).ftl`, macro name `component`.
+    *   Log missing components; render fallback.
+*   **Caching**
+    *   Cache parsed & validated configs (e.g., in memory with TTL) for performance.
+*   **Security**
+    *   Treat YAML as **content**, not code. Do **not** evaluate arbitrary expressions in templates.
+    *   Escape user-provided strings; Freemarker is not an HTML sanitizer—use safe rendering practices.
+*   **Localization**
+    *   Keep i18n outside Freemarker where possible (keys -> strings map) or pass localized strings in `model`.
+
+***
+
+## 8) Optional: Spring Boot Integration
+
+If you prefer Spring Boot:
+
+```java
+// YAML to POJO
+@ConfigurationProperties(prefix = "layout")
+public class LayoutProperties {
+  private Map<String, Object> page;
+  // getters/setters
+}
+
+// Then bind with @EnableConfigurationProperties(LayoutProperties.class)
+// Or load external YAMLs via ResourceLoader and the same validate+normalize pipeline.
+```
+
+***
+
+## Wrap‑up
+
+Yes—you can **use schema‑driven YAML** to fully control Freemarker rendering at runtime, **without exploding templates**. The core is: **validate** → **normalize** → **render** using a **generic template + component registry**.
+
+If you share a sample page type (e.g., **checkout**, **support ticket**, **marketing landing**) I can tailor the YAML schema (`rules`, `conditions`, `zones`) and drop in component examples aligned to your domain.
