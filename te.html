@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<style>
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th, td {
+    border: 1px solid #444;
+    padding: 4px;
+    text-align: center;
+}
+
+/* Critical for rotation */
+th {
+    height: 140px;                 /* gives enough space for rotated content */
+    overflow: visible !important;  /* avoid clipping by FS renderer */
+}
+
+/* Rotated text wrapper */
+.v-header {
+    display: inline-block;         /* must be inline-block */
+    transform: rotate(-90deg);
+    transform-origin: left bottom; /* best alignment for 1.0.10 */
+    white-space: nowrap;           /* keeps text in one line */
+}
+</style>
+</head>
+<body>
+
+<h3>Vertical Table Headers (OpenHTMLToPDF 1.0.10)</h3>
+
+<table>
+    <thead>
+    <tr>
+        <th><div class="v-header">Employee Name</div></th>
+        <th><div class="v-header">Department</div></th>
+        <th><div class="v-header">Joining Date</div></th>
+        <th><div class="v-header">Active</div></th>
+    </tr>
+    </thead>
+    <tbody>
+    <#list employees as emp>
+    <tr>
+        <td>${emp.name}</td>
+        <td>${emp.department}</td>
+        <td>${emp.joiningDate}</td>
+        <td>${emp.active?string("Yes", "No")}</td>
+    </tr>
+    </#list>
+    </tbody>
+</table>
+
+</body>
+</html>
