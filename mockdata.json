@@ -1,0 +1,923 @@
+{
+    "configName": "enrollment-multi-product",
+    "payload": {
+        "application": {
+            "acn": "X00000000000000",
+            "applicationVersion": "OFF_HIX_CT_2027",
+            "state": "CT",
+            "formNo": "OFF_HIX_CT_2027",
+            "versionNo": "2027",
+            "releaseNo": "R25_01_01_2022",
+            "isMGA": "NO",
+            "isAgentAssisted": "YES",
+            "isAgentSubmitted": "YES",
+            "isApplyingForOthers": "NO",
+            "isAgentRecall": "NO",
+            "isFamilyElect": "YES",
+            "rateTier": "Tier1",
+            "premiumAmt": 1234.56,
+            "campaignId": "MOCK1",
+            "brandName": "MOCKBRAND",
+            "applicationType": "ONEXCHANGE",
+            "reqEffDate": "2027-01-01",
+            "futureReqEffDate": "2027-02-01",
+            "accessControlList": [
+                {
+                    "accessType": "OWNER",
+                    "user": {
+                        "userId": "mock-user-id-123",
+                        "shopperRole": "CONSUMER"
+                    }
+                }
+            ],
+            "lastUpdatedId": "mock-user-id-123",
+            "lastUpdatedTS": "2025-11-19",
+            "lastPageAccessed": "page1",
+            "agent": {
+                "id": 999999,
+                "agentId": "AGENT123",
+                "agentTIN": "TINMOCK123",
+                "agentUserId": "mock-user-id-123",
+                "adeAgentId": "ADE123",
+                "firstName": "Mock",
+                "lastName": "Agent",
+                "mi": "M",
+                "isMGA": "NO",
+                "agencyName": "Mock Agency",
+                "phoneNo": "123-456-7890",
+                "faxNo": "123-456-7891",
+                "emailAddress": "mock.agent@example.com",
+                "parentAgent": null,
+                "isAssistApplicant": "NO",
+                "address": {
+                    "id": 1,
+                    "addressLine1": "123 Mock St",
+                    "city": "Mockville",
+                    "state": "CT",
+                    "postalCode": "00000"
+                },
+                "agentType": "NONE",
+                "issuedPolicies": [],
+                "isIndvFaceToFaceAppt": "NONE",
+                "voiceVaultConfirmationNo": null,
+                "action": "NONE"
+            },
+            "applicant": [
+                {
+                    "id": 1001,
+                    "memberCode": 1,
+                    "demographic": {
+                        "lastName": "Applicant",
+                        "firstName": "Alice",
+                        "mi": "A",
+                        "dateOfBirth": "1980-01-01",
+                        "ssn": "111111111",
+                        "gender": "FEMALE",
+                        "maritalStatus": "Married",
+                        "relationshipType": "APPLICANT",
+                        "emailAddress": "alice.applicant@example.com"
+                    },
+                    "ethnicity1": "21",
+                    "ethnicity2": "22",
+                    "ethnicity3": "23",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "5",
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "address": [
+                        {
+                            "id": 2001,
+                            "addressLine1": "1 MAILING St",
+                            "city": "CityA",
+                            "state": "CT",
+                            "postalCode": "06001",
+                            "addressType": "MAILING"
+                        },
+                        {
+                            "id": 2001,
+                            "addressLine1": "1 HOME St",
+                            "city": "CityA",
+                            "state": "CT",
+                            "postalCode": "06001",
+                            "addressType": "HOME"
+                        },
+                        {
+                            "id": 2001,
+                            "addressLine1": "1 BILLING St",
+                            "city": "CityA",
+                            "state": "CT",
+                            "postalCode": "06001",
+                            "addressType": "BILLING"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1001,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1001",
+                                "planName": "Mock Silver HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 100.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397",
+                                "covIssuerPhone": "111",
+                                "covPlanType": "TESTING",
+                                "covGroupNumber": "TESTGroup"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 45
+                },
+                {
+                    "id": 1002,
+                    "memberCode": 2,
+                    "demographic": {
+                        "lastName": "Partner",
+                        "firstName": "Bob",
+                        "mi": "B",
+                        "dateOfBirth": "1982-02-02",
+                        "ssn": "222222222",
+                        "gender": "MALE",
+                        "relationshipType": "DOMESTICPARTNER",
+                        "emailAddress": "bob.partner@example.com"
+                    },
+                    "ethnicity1": "21",
+                    "ethnicity2": "22",
+                    "ethnicity3": "23",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "5",
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "address": [
+                        {
+                            "id": 2002,
+                            "addressLine1": "2 Main St",
+                            "city": "CityB",
+                            "state": "CT",
+                            "postalCode": "06002",
+                            "addressType": "HOME"
+                        },
+                        {
+                            "id": 2002,
+                            "addressLine1": "5 Entin St",
+                            "city": "CityB",
+                            "state": "CT",
+                            "postalCode": "06002",
+                            "addressType": "BILLING"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1002,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1002",
+                                "planName": "Mock Gold HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 120.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 43
+                },
+                {
+                    "id": 1003,
+                    "memberCode": 3,
+                    "demographic": {
+                        "lastName": "Child1",
+                        "firstName": "Charlie",
+                        "mi": "C",
+                        "dateOfBirth": "2010-03-03",
+                        "ssn": "333333333",
+                        "gender": "MALE",
+                        "relationshipType": "CHILD",
+                        "emailAddress": "charlie.child1@example.com"
+                    },
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "ethnicity1": "23",
+                    "ethnicity2": "24",
+                    "ethnicity3": "20",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "6",
+                    "address": [
+                        {
+                            "id": 2003,
+                            "addressLine1": "3 Main St",
+                            "city": "CityC",
+                            "state": "CT",
+                            "postalCode": "06003",
+                            "addressType": "HOME"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1003,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1003",
+                                "planName": "Mock Bronze HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 80.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 15
+                },
+                {
+                    "id": 1004,
+                    "memberCode": 4,
+                    "demographic": {
+                        "lastName": "Child2",
+                        "firstName": "Daisy",
+                        "mi": "D",
+                        "dateOfBirth": "2012-04-04",
+                        "ssn": "444444444",
+                        "gender": "FEMALE",
+                        "relationshipType": "CHILD",
+                        "emailAddress": "daisy.child2@example.com"
+                    },
+                    "ethnicity1": "23",
+                    "ethnicity2": "24",
+                    "ethnicity3": "20",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "6",
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "address": [
+                        {
+                            "id": 2004,
+                            "addressLine1": "4 Main St",
+                            "city": "CityD",
+                            "state": "CT",
+                            "postalCode": "06004",
+                            "addressType": "HOME"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1004,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1004",
+                                "planName": "Mock Child HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 60.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 13
+                },
+                {
+                    "id": 1005,
+                    "memberCode": 5,
+                    "demographic": {
+                        "lastName": "Child3",
+                        "firstName": "Evan",
+                        "mi": "E",
+                        "dateOfBirth": "2014-05-05",
+                        "ssn": "555555555",
+                        "gender": "MALE",
+                        "relationshipType": "CHILD",
+                        "emailAddress": "evan.child3@example.com"
+                    },
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "ethnicity1": "23",
+                    "ethnicity2": "24",
+                    "ethnicity3": "20",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "6",
+                    "address": [
+                        {
+                            "id": 2005,
+                            "addressLine1": "5 Main St",
+                            "city": "CityE",
+                            "state": "CT",
+                            "postalCode": "06005",
+                            "addressType": "HOME"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1005,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1005",
+                                "planName": "Mock Child HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 60.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 11
+                },
+                {
+                    "id": 1006,
+                    "memberCode": 6,
+                    "ethnicity1": "23",
+                    "ethnicity2": "24",
+                    "ethnicity3": "20",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "6",
+                    "demographic": {
+                        "lastName": "Child4",
+                        "firstName": "Fiona",
+                        "mi": "F",
+                        "dateOfBirth": "2016-06-06",
+                        "ssn": "666666666",
+                        "gender": "FEMALE",
+                        "relationshipType": "CHILD",
+                        "emailAddress": "fiona.child4@example.com"
+                    },
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "address": [
+                        {
+                            "id": 2006,
+                            "addressLine1": "6 Main St",
+                            "city": "CityF",
+                            "state": "CT",
+                            "postalCode": "06006",
+                            "addressType": "HOME"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1006,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1006",
+                                "planName": "Mock Child HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 60.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 9
+                },
+                {
+                    "id": 1007,
+                    "memberCode": 7,
+                    "ethnicity1": "23",
+                    "ethnicity2": "24",
+                    "ethnicity3": "20",
+                    "race1": "2",
+                    "race2": "4",
+                    "race3": "6",
+                    "demographic": {
+                        "lastName": "Child5",
+                        "firstName": "Grace",
+                        "mi": "G",
+                        "dateOfBirth": "2018-07-07",
+                        "ssn": "777777777",
+                        "gender": "FEMALE",
+                        "relationshipType": "CHILD",
+                        "emailAddress": "grace.child5@example.com"
+                    },
+                    "isBillingAddrSameAsHomeAddr": "YES",
+                    "address": [
+                        {
+                            "id": 2007,
+                            "addressLine1": "7 Main St",
+                            "city": "CityG",
+                            "state": "CT",
+                            "postalCode": "06007",
+                            "addressType": "HOME"
+                        }
+                    ],
+                    "planSelection": {
+                        "action": "NONE",
+                        "id": 1007,
+                        "optRider": [],
+                        "plan": [
+                            {
+                                "action": "NONE",
+                                "companyDescr": "Mock Health",
+                                "planId": "P1007",
+                                "planName": "Mock Child HMO",
+                                "planType": "HMO",
+                                "premiumAmt": 60.0,
+                                "productType": "MEDICAL"
+                            }
+                        ]
+                    },
+                    "priorCoverage": [
+                        {
+                            "id": 99526,
+                            "insCovIn63DaysStartDate": null,
+                            "isAnyMedicareCovInvolTerminated": null,
+                            "isInsCovInThePastInvolTerminated": null,
+                            "action": "NONE",
+                            "isOtherHealthCovDisability": null,
+                            "otherHealthCovDisabilityReason": "",
+                            "isReplCovPolicyInForce": "YES",
+                            "isReplCovPolicyInReplace": null,
+                            "anthemPolicy": {
+                                "id": 158402,
+                                "covPolicyNo": "12345",
+                                "covName": "test",
+                                "covGroupNo": "G1324",
+                                "covCompName": "ANTHEM",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-01",
+                                "action": "NONE",
+                                "covState": "nyc",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": "2025-10-01",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "otherHealthCovPolicy": {
+                                "id": 158404,
+                                "covPolicyNo": "1",
+                                "covName": "tesT",
+                                "covGroupNo": "G1324",
+                                "covCompName": "anthem",
+                                "covCompAddress": "test",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Group",
+                                "covPaidThruDate": "2025-10-11",
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798397"
+                            },
+                            "isEligibleForMedicare": "NO",
+                            "replCovCancelDate": null,
+                            "otherHealthCovStartDate": null,
+                            "otherHealthCovEndDate": null,
+                            "otherDentalHealthCovPolicy": {
+                                "id": 158403,
+                                "covPolicyNo": "1",
+                                "covName": "ANTHEM",
+                                "covGroupNo": "G1234",
+                                "covCompName": "anthem",
+                                "covCompAddress": "tst",
+                                "covStartDate": "2025-10-01",
+                                "covEndDate": "2025-10-31",
+                                "action": "NONE",
+                                "covState": "NYC",
+                                "covPolicyType": "Individual",
+                                "covPaidThruDate": null,
+                                "covApplicants": [],
+                                "covPhoneNo": "8625798357"
+                            },
+                            "isDentalReplCovPolicyInForce": "YES",
+                            "isSimilarDentalReplCovPolicyInForce": null,
+                            "isVisionReplCovPolicyInForce": null,
+                            "otherVisionHealthCovPolicy": null,
+                            "isDentalOrthodontiaCovPolicyInForce": null
+                        }
+                    ],
+                    "age": 7
+                }
+            ]
+        }
+    }
+}
