@@ -328,9 +328,3 @@ Copilot:
 
 ***
 
-If you want, next I can:
-
-*   Map this to **specific payer apps** (Claims, Enrollment, Care Mgmt)
-*   Create a **RACI matrix for AI usage**
-*   Propose **AI guardrails for HIPAA / PHI**
-*   Provide a **pilot rollout plan for Cognizant‑style delivery teams**
