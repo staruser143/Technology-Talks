@@ -86,12 +86,3 @@ And keep **Windsurf (optional)** for:
 
 ***
 
-## Quick question to tailor this to your payer SDLC
-
-When you say “orchestrate changes across files,” which scenario are you thinking of?
-
-1.  **Feature work** (controller + service + repo + tests)
-2.  **Modernization/refactor** (rename domain concepts across modules, upgrade frameworks, split a service)
-3.  **Regulatory change** (benefit rules/pricing logic touching batch + API + reporting)
-
-If you tell me which one (or all), I’ll map **exactly how Copilot Agent mode vs Windsurf Cascade** performs and what guardrails you’d want in a healthcare payer environment.
