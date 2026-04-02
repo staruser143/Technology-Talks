@@ -1,0 +1,46 @@
+Here’s an **exam‑oriented “Correct vs Distractor” table** for **AWS Placement Groups**, tuned for **Associate → Professional** level questions.
+
+***
+
+## AWS Placement Groups — ✅ Correct vs ❌ Distractor Exam Table
+
+| Scenario / Requirement                                                                     | ✅ Correct Choice                 | ❌ Common Distractor                      | Why Correct                                                                                     | Why Distractor Is Wrong                                   |
+| ------------------------------------------------------------------------------------------ | -------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| Need **lowest possible latency** and **highest network throughput** between instances      | **Cluster placement group**      | Spread placement group                   | Cluster places instances physically close (same rack / few racks) for microsecond‑level latency | Spread prioritizes fault isolation, not performance       |
+| Running **HPC / MPI / ML training** workload in a single AZ                                | **Cluster placement group**      | Partition placement group                | HPC needs tight coupling and ultra‑low latency                                                  | Partition trades latency for fault isolation              |
+| Need to **minimize correlated failures** for a **small number of critical EC2 instances**  | **Spread placement group**       | Cluster placement group                  | Spread places each instance on distinct hardware                                                | Cluster increases blast radius                            |
+| Need **high availability across multiple AZs** for a few instances                         | **Spread placement group**       | Cluster placement group                  | Spread supports multi‑AZ fault isolation                                                        | Cluster is **single‑AZ only**                             |
+| Need to run **hundreds or thousands of distributed nodes** with rack‑level fault isolation | **Partition placement group**    | Spread placement group                   | Partition scales fault isolation using partitions                                               | Spread has **low instance limits per AZ**                 |
+| Deploying **Kafka, Cassandra, HDFS** with rack‑awareness                                   | **Partition placement group**    | Cluster placement group                  | Partition isolates failures per partition/rack                                                  | Cluster failure can impact many brokers                   |
+| Want **best performance but also HA across AZs**                                           | ❌ No placement group fits        | Cluster placement group                  | Placement groups cannot deliver both simultaneously                                             | Cluster is single‑AZ → fails HA requirement               |
+| Need instances placed **randomly for best availability (default behavior)**                | **No placement group**           | Spread placement group                   | AWS default spreading already optimizes availability                                            | Spread is unnecessary unless strict isolation is required |
+| Want to **move a running instance** into a placement group                                 | ❌ Not possible                   | Stop instance and modify placement group | Placement groups must be chosen at launch                                                       | Instance must be stopped/recreated                        |
+| Need **fault isolation at scale**, but not per‑instance isolation                          | **Partition placement group**    | Spread placement group                   | Partition isolates by group, not per EC2                                                        | Spread isolates per EC2 → doesn’t scale                   |
+| Need **network‑intensive application across Regions**                                      | ❌ Not a placement group use case | Cluster placement group                  | Placement groups are **within a Region**                                                        | No placement group works cross‑Region                     |
+| Need **licensing server must never fail with others**                                      | **Spread placement group**       | Partition placement group                | Spread gives per‑instance hardware isolation                                                    | Partition still shares partition hardware                 |
+
+***
+
+## High‑yield exam memory hooks 🧠
+
+*   **Cluster = Performance**
+*   **Spread = Survival (few instances)**
+*   **Partition = Survival at Scale**
+
+***
+
+## One‑liner elimination logic (use this in the exam)
+
+*   If the question says **“low latency / highest throughput”** → ✅ **Cluster**
+*   If it says **“minimize correlated failures” + few instances** → ✅ **Spread**
+*   If it says **“large distributed system”** → ✅ **Partition**
+*   If it says **“multi‑AZ + HPC”** → ❌ Trick (no valid solution)
+
+***
+If you want next, I can:
+
+*   Create **Pro‑level trick questions** where placement groups are subtle distractors
+*   Add a **“Works vs Correct vs Distractor” super‑table**
+*   Map placement groups directly to **SAP‑C02 case studies**
+
+Just say the word.
