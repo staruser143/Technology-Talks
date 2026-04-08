@@ -12,21 +12,21 @@ ResultPath
 - Analogy: Think of it as merging the task’s result into the input payload.  
 
 Example:
-`json
+```json
 "ResultPath": "$.taskResult"
-`
+```
 If the input is:
-`json
+```json
 { "orderId": 123 }
-`
+```
 and the task returns:
-`json
+```json
 { "status": "processed" }
-`
+```
 then the merged output becomes:
-`json
+```json
 { "orderId": 123, "taskResult": { "status": "processed" } }
-`
+```
 
 ---
 
@@ -39,17 +39,17 @@ OutputPath
 - Analogy: Think of it as trimming the payload before handing it off.  
 
 Example:
-`json
+```json
 "OutputPath": "$.taskResult.status"
-`
+```
 From the previous merged output:
-`json
+```json
 { "orderId": 123, "taskResult": { "status": "processed" } }
-`
+```
 the next state would only receive:
-`json
+```json
 "processed"
-`
+```
 
 ---
 
@@ -60,15 +60,14 @@ the next state would only receive:
 ---
 
 📐 Visual Flow
-`mermaid
+```mermaid
 flowchart LR
     A[Input] --> B[Task Execution]
     B -->|Result| C[ResultPath merges result into input]
     C -->|Filtered| D[OutputPath selects portion for next state]
-`
+```
 
 ---
 
 👉 In practice, you often use ResultPath to enrich the payload with new data, and OutputPath to slim down what the next state sees.  
 
-Would you like me to show you a real-world JSON snippet combining both (say, in a healthcare claim workflow where you enrich with validation results but only pass the decision outcome downstream)? That would tie directly into your regulated document pipeline interests.
