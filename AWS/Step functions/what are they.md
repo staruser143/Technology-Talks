@@ -1,7 +1,8 @@
 ---
 
 🔑 Core Concepts
-- State Machine: A workflow definition written in Amazon States Language (JSON-based).  
+- State Machine: A workflow definition written in Amazon States Language (JSON-based).
+  
 - States: Each step in the workflow. Types include:
   - Task: Executes a unit of work (e.g., Lambda function, API call).  
   - Choice: Branching logic based on conditions.  
@@ -30,7 +31,7 @@
 ---
 
 🛠 Example Workflow (JSON Snippet)
-`json
+```json
 {
   "Comment": "Simple ETL Workflow",
   "StartAt": "Extract",
@@ -52,20 +53,20 @@
     }
   }
 }
-`
+```
 
 ---
 
 📐 Visualizing with Mermaid
 Here’s a simplified diagram of a Step Functions ETL pipeline:
 
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> Extract
     Extract --> Transform
     Transform --> Load
     Load --> [*]
-`
+```
 
 ---
 
