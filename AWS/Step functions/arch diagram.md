@@ -4,7 +4,7 @@ Here’s the complete architecture diagram for the resilient, governance-enabled
 
 📐 Architecture Diagram (Mermaid)
 
-`mermaid
+```mermaid
 flowchart TB
     subgraph Input
         A[Claims Batch in S3/DynamoDB]
@@ -56,7 +56,7 @@ flowchart TB
     M --> O
     O --> P --> R
     O --> Q --> S
-`
+```
 
 ---
 
