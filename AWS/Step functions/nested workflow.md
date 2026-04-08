@@ -3,7 +3,7 @@ Here’s how a nested workflow looks when Approved claims trigger parallel tasks
 ---
 
 🏥 JSON Workflow Snippet with Nested Parallel State
-`json
+```json
 {
   "StartAt": "ValidateClaim",
   "States": {
@@ -82,7 +82,7 @@ Here’s how a nested workflow looks when Approved claims trigger parallel tasks
     }
   }
 }
-`
+```
 
 ---
 
@@ -98,7 +98,7 @@ Here’s how a nested workflow looks when Approved claims trigger parallel tasks
 ---
 
 📐 Visual Workflow
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> ValidateClaim
     ValidateClaim --> RouteDecision
@@ -119,7 +119,7 @@ stateDiagram-v2
     NotifyDenial --> [*]
     ManualReview --> [*]
     ErrorHandler --> [*]
-`
+```
 
 ---
 
@@ -130,5 +130,3 @@ stateDiagram-v2
 - This design supports governance, auditability, and resilience in regulated domains like healthcare and insurance.  
 
 ---
-
-Would you like me to extend this further into a Map state example—where multiple claims are processed in batch, each going through validation and branching independently? That would show how Step Functions scales for high-volume workflows.
