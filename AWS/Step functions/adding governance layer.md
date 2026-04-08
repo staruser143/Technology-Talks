@@ -3,7 +3,7 @@ Here’s how you can add a governance layer to the hybrid pipeline so that any f
 ---
 
 🏥 JSON Workflow Snippet with Governance Layer
-`json
+```json
 {
   "StartAt": "PreprocessClaims",
   "States": {
@@ -123,7 +123,7 @@ Here’s how you can add a governance layer to the hybrid pipeline so that any f
     }
   }
 }
-`
+```
 
 ---
 
