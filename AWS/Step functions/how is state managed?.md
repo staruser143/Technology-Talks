@@ -49,15 +49,13 @@ Step Functions automatically passes this JSON payload between states—no manual
 ---
 
 📐 Visualizing State Management
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> Extract
     Extract --> Transform
     Transform --> Load
     Load --> [*]
-`
+```
 Each arrow represents state transitions, with Step Functions persisting inputs/outputs at every step.  
 
 ---
-
-👉 Would you like me to show you a real-world example of state management in a regulated workflow (e.g., healthcare claim processing), where payload references and audit logs are critical? That would tie directly into your interest in compliance-driven document pipelines.
