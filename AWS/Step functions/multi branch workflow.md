@@ -3,7 +3,7 @@ Here’s a multi-branch healthcare claim workflow using AWS Step Functions, show
 ---
 
 🏥 JSON Workflow Snippet
-`json
+```json
 {
   "StartAt": "ValidateClaim",
   "States": {
@@ -57,7 +57,7 @@ Here’s a multi-branch healthcare claim workflow using AWS Step Functions, show
     }
   }
 }
-`
+```
 
 ---
 
@@ -85,7 +85,7 @@ Here’s a multi-branch healthcare claim workflow using AWS Step Functions, show
 ---
 
 📐 Visual Workflow
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> ValidateClaim
     ValidateClaim --> RouteDecision
@@ -97,7 +97,7 @@ stateDiagram-v2
     NotifyDenial --> [*]
     ManualReview --> [*]
     ErrorHandler --> [*]
-`
+```
 
 ---
 
@@ -108,5 +108,3 @@ stateDiagram-v2
 - Fail State guarantees compliance by catching unexpected outcomes.  
 
 ---
-
-Would you like me to extend this into a nested workflow—for example, Approved claims go into a Parallel state that simultaneously triggers payment processing and audit logging? That would show how Step Functions handles concurrent regulated tasks.
