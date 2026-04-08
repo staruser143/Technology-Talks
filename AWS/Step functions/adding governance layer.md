@@ -140,7 +140,7 @@ Here’s how you can add a governance layer to the hybrid pipeline so that any f
 ---
 
 📐 Visual Workflow
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> PreprocessClaims
     PreprocessClaims --> ProcessClaimsBatch
@@ -173,7 +173,7 @@ stateDiagram-v2
     ProcessClaimsBatch --> ComplianceAuditQueue: Error
     ProcessClaimsBatch --> [*]
     ComplianceAuditQueue --> [*]
-`
+```
 
 ---
 
