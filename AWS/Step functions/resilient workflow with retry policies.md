@@ -3,7 +3,7 @@ Excellent—let’s make this workflow resilient by adding retry policies with e
 ---
 
 🏥 JSON Workflow Snippet with Retry Policies
-`json
+```json
 {
   "StartAt": "PreprocessClaims",
   "States": {
@@ -147,7 +147,7 @@ Excellent—let’s make this workflow resilient by adding retry policies with e
     }
   }
 }
-`
+```
 
 ---
 
@@ -160,7 +160,7 @@ Excellent—let’s make this workflow resilient by adding retry policies with e
 ---
 
 📐 Visual Workflow with Resilience
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> PreprocessClaims
     PreprocessClaims --> ProcessClaimsBatch
@@ -193,7 +193,7 @@ stateDiagram-v2
     ProcessClaimsBatch --> ComplianceAuditQueue: Error after retries
     ProcessClaimsBatch --> [*]
     ComplianceAuditQueue --> [*]
-`
+```
 
 ---
 
@@ -204,5 +204,3 @@ stateDiagram-v2
 - Compliance: Regulators see both successful and failed attempts, with retry history.  
 
 ---
-
-Would you like me to add monitoring hooks (e.g., CloudWatch metrics and alarms) so you can track retry counts, failures, and compliance escalations in real time? That would complete the governance + resilience picture.
