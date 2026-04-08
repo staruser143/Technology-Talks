@@ -3,7 +3,7 @@ Here’s how a hybrid pipeline looks when you first preprocess claims in bulk (e
 ---
 
 🏥 JSON Workflow Snippet
-`json
+```json
 {
   "StartAt": "PreprocessClaims",
   "States": {
@@ -99,7 +99,7 @@ Here’s how a hybrid pipeline looks when you first preprocess claims in bulk (e
     }
   }
 }
-`
+```
 
 ---
 
@@ -121,7 +121,7 @@ Here’s how a hybrid pipeline looks when you first preprocess claims in bulk (e
 ---
 
 📐 Visual Workflow
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> PreprocessClaims
     PreprocessClaims --> ProcessClaimsBatch
@@ -149,7 +149,7 @@ stateDiagram-v2
     }
 
     ProcessClaimsBatch --> [*]
-`
+```
 
 ---
 
