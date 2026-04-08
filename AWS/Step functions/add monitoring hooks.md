@@ -3,6 +3,7 @@ Here’s how we can add monitoring hooks to the resilient, governance-enabled wo
 ---
 
 🏥 Enhanced Workflow with Monitoring
+
 In Step Functions, you don’t embed CloudWatch alarms directly into the state machine JSON. Instead, you configure CloudWatch metrics, logs, and alarms tied to the workflow’s executions. Here’s how it behaves:
 
 CloudWatch Metrics
@@ -25,14 +26,14 @@ You can set alarms on key metrics:
 ---
 
 📐 Visual Monitoring Flow
-`mermaid
+```mermaid
 flowchart LR
     A[Step Functions Execution] --> B[CloudWatch Metrics]
     A --> C[CloudWatch Logs]
     B --> D[CloudWatch Alarms]
     D --> E[Ops Team Notification]
     D --> F[Compliance Officer Notification]
-`
+```
 
 ---
 
@@ -45,7 +46,7 @@ flowchart LR
 ---
 
 🔎 Example Alarm (Terraform/IaC Style)
-`hcl
+```hcl
 resource "awscloudwatchmetricalarm" "highfailures" {
   alarm_name          = "StepFunctionsHighFailures"
   comparison_operator = "GreaterThanThreshold"
@@ -57,7 +58,7 @@ resource "awscloudwatchmetricalarm" "highfailures" {
   threshold           = 5
   alarm_actions       = ["arn:aws:sns:region:account:OpsAlerts"]
 }
-`
+```
 
 ---
 
