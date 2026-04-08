@@ -13,7 +13,7 @@ Workflow Goal
 ---
 
 JSON Snippet
-`json
+```json
 {
   "StartAt": "ValidateClaim",
   "States": {
@@ -31,47 +31,47 @@ JSON Snippet
     }
   }
 }
-`
+```
 
 ---
 
 Step-by-Step Behavior
 1. Input Payload (from submission):
-   `json
+  ```json
    { "claimId": "C123", "amount": 5000 }
-   `
+   ```
 
 2. Lambda Output (validation result):
-   `json
+  ```json
    { "decision": "Approved", "errors": [] }
-   `
+  ```
 
 3. ResultPath Merge ($.validationResult):
-   `json
+   ```json
    {
      "claimId": "C123",
      "amount": 5000,
      "validationResult": { "decision": "Approved", "errors": [] }
    }
-   `
+   ```
 
 4. OutputPath Filter ($.validationResult.decision):
-   `json
+  ```json
    "Approved"
-   `
+   ```
 
 5. AdjudicateClaim State receives only "Approved" as input.  
 
 ---
 
 📐 Visualizing the Flow
-`mermaid
+```mermaid
 flowchart LR
     A[Claim Submission] --> B[ValidateClaim Task]
     B -->|ResultPath merges| C[Payload with validationResult]
     C -->|OutputPath filters| D["Decision: Approved"]
     D --> E[AdjudicateClaim Task]
-`
+```
 
 ---
 
@@ -81,5 +81,3 @@ flowchart LR
 - This separation supports governance: auditors can review enriched payloads, while business logic stays lean.  
 
 ---
-
-Would you like me to expand this into a full multi-branch workflow (Approved vs Denied vs Needs Review), showing how Choice states combine with ResultPath and OutputPath for real-world healthcare compliance pipelines? That would give you a complete architecture view.
