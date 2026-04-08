@@ -67,7 +67,8 @@ Here’s how you can optimize costs in the Step Functions pipeline we’ve built
 ---
 
 📐 Optimized Architecture Flow
-`mermaid
+
+```mermaid
 flowchart TB
     A[Claims Batch in S3] --> B[PreprocessClaims Lambda (combined tasks)]
     B --> C[Map State - Express Workflow]
@@ -90,7 +91,7 @@ flowchart TB
     StepFunctions --> M
     StepFunctions --> N
     M --> O
-`
+```
 
 ---
 
@@ -103,5 +104,3 @@ flowchart TB
 ---
 
 Sridhar, this is now a cost-aware, resilient, observable, and compliant pipeline—essentially production-grade for healthcare/insurance workloads.  
-
-Would you like me to quantify the savings (e.g., estimated cost difference between Standard vs Express workflows for 10,000 claims/day)? That would give you a concrete financial view of the optimization.
