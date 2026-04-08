@@ -3,7 +3,7 @@ Here’s how you can scale the healthcare claim workflow into batch processing u
 ---
 
 🏥 JSON Workflow Snippet with Map State
-`json
+```json
 {
   "StartAt": "ProcessClaimsBatch",
   "States": {
@@ -93,7 +93,7 @@ Here’s how you can scale the healthcare claim workflow into batch processing u
     }
   }
 }
-`
+```
 
 ---
 
@@ -120,7 +120,7 @@ Here’s how you can scale the healthcare claim workflow into batch processing u
 ---
 
 📐 Visual Workflow
-`mermaid
+```mermaid
 stateDiagram-v2
     [*] --> ProcessClaimsBatch
 
@@ -147,7 +147,7 @@ stateDiagram-v2
     }
 
     ProcessClaimsBatch --> [*]
-`
+```
 
 ---
 
