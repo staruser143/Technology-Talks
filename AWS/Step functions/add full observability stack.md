@@ -22,7 +22,7 @@ Here’s how you can extend the resilient, governance-enabled Step Functions wor
 ---
 
 📐 Visual Observability Flow
-`mermaid
+```mermaid
 flowchart LR
     A[Step Functions Execution] --> B[CloudWatch Metrics]
     A --> C[CloudWatch Logs]
@@ -32,23 +32,23 @@ flowchart LR
     E --> G[SNS Topic: Compliance Alerts]
     F --> H[Slack/Email Notifications]
     G --> I[Compliance Officer Dashboard]
-`
+```
 
 ---
 
 🛠 Example Configurations
 
 Step Functions with X-Ray
-`json
+```json
 {
   "tracingConfiguration": {
     "enabled": true
   }
 }
-`
+```
 
 SNS Notification for Compliance
-`hcl
+```hcl
 resource "awssnstopic" "compliance_alerts" {
   name = "ComplianceAlerts"
 }
@@ -64,7 +64,7 @@ resource "awscloudwatchmetricalarm" "complianceescalations" {
   threshold           = 10
   alarmactions       = [awssnstopic.compliancealerts.arn]
 }
-`
+```
 
 Slack Integration via SNS
 - Create an HTTPS endpoint (Slack webhook).  
