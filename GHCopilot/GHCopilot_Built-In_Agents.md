@@ -1,4 +1,4 @@
-Yes. **GitHub Copilot in Visual Studio Code does provide built‑in agents**, and as of **VS Code 1.116 (April 2026)** these are **first‑class, native capabilities**, not just extensions.
+**GitHub Copilot in Visual Studio Code does provide built‑in agents**, and as of **VS Code 1.116 (April 2026)** these are **first‑class, native capabilities**, not just extensions.
 
 Below is a **concise, architect‑level breakdown** of what is *actually built in* versus what is optional or custom.
 
@@ -121,7 +121,7 @@ These require `.agent.md`, `.prompt.md`, MCP configuration, or org enablement.  
 
 In short:
 
-> **Yes — GitHub Copilot ships with real, built‑in agents in VS Code, capable of planning, coding, debugging, and producing PRs autonomously.**
+> ** GitHub Copilot ships with real, built‑in agents in VS Code, capable of planning, coding, debugging, and producing PRs autonomously.**
 
 ***
 
