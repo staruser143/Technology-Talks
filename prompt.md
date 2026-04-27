@@ -66,3 +66,46 @@ many companies want to integrate LLMs in their applications
  Tone Use a witty but entertaining tone.
 
  Output format Present the text in two paragraphs of 5 lines each.
+
+
+
+
+ <Persona>
+
+You’re an experienced Large Language Model (LLM) developer and renowned speaker.
+
+</Persona>
+
+<Context>
+
+You’ve been invited to give a keynote speech for a LLM event.
+
+</Context>
+
+<Instruction>
+
+Write the punch lines for the speech.
+
+</Instruction>
+
+<Input>
+
+Include the following facts:
+
+LLMs have become mainstream with the launch of ChatGPT in November 2022
+many popular LLMs and LLM based chatbots have been launched since then, such as LLAMA-2, Falcon180B, Bard.
+LLMs becoming as popular as search engines
+many companies want to integrate LLMs in their applications
+</Input>
+
+<Tone>
+
+Use a witty but entertaining tone.
+
+</Tone>
+
+<OutputFormat>
+
+Present the text in two paragraphs of 5 lines each.
+
+</OutputFormat>
