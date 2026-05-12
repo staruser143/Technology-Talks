@@ -1,0 +1,5 @@
+Sure! Let me build an interactive example that walks you through exactly how MCP works — using a concrete, relatable scenario.Click **Next** to walk through the flow step by step. You'll see which part of the system becomes active at each stage, and the actual data being passed around.
+
+The key insight here is that **MCP is what makes the last step possible**. Without it, Claude could *tell* you "here are some flights" — but it couldn't actually book one or touch your calendar. MCP gives it real hands.
+
+Also notice that Claude didn't need any special knowledge of the flight API or the calendar API. It just used the standard MCP protocol, and each server handled its own domain. That's the power of a shared standard — swap in any flight provider or calendar app, and Claude works with it the same way.
