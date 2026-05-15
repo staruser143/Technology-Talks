@@ -1,0 +1,12 @@
+# API Keys and Secrets
+.env
+
+# Python environment and cache
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+.ipynb_checkpoints/
+
+# macOS system files
+.DS_Store
