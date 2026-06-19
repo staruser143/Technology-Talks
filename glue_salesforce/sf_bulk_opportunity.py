@@ -45,9 +45,13 @@ response = requests.post(
         "assertion": jwt_token
     }
 )
+response.raise_for_status()
 
-access_token = response.json().get("access_token")
-instance_url = response.json().get("instance_url")
+token_data = response.json()
+access_token = token_data.get("access_token")
+instance_url = token_data.get("instance_url")
+if not access_token or not instance_url:
+    raise RuntimeError(f"Salesforce auth failed: {token_data}")
 
 # Create Bulk API v2 job
 headers = {
@@ -67,6 +71,7 @@ job_response = requests.post(
     headers=headers,
     json=job_payload
 )
+job_response.raise_for_status()
 
 job_id = job_response.json()["id"]
 
@@ -78,14 +83,19 @@ while status in ["InProgress", "UploadComplete"]:
         f"{instance_url}/services/data/v58.0/jobs/query/{job_id}",
         headers=headers
     )
+    job_status_response.raise_for_status()
     status = job_status_response.json()["state"]
     print(f"Job status: {status}")
+
+if status == "Failed":
+    raise RuntimeError(f"Salesforce bulk query job {job_id} failed")
 
 # Get result URLs
 results_response = requests.get(
     f"{instance_url}/services/data/v58.0/jobs/query/{job_id}/results",
     headers=headers
 )
+results_response.raise_for_status()
 
 # Save results to temp file
 with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as tmp_file:

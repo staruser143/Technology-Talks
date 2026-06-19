@@ -28,8 +28,9 @@ public class PdfController {
                     .headers(headers)
                     .body(pdfBytes);
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            System.err.println("PDF generation failed for invoice: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(("PDF generation failed: " + e.getMessage()).getBytes());
         }
     }
 }
