@@ -93,7 +93,8 @@ public class EnhancedMappingResolver {
                 Object value = e.evaluate(context);
                 data.put(field.getName(), value);
             } catch (Exception e) {
-                log.warn("Failed to compute field: " + field.getName(), e);
+                log.error("Failed to compute field '{}': {}", field.getName(), e.getMessage(), e);
+                throw new RuntimeException("Computed field evaluation failed: " + field.getName(), e);
             }
         }
     }
@@ -209,8 +210,8 @@ public class EnhancedMappingResolver {
             Object result = e.evaluate(context);
             return Boolean.TRUE.equals(result);
         } catch (Exception e) {
-            log.warn("Failed to evaluate condition: " + condition, e);
-            return false;
+            log.error("Condition evaluation failed for expression '{}': {}", condition, e.getMessage(), e);
+            throw new RuntimeException("Condition evaluation failed: " + condition, e);
         }
     }
 

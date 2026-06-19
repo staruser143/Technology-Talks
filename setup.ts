@@ -19,6 +19,7 @@ this.changeFeedProcessor = sourceContainer.items.changeFeedProcessor('event-proc
       await context.checkpoint();  // Explicit checkpointing
     } catch (error) {
       console.error('Failed to process changes or checkpoint:', error);
+      throw error;
     }
   });
 
@@ -26,6 +27,8 @@ async function processChange(change) {
   try {
     await this.writeToReadModel(change);
   } catch (error) {
+    console.error('Failed to write change to read model, sending to dead-letter queue:', error);
     await this.sendToDeadLetterQueue(change, error);
+    throw error;
   }
 }

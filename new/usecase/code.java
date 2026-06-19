@@ -10,7 +10,8 @@ public class YamlTest {
             FieldMapping mapping = yaml.load(testYaml);
             System.out.println("Success! Source: " + mapping.getCollection().getSource());
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("YAML parsing failed: " + e.getMessage());
+            throw new RuntimeException("Failed to parse YAML field mapping", e);
         }
     }
 }
