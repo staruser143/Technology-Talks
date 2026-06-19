@@ -17,13 +17,33 @@ resource "aws_secretsmanager_secret" "salesforce_oauth" {
   name = "salesforce/oauth"
 }
 
+variable "salesforce_client_id" {
+  type      = string
+  sensitive = true
+}
+
+variable "salesforce_client_secret" {
+  type      = string
+  sensitive = true
+}
+
+variable "salesforce_refresh_token" {
+  type      = string
+  sensitive = true
+}
+
+variable "salesforce_instance_url" {
+  type    = string
+  default = "https://yourInstance.salesforce.com"
+}
+
 resource "aws_secretsmanager_secret_version" "salesforce_oauth_version" {
   secret_id     = aws_secretsmanager_secret.salesforce_oauth.id
   secret_string = jsonencode({
-    client_id     = "your-client-id"
-    client_secret = "your-client-secret"
-    refresh_token = "your-refresh-token"
-    instance_url  = "https://yourInstance.salesforce.com"
+    client_id     = var.salesforce_client_id
+    client_secret = var.salesforce_client_secret
+    refresh_token = var.salesforce_refresh_token
+    instance_url  = var.salesforce_instance_url
   })
 }
 

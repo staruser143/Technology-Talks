@@ -7,7 +7,7 @@ services:
     environment:
       - LDAP_ORGANISATION=Example Corp
       - LDAP_DOMAIN=example.com
-      - LDAP_ADMIN_PASSWORD=admin_password
+      - LDAP_ADMIN_PASSWORD=${LDAP_ADMIN_PASSWORD:?Set LDAP_ADMIN_PASSWORD in .env}
     ports:
       - "389:389"
       - "636:636"
@@ -36,4 +36,4 @@ services:
       - LDAP_URL=ldaps://ldap:636
       - BASE_DN=dc=example,dc=com
       - BIND_DN=cn=admin,dc=example,dc=com
-      - BIND_PASSWORD=admin_password
+      - BIND_PASSWORD=${LDAP_ADMIN_PASSWORD:?Set LDAP_ADMIN_PASSWORD in .env}
