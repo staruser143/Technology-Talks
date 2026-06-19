@@ -1,38 +1,18 @@
-import org.apache.pdfbox.Loader;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
-import org.apache.pdfbox.pdmodel.PDResources;
-import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
-import org.apache.pdfbox.pdmodel.font.PDFont;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
-import org.apache.pdfbox.cos.COSName;
+import shared.pdf.PdfFontUtils;
 
 import java.io.File;
 
+/**
+ * Maps the /HeBo alias to Helvetica Bold in a PDF form's default resources.
+ *
+ * Now delegates to PdfFontUtils.repairFontAndSave() which consolidates
+ * the logic previously duplicated between MapHeBoAlias.java and RepairDA.java.
+ */
 public class MapHeBoAlias {
     public static void main(String[] args) throws Exception {
-        try (PDDocument doc = Loader.loadPDF(new File("template.pdf"))) {
-            PDDocumentCatalog catalog = doc.getDocumentCatalog();
-            PDAcroForm acroForm = catalog.getAcroForm();
-            if (acroForm == null) throw new IllegalStateException("No AcroForm in template");
-
-            PDResources dr = acroForm.getDefaultResources();
-            if (dr == null) { dr = new PDResources(); acroForm.setDefaultResources(dr); }
-
-            // Create Helvetica Bold as a Standard14 font (PDFBox 3.x way)
-            PDFont helvBold = new PDType1Font(Standard14Fonts.FontName.HELVETICA_BOLD);
-
-            // Register it under the exact alias used by your DA: /HeBo
-            dr.put(COSName.getPDFName("HeBo"), helvBold);
-
-            // Optional: set a default appearance (font + size + color) for the form
-            if (acroForm.getDefaultAppearance() == null || acroForm.getDefaultAppearance().isBlank()) {
-                acroForm.setDefaultAppearance("/HeBo 8 Tf 0 g"); // 8pt, black
-            }
-
-            acroForm.setNeedAppearances(false); // let PDFBox generate appearances
-            doc.save("template-fixed.pdf");
-        }
+        PdfFontUtils.repairFontAndSave(
+            new File("template.pdf"),
+            new File("template-fixed.pdf")
+        );
     }
 }
