@@ -177,7 +177,6 @@ Native AWS Services
 
 ***
 
-## For a Principal Architect
 
 I would view Unified Studio as AWS's answer to:
 
