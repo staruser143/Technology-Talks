@@ -44,8 +44,7 @@ public class TemplateMerger {
                     System.out.println(writer.toString());
                     return writer.toString(); // Returns merged HTML
                 } catch (Exception e) {
-                e.printStackTrace();
-                return "Error during template merging: " + e.getMessage();
+                throw new RuntimeException("Template merging failed for: " + templateName, e);
         }   
     }
 }

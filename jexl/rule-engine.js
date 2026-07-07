@@ -35,7 +35,9 @@ export async function evaluateRules(rules, context) {
         matchedResults.push({ name: rule.name, ...output });
       }
     } catch (err) {
-      console.error(`Error evaluating rule "${rule.name}":`, err.message);
+      const error = new Error(`Rule evaluation failed for "${rule.name}": ${err.message}`);
+      error.cause = err;
+      throw error;
     }
   }
 

@@ -67,7 +67,8 @@ public class HybridPdfFormFiller {
                 try {
                     field.setValue(valueNode.asText());
                 } catch (Exception e) {
-                    System.err.println("Failed to set value for field: " + fieldName);
+                    System.err.println("Failed to set value for field: " + fieldName + ", cause: " + e.getMessage());
+                    throw new RuntimeException("Error setting PDF form field: " + fieldName, e);
                 }
             }
         }
