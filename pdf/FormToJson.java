@@ -1,9 +1,9 @@
-import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
+import shared.pdf.PdfDocumentUtils;
+import shared.pdf.PdfFieldUtils;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -31,9 +31,8 @@ public class FormToJson {
     }
 
     public static String inspectToJson(File pdf) throws Exception {
-        try (PDDocument doc = Loader.loadPDF(pdf)) {
-            PDDocumentCatalog catalog = doc.getDocumentCatalog();
-            PDAcroForm acroForm = catalog.getAcroForm();
+        try (PDDocument doc = PdfDocumentUtils.loadPdf(pdf)) {
+            PDAcroForm acroForm = PdfDocumentUtils.getAcroForm(doc);
             StringBuilder sb = new StringBuilder();
             sb.append("{\n");
             sb.append("  \"file\": ").append(jsonString(pdf.getName())).append(",\n");
@@ -44,19 +43,13 @@ public class FormToJson {
                 return sb.toString();
             }
 
-            // Build page->index map for stable widget page numbers
-            Map<PDPage, Integer> pageIndex = new IdentityHashMap<>();
-            int idx = 0;
-            for (PDPage p : doc.getPages()) {
-                pageIndex.put(p, idx++);
-            }
+            Map<PDPage, Integer> pageIndex = PdfDocumentUtils.buildPageIndex(doc);
 
             sb.append("  \"acroForm\": {\n");
             sb.append("    \"needAppearances\": ").append(acroForm.getNeedAppearances() != null && acroForm.getNeedAppearances()).append(",\n");
             sb.append("    \"defaultAppearance\": ").append(jsonString(acroForm.getDefaultAppearance())).append("\n");
             sb.append("  },\n");
 
-            // Fields
             List<PDField> fields = new ArrayList<>();
             for (PDField f : acroForm.getFieldTree()) fields.add(f);
 
@@ -75,14 +68,13 @@ public class FormToJson {
     private static void appendFieldJson(StringBuilder sb, PDField f, Map<PDPage, Integer> pageIndex) throws Exception {
         sb.append("    {\n");
         put(sb, "name", f.getFullyQualifiedName(), true);
-        put(sb, "pdfType", f.getFieldType(), true);               // Tx, Btn, Ch, Sig
-        put(sb, "type", readableType(f), true);                   // Text, Checkbox, Radio, ComboBox, ListBox, Signature
+        put(sb, "pdfType", f.getFieldType(), true);
+        put(sb, "type", PdfFieldUtils.readableType(f), true);
         put(sb, "readOnly", f.isReadOnly(), true);
         put(sb, "required", f.isRequired(), true);
         put(sb, "noExport", f.isNoExport(), true);
         put(sb, "value", f.getValueAsString(), true);
 
-        // Defaults & type-specific properties
         if (f instanceof PDTextField t) {
             put(sb, "default", t.getDefaultValue(), true);
             put(sb, "multiline", t.isMultiline(), true);
@@ -93,11 +85,9 @@ public class FormToJson {
         } else if (f instanceof PDChoice ch) {
             put(sb, "default", ch.getDefaultValue(), true);
 
-            // Options (display vs export)
-            List<String> display = nullSafeList(ch.getOptionsDisplayValues());
-            List<String> export  = ch.getOptionsExportValues(); // may be null
+            List<String> display = PdfFieldUtils.nullSafeList(ch.getOptionsDisplayValues());
+            List<String> export  = ch.getOptionsExportValues();
             if (export == null || export.isEmpty()) {
-                // Only display values present
                 putOptionsArray(sb, display, null, true);
             } else {
                 putOptionsArray(sb, display, export, true);
@@ -115,14 +105,13 @@ public class FormToJson {
             put(sb, "onValue", onVal, true);
             put(sb, "checked", onVal != null && onVal.equals(cur), true);
         } else if (f instanceof PDRadioButton rb) {
-            List<String> exportValues = nullSafeList(rb.getExportValues());
+            List<String> exportValues = PdfFieldUtils.nullSafeList(rb.getExportValues());
             putArray(sb, "choices", exportValues, true);
             put(sb, "selected", rb.getValue(), true);
         } else if (f instanceof PDSignatureField sig) {
             put(sb, "signed", sig.getSignature() != null, true);
         }
 
-        // Widgets (page + rect)
         List<PDAnnotationWidget> widgets = f.getWidgets();
         if (widgets == null) widgets = Collections.emptyList();
         sb.append("      \"widgets\": [\n");
@@ -151,16 +140,6 @@ public class FormToJson {
     }
 
     // ---------- Helpers ----------
-
-    private static String readableType(PDField f) {
-        if (f instanceof PDTextField)       return "Text";
-        if (f instanceof PDCheckBox)        return "Checkbox";
-        if (f instanceof PDRadioButton)     return "Radio";
-        if (f instanceof PDComboBox)        return "ComboBox";
-        if (f instanceof PDListBox)         return "ListBox";
-        if (f instanceof PDSignatureField)  return "Signature";
-        return f.getClass().getSimpleName();
-    }
 
     private static void put(StringBuilder sb, String key, String val, boolean comma) {
         sb.append("      ").append(jsonString(key)).append(": ").append(jsonString(val));
@@ -202,10 +181,6 @@ public class FormToJson {
         if (comma) sb.append(","); sb.append("\n");
     }
 
-    private static List<String> nullSafeList(List<String> list) {
-        return (list == null) ? Collections.emptyList() : list;
-    }
-
     private static String jsonString(String s) {
         if (s == null) return "null";
         StringBuilder out = new StringBuilder();
@@ -233,7 +208,6 @@ public class FormToJson {
     }
 
     private static String fmt(float v) {
-        // Compact float for JSON
         if (Math.abs(v - Math.rint(v)) < 1e-6) {
             return Integer.toString((int) Math.rint(v));
         }
