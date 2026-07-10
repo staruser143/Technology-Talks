@@ -1,0 +1,29 @@
+Good news: this fits directly into the architecture we've already built, without needing a separate platform. AWS gives you two fundamentally different strategies per source — **bring the data in** (ETL/replication into the lake) or **query it in place** (federation, no copy) — and the right choice differs by source.
+
+**Salesforce Data Cloud**
+This is actually the strongest of the three, because AWS and Salesforce have built purpose-made zero-copy paths — you don't need generic ETL tooling:
+
+- **Zero Copy Data Federation (Data Cloud → Redshift, data-in)**: lets Data Cloud query Redshift data live via query pushdown, with Redshift compute doing the work and nothing persisted in Data Cloud — useful if the flow is "enrich Salesforce with lake data," not the direction you're asking about, but worth knowing it's bidirectional.
+- **Zero Copy Data Sharing (Data Cloud → Redshift, data-out — the relevant direction for you)**: Data Cloud creates a data share of specific Data Cloud objects; on the AWS side, Lake Formation accepts that datashare and creates a **Glue Data Catalog view** and cross-account resource share via AWS Resource Access Manager, and once accepted, Data 360 objects mount as Glue Data Catalog views, queryable from Redshift, Athena, or EMR using standard SQL. This means Salesforce Data Cloud data becomes a **first-class Lake Formation-governed Glue asset** — which drops straight into the DataZone publishing flow we've already mapped, with no separate connector or ETL job required.
+- If you'd rather physically replicate the data instead of querying live, Amazon AppFlow's Salesforce connector remains an option for standard Salesforce CRM objects, landing data in S3/Redshift on a schedule or via change-data-capture — but for Data Cloud specifically, Zero Copy is the more modern, AWS-native path and avoids a second ingestion pipeline to maintain.
+
+**Snowflake**
+Two supported approaches, and the right one depends on whether business users need it alongside lake data in the same query, or as its own catalog entry:
+
+- **Athena Federated Query — Snowflake connector**: lets Athena run live SQL against Snowflake without copying data, and — importantly — this connector can register with the Glue Data Catalog as a federated catalog and supports Lake Formation access controls at the catalog, database, table, column, row, and tag level. That means a business user can be governed by the exact same Lake Formation/DataZone subscription flow we've built, just pointed at a federated Snowflake catalog instead of a native S3 table.
+- **AWS Glue crawler on Snowflake**: a Glue crawler can register Snowflake table *metadata* into the Glue Data Catalog, but a known limitation is that Athena can't directly query a crawled Snowflake table this way — you still need the federated connector (above) to actually run the query; the crawler alone only gets you discovery, not consumption.
+- **Snowflake-native data sharing**, if your business users already have direct Snowflake seats, is also an option, but it sits outside this AWS-centric governance model entirely — you'd be maintaining two separate access-control systems, which most organizations try to avoid.
+
+**MongoDB**
+The least "native" of the three, but still workable:
+
+- **Athena Federated Query — DocumentDB connector**: this connector enables Athena to communicate with DocumentDB instances, and also works with any MongoDB-compatible endpoint — so this is the direct federation path, letting Athena query MongoDB collections as SQL tables without moving data.
+- **Glue ETL with the MongoDB connector**: AWS Glue already integrates with popular data stores such as Redshift, RDS, MongoDB, and S3 — so if you'd rather periodically land MongoDB collections into S3 as governed Parquet/Glue tables (better for heavy analytical workloads than live federation), a Glue job with the MongoDB connector is the standard route.
+- Unlike Snowflake and Salesforce Data Cloud, there isn't yet a first-party "managed connector" for MongoDB the way Athena now offers for a shortlist of sources (DynamoDB, PostgreSQL, MySQL, Snowflake) — so MongoDB access typically stays in the self-managed federated-connector or ETL-job category rather than a fully managed, zero-maintenance path.
+
+**How this attaches to the architecture we've already built**
+In every case above, once the external source is either (a) registered as a Lake Formation-governed federated Glue catalog, or (b) physically landed as governed S3/Glue tables, the rest of the pipeline is unchanged: Lake Formation grants apply the same way, DataZone can publish it as a business catalog asset (federated connections and external sources are explicitly part of what a business data catalog can register), and the subscription/approval workflow, identity model, and consumption tools we've diagrammed all work identically regardless of whether the underlying bytes live in S3, Snowflake, or a Salesforce Data Cloud share.
+
+One practical difference worth flagging: **federated (query-in-place) sources add live latency and cost to the source system on every query**, since Athena/Redshift push the query down to Snowflake/MongoDB compute at execution time — for high-frequency business-user dashboards, that can get expensive or slow compared to a periodically-refreshed copy in S3. Worth deciding per source based on query patterns rather than defaulting to federation everywhere.
+
+Want this sketched as a diagram — each source (Salesforce Data Cloud, Snowflake, MongoDB) with its two path options, converging into the same Glue/Lake Formation/DataZone layer we've already built?
