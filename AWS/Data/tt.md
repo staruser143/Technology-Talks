@@ -1,0 +1,7 @@
+That went through this time. Each source has its own connection path up top, but they all funnel into the same governed catalog and subscription flow we've already built — that convergence point is really the main thing worth taking away here: none of these three sources need a separate governance model or a separate business-user experience.
+
+A couple of things the boxes compress that are worth keeping in mind:
+
+- The **Snowflake path is asymmetric** — the crawler branch only gets you discovery (metadata sits in the catalog), not actual query access. If a business user tries to query a Snowflake table that was only crawled and not connected through the federated connector, it'll fail. Worth making that distinction clear in any internal documentation so it doesn't get treated as "two equivalent options."
+- **Salesforce Data Cloud's Zero Copy path is the cleanest of the three** because Lake Formation accepts the datashare directly and creates the Glue view itself — there's no connector to install or maintain on the AWS side, unlike Snowflake and MongoDB where you're standing up and operating an Athena federated query connector.
+- The **MongoDB branch has the least first-party support** — Athena's federated connector list covers a shortlist of managed sources, and MongoDB isn't one of them by name (it rides on the DocumentDB connector working against MongoDB-compatible endpoints), so expect more manual setup and testing than the other two.
