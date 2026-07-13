@@ -237,9 +237,9 @@ Result:
 
 ### Limitation
 
-You only get technical schema metadata.
+We only get technical schema metadata.
 
-You do NOT automatically get:
+We do NOT automatically get:
 
 * Business glossary
 * Collection descriptions
@@ -461,9 +461,9 @@ can be registered as DataZone business catalog assets through custom integration
 
 ***
 
-# My Recommendation for Your Environment
+# Recommendation for Our Environment
 
-Considering your landscape:
+Considering our landscape:
 
 ```text
 AWS
@@ -501,4 +501,4 @@ In other words:
 * Let **Alation harvest metadata directly from Snowflake, MongoDB Atlas, and Salesforce Data Cloud**.
 * If DataZone is retained, use it primarily for AWS data products and AWS-native governed access.
 
-That gives you richer metadata, better lineage, less duplication, and avoids turning Glue Catalog into a metadata aggregation platform for systems it was not primarily designed to govern.
+That gives us richer metadata, better lineage, less duplication, and avoids turning Glue Catalog into a metadata aggregation platform for systems it was not primarily designed to govern.
