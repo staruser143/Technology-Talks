@@ -256,20 +256,10 @@ Strong fit for a multi-cloud enterprise data marketplace.
 
 Adopt a hybrid architecture:
 
-```typescript
-// Architecture Pattern
-interface DataGovernanceArchitecture {
-  enterpriseCatalog: "Alation Cloud";           // Business catalog and marketplace
-  awsMetadataRepository: "AWS Glue Catalog";    // AWS technical metadata
-  awsGovernedSharing: "Amazon DataZone";        // Optional AWS-native sharing
-  sourcePlatforms: "Systems of record";         // Security and access control
-}
-```
-
-- **Alation Cloud** = Enterprise business catalog and data marketplace
-- **AWS Glue Catalog** = AWS technical metadata repository
-- **Amazon DataZone** = Optional AWS-native governed sharing layer for AWS-specific use cases
-- **Source platforms** = Systems of record for security and access control
+**Alation Cloud** = Enterprise business catalog and data marketplace  
+**AWS Glue Catalog** = AWS technical metadata repository  
+**Amazon DataZone** = Optional AWS-native governed sharing layer for AWS-specific use cases  
+**Source platforms** = Systems of record for security and access control
 
 #### Advantages
 
@@ -299,22 +289,17 @@ interface DataGovernanceArchitecture {
 
 The recommended architecture is:
 
-```typescript
-// Final Architecture Decision
-const dataGovernanceStrategy = {
-  primaryLayer: "Alation Cloud",
-  description: "Enterprise-wide data discovery, business catalog, governance, and data marketplace",
-  
-  awsTechnicalRepository: "AWS Glue Catalog",
-  description: "Technical metadata repository for AWS assets",
-  
-  selectiveAwsLayer: "Amazon DataZone",
-  description: "Optional AWS-native governed access and subscription workflows",
-  
-  accessControl: "Native platforms",
-  description: "Snowflake RBAC, MongoDB Atlas roles, Lake Formation, IAM, etc."
-};
-```
+**Primary Layer: Alation Cloud**
+- Enterprise-wide data discovery, business catalog, governance, and data marketplace
+
+**AWS Technical Repository: AWS Glue Catalog**
+- Technical metadata repository for AWS assets (S3, Athena, Glue, Redshift Spectrum, Lake Formation)
+
+**Optional AWS Layer: Amazon DataZone**
+- AWS-native governed access and subscription workflows where AWS Lake Formation, Glue, Redshift, Athena, or SageMaker integration is required
+
+**Access Control: Native Platforms**
+- Snowflake RBAC, MongoDB Atlas roles, Lake Formation, IAM, and other platform-native mechanisms
 
 ---
 
@@ -558,19 +543,13 @@ Metadata harvesting alone is insufficient. The organization must automate enrich
 
 ### Enrichment Layers
 
-```typescript
-interface MetadataEnrichment {
-  layers: [
-    "Rule-based enrichment",
-    "Domain-based enrichment",
-    "Usage-based enrichment",
-    "Quality-based enrichment",
-    "Lineage-based enrichment",
-    "AI-assisted description generation",
-    "Steward-approved certification"
-  ];
-}
-```
+1. Rule-based enrichment
+2. Domain-based enrichment
+3. Usage-based enrichment
+4. Quality-based enrichment
+5. Lineage-based enrichment
+6. AI-assisted description generation
+7. Steward-approved certification
 
 ### Examples
 
@@ -748,68 +727,56 @@ Connector management is a critical operational capability.
 
 ### Phase 1: Foundation
 
-```
-✓ Define metadata operating model
-✓ Define domains
-✓ Define glossary structure
-✓ Define certification levels
-✓ Define ownership/stewardship model
-✓ Configure Alation Cloud
-✓ Integrate SSO
-```
+- Define metadata operating model
+- Define domains
+- Define glossary structure
+- Define certification levels
+- Define ownership/stewardship model
+- Configure Alation Cloud
+- Integrate SSO
 
 ### Phase 2: Pilot Metadata Harvesting
 
-```
-✓ Connect AWS Glue Catalog
-✓ Connect Snowflake
-✓ Connect MongoDB Atlas
-✓ Connect Salesforce / Salesforce Data Cloud where supported
-✓ Connect Power BI / Tableau
-✓ Validate metadata coverage
-```
+- Connect AWS Glue Catalog
+- Connect Snowflake
+- Connect MongoDB Atlas
+- Connect Salesforce / Salesforce Data Cloud where supported
+- Connect Power BI / Tableau
+- Validate metadata coverage
 
 ### Phase 3: Business Enrichment
 
-```
-✓ Add business descriptions
-✓ Map glossary terms
-✓ Assign owners and stewards
-✓ Apply classifications
-✓ Add usage guidance
-✓ Identify certified candidate assets
-```
+- Add business descriptions
+- Map glossary terms
+- Assign owners and stewards
+- Apply classifications
+- Add usage guidance
+- Identify certified candidate assets
 
 ### Phase 4: Marketplace Launch
 
-```
-✓ Publish first data products
-✓ Enable access request workflows
-✓ Promote certified assets
-✓ Train business users
-✓ Collect adoption feedback
-```
+- Publish first data products
+- Enable access request workflows
+- Promote certified assets
+- Train business users
+- Collect adoption feedback
 
 ### Phase 5: Governance and Automation
 
-```
-✓ Automate metadata enrichment
-✓ Automate classification rules
-✓ Integrate data quality scores
-✓ Implement lineage validation
-✓ Integrate ServiceNow/access workflows
-✓ Monitor connector health
-```
+- Automate metadata enrichment
+- Automate classification rules
+- Integrate data quality scores
+- Implement lineage validation
+- Integrate ServiceNow/access workflows
+- Monitor connector health
 
 ### Phase 6: Scale
 
-```
-✓ Expand to more domains
-✓ Add Azure and Databricks sources
-✓ Add more BI assets
-✓ Establish quarterly certification reviews
-✓ Track adoption and reuse metrics
-```
+- Expand to more domains
+- Add Azure and Databricks sources
+- Add more BI assets
+- Establish quarterly certification reviews
+- Track adoption and reuse metrics
 
 ---
 
@@ -835,59 +802,17 @@ Connector management is a critical operational capability.
 
 Adopt the following architecture:
 
-```typescript
-// Final Enterprise Data Governance Architecture
-const recommendedArchitecture = {
-  // Enterprise Data Marketplace
-  alationCloud: {
-    role: "Enterprise Data Marketplace, business catalog, discovery, glossary, stewardship, certification, lineage, and access request layer",
-    capabilities: [
-      "Business-user discovery",
-      "Enterprise glossary",
-      "Data product marketplace",
-      "Certification workflows",
-      "Stewardship tracking",
-      "Lineage visualization",
-      "Access request intake"
-    ]
-  },
-  
-  // AWS Technical Repository
-  awsGlueCatalog: {
-    role: "AWS technical metadata repository for S3, Athena, Glue, Redshift Spectrum, Lake Formation, and AWS-native analytics",
-    capabilities: [
-      "AWS table schema management",
-      "Partition tracking",
-      "Location management",
-      "AWS-native query optimization"
-    ]
-  },
-  
-  // Optional AWS Governed Sharing
-  amazonDataZone: {
-    role: "Optional AWS-specific governed sharing and subscription layer where AWS-native access fulfillment is valuable",
-    capabilities: [
-      "AWS-native publish/subscribe",
-      "Automatic access fulfillment",
-      "Lake Formation integration",
-      "Projects and environments"
-    ],
-    usage: "Selective, for AWS-centric workflows"
-  },
-  
-  // Access Control
-  nativePlatforms: {
-    role: "Systems of record for physical access enforcement",
-    examples: [
-      "Lake Formation / IAM",
-      "Snowflake RBAC",
-      "MongoDB Atlas roles",
-      "Salesforce permissions",
-      "Azure RBAC"
-    ]
-  }
-};
-```
+**Alation Cloud**  
+= Enterprise Data Marketplace, business catalog, discovery, glossary, stewardship, certification, lineage, and access request layer
+
+**AWS Glue Catalog**  
+= AWS technical metadata repository for S3, Athena, Glue, Redshift Spectrum, Lake Formation, and AWS-native analytics
+
+**Amazon DataZone**  
+= Optional AWS-specific governed sharing and subscription layer where AWS-native access fulfillment is valuable
+
+**Native platforms**  
+= Systems of record for physical access enforcement (Lake Formation / IAM, Snowflake RBAC, MongoDB Atlas roles, Salesforce permissions, Azure RBAC, etc.)
 
 ### Final Decision Statement
 
