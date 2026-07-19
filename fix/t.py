@@ -1,8 +1,10 @@
 from langchain_google_genai import ChatGoogleGenerativeAI
 import os
+import sys
 
-# Set your key (or use a .env file)
-os.environ["GOOGLE_API_KEY"] = "YOUR_KEY_HERE"
+# Load API key from environment variable (set via .env file or shell export)
+if not os.environ.get("GOOGLE_API_KEY"):
+    sys.exit("Error: GOOGLE_API_KEY environment variable is not set.")
 
 # Initialize the 2026-standard model
 llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash")
