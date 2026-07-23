@@ -11,7 +11,10 @@ Below is an architect-oriented comparison of **GitHub Copilot, Windsurf, Devin A
 | Parallel cloud coding tasks and PR generation            | **OpenAI Codex**   | Cloud-based software engineering agent that runs tasks in isolated cloud sandboxes, works in parallel, runs tests, and proposes PRs. [\[openai.com\]](https://openai.com/index/introducing-codex/), [\[learn.chatgpt.com\]](https://learn.chatgpt.com/docs/cloud)                   |
 
 **Short answer:**  
-Use **GitHub Copilot** as the default enterprise-wide coding assistant, **Claude Code or Codex** for advanced agentic engineering workflows, **Devin** for delegated backlog execution, and **Windsurf** where teams want an AI-native IDE experience rather than plugin-based assistance.
+- Use **GitHub Copilot** as the default enterprise-wide coding assistant, 
+- **Claude Code or Codex** for advanced agentic engineering workflows, 
+- **Devin** for delegated backlog execution, and 
+- **Windsurf** where teams want an AI-native IDE experience rather than plugin-based assistance.
 
 ***
 
@@ -57,7 +60,8 @@ Most of these tools now share a common baseline.
 | Agentic workflows             | Plan, execute, validate, and iterate with some autonomy.                                   | Windsurf, Devin, Claude Code, Codex, Copilot agent/cloud agent                                                      |
 | Custom instructions           | Repository or project-specific guidance.                                                   | Copilot custom instructions, Claude Code CLAUDE.md-style workflows, Codex AGENTS.md, Devin knowledge/setup patterns |
 
-GitHub Copilot supports inline suggestions, Copilot Chat, PR summaries, CLI, code review, IDE agent mode, and Copilot cloud agent.  Claude Code and Codex also support repository-level instruction files or conventions such as Claude-oriented project context and Codex `AGENTS.md` instructions. [\[docs.github.com\]](https://docs.github.com/en/copilot/get-started/features), [\[github.com\]](https://github.com/features/copilot) [\[code.claude.com\]](https://code.claude.com/docs/en/overview), [\[openai.com\]](https://openai.com/index/introducing-codex/)
+- GitHub Copilot supports inline suggestions, Copilot Chat, PR summaries, CLI, code review, IDE agent mode, and Copilot cloud agent.
+- Claude Code and Codex also support repository-level instruction files or conventions such as Claude-oriented project context and Codex `AGENTS.md` instructions. [\[docs.github.com\]](https://docs.github.com/en/copilot/get-started/features), [\[github.com\]](https://github.com/features/copilot) [\[code.claude.com\]](https://code.claude.com/docs/en/overview), [\[openai.com\]](https://openai.com/index/introducing-codex/)
 
 ***
 
@@ -75,13 +79,14 @@ GitHub Copilot supports inline suggestions, Copilot Chat, PR summaries, CLI, cod
 | PR support                | Can generate PR summaries and code review suggestions.                                                                   |
 | Cloud agent               | Can research a repository, create an implementation plan, make changes on a branch, and let users review or create a PR. |
 
-GitHub Copilot includes assistive capabilities such as chat, inline suggestions, PR summaries, GitHub Desktop commit messages, and agentic capabilities such as Copilot CLI, cloud agent, code review, and IDE agent mode.  GitHub also positions Copilot as a workflow-wide assistant across IDE, GitHub, CLI, project tools, chat apps, custom MCP servers, and third-party agents. [\[docs.github.com\]](https://docs.github.com/en/copilot/get-started/features) [\[github.com\]](https://github.com/features/copilot)
+- GitHub Copilot includes assistive capabilities such as chat, inline suggestions, PR summaries, GitHub Desktop commit messages, and agentic capabilities such as Copilot CLI, cloud agent, code review, and IDE agent mode.  
+- GitHub also positions Copilot as a workflow-wide assistant across IDE, GitHub, CLI, project tools, chat apps, custom MCP servers, and third-party agents. [\[docs.github.com\]](https://docs.github.com/en/copilot/get-started/features) [\[github.com\]](https://github.com/features/copilot)
 
 ### Best Use Cases
 
 Use GitHub Copilot when:
 
-* Our team already uses **GitHub Enterprise**.
+* The team already uses **GitHub Enterprise**.
 * We need broad, low-friction adoption across many developers.
 * We want AI assistance inside **VS Code, Visual Studio, JetBrains, GitHub.com, CLI, and PR workflow**.
 * We want **central governance, auditability, and enterprise controls**.
@@ -116,7 +121,7 @@ Use Windsurf when:
 * We want an integrated experience for **planning, coding, debugging, terminal execution, and refactoring**.
 * We work on **multi-file frontend/backend changes**.
 * We want a more immersive alternative to Copilot or Cursor-like workflows.
-* Our team values fast prototyping and AI-guided application development.
+* The team values fast prototyping and AI-guided application development.
 
 ### Limitations
 
@@ -206,7 +211,7 @@ Use Claude Code when:
 
 | Area                | Codex Strength                                                                   |
 | ------------------- | -------------------------------------------------------------------------------- |
-| Cloud agents        | Runs tasks in isolated cloud environments preloaded with our repository.        |
+| Cloud agents        | Runs tasks in isolated cloud environments preloaded with the repository.        |
 | Parallel execution  | Multiple coding tasks can run independently in parallel.                         |
 | PR workflow         | Can commit changes, provide logs/test evidence, and open PRs.                    |
 | AGENTS.md           | Repository instruction file to guide navigation, testing, and project standards. |
@@ -258,7 +263,7 @@ Use Codex when:
 ## Use Case 1: Individual developer writing code daily
 
 **Recommended:** GitHub Copilot or Windsurf  
-Use **GitHub Copilot** if we want to stay inside our existing IDE and GitHub workflow. Use **Windsurf** if we are willing to adopt an AI-native IDE where planning, coding, debugging, and terminal execution are deeply integrated. [\[docs.github.com\]](https://docs.github.com/en/copilot/get-started/features), [\[decidenavigator.com\]](https://decidenavigator.com/tools/windsurf)
+Use **GitHub Copilot** if we want to stay inside the existing IDE and GitHub workflow. Use **Windsurf** if we are willing to adopt an AI-native IDE where planning, coding, debugging, and terminal execution are deeply integrated. [\[docs.github.com\]](https://docs.github.com/en/copilot/get-started/features), [\[decidenavigator.com\]](https://decidenavigator.com/tools/windsurf)
 
 **Best combination:**
 
