@@ -1,6 +1,6 @@
-# Metadata Harvesting with Altion Cloud
+# Metadata Harvesting with Alation Cloud
 - When using **Alation Cloud**, metadata harvesting is one of the first implementation workstreams. 
-- We yypically do **not** harvest everything through AWS Glue Catalog. 
+- We typically do **not** harvest everything through AWS Glue Catalog. 
 - Instead, Alation harvests metadata directly from each source system and builds a unified enterprise catalog.
 
 ## Recommended Metadata Harvesting Architecture
@@ -264,7 +264,7 @@ Descriptions
 Ownership
 ```
 
-For Data Cloud specifically, verify during Alation implementation exactly which asset types are supported in your version and connector package.
+For Data Cloud specifically, vwe need to erify during Alation implementation exactly which asset types are supported in our version and connector package.
 
 ### Recommended Approach
 
@@ -458,4 +458,4 @@ Tableau ────────────┘
  Access Requests
 ```
 
-This avoids forcing everything through Glue Catalog, gives richer metadata, and supports your goal of using **Alation as the enterprise data marketplace across AWS and non-AWS platforms**.
+This avoids forcing everything through Glue Catalog, gives richer metadata, and supports our goal of using **Alation as the enterprise data marketplace across AWS and non-AWS platforms**.
