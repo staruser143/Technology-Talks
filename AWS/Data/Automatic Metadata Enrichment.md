@@ -1,6 +1,6 @@
 # Automatic Metadata Enrichment
 
-Harvesting technical metadata is relatively easy. We nee to automatically add:
+For Harvesting technical metadata we need to automatically add:
 
 * Business descriptions
 * Business glossary mappings
@@ -13,7 +13,7 @@ Harvesting technical metadata is relatively easy. We nee to automatically add:
 * Lineage context
 * Usage guidance
 
-For an enterprise like our with **AWS + Snowflake + MongoDB Atlas + Salesforce Data Cloud**, the recommendation is a layered enrichment strategy.
+For an enterprise like ours with **AWS + Snowflake + MongoDB Atlas + Salesforce Data Cloud**, the recommendation is a layered enrichment strategy.
 
 ***
 
@@ -158,11 +158,7 @@ This significantly improves business-user search.
 
 # Automated Ownership Assignment
 
-Many organizations manually assign owners.
-
-Don't do that.
-
-Instead build ownership rules.
+Instead of having organizations manually assign owners, We need to  build ownership rules.
 
 Example:
 
@@ -234,8 +230,6 @@ When assets arrive, they are auto-tagged.
 ***
 
 # Auto-Generating Business Descriptions using AI
-
-This is where GenAI becomes very valuable.
 
 Example harvested metadata:
 
@@ -414,9 +408,7 @@ Business users can immediately understand impact analysis.
 
 # Certification Automation
 
-Instead of manually certifying datasets:
-
-Create certification rules.
+Instead of manually certifying datasets,we  Create certification rules.
 
 Example:
 
