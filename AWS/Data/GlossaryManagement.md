@@ -1,5 +1,5 @@
 **Glossary Management** 
- Creating, maintaining, governing, and publishing a common set of **business terms and definitions** that everyone in the organization uses consistently.
+Creating, maintaining, governing, and publishing a common set of **business terms and definitions** that everyone in the organization uses consistently.
 
 In an Alation implementation, the **Business Glossary** is often the foundation that turns a technical catalog into a business-friendly data marketplace.
 
@@ -499,6 +499,6 @@ Alation Marketplace
 Business Discovery & Consumption
 ```
 
-### In one sentence:
+### Summary
 
 **Glossary Management is the process of defining and governing a common business vocabulary and linking those business terms to physical data assets, enabling users to search, understand, trust, and consume data consistently across AWS, Snowflake, MongoDB Atlas, Salesforce Data Cloud, and other platforms.**
