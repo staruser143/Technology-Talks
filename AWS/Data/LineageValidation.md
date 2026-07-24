@@ -170,8 +170,6 @@ with no transformation detail.
 
 # Lineage Validation Framework
 
-I typically recommend a 5-step process.
-
 ## Step 1: Connector Validation
 
 Ensure metadata harvesting is working correctly.
