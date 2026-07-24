@@ -10,8 +10,6 @@ Governance Automation
 Marketplace Publishing
 ```
 
-Think of it this way:
-
 ```text
 Without Connectors
       ↓
@@ -204,8 +202,6 @@ Business users won't see it until the next refresh.
 ***
 
 # 4. Query Log Ingestion
-
-This is frequently overlooked.
 
 Metadata alone tells us:
 
@@ -554,7 +550,7 @@ Broken Lineage < 5%
 
 # For the AWS + Snowflake + MongoDB Atlas + Salesforce Data Cloud Landscape
 
-I would create a dedicated **Metadata & Catalog Operations Team** responsible for:
+We need to  create a dedicated **Metadata & Catalog Operations Team** responsible for:
 
 ```text
 1. Connector Management
