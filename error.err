@@ -1,0 +1,7 @@
+  File "/usr/local/lib/python3.12/dist-packages/pydantic/main.py", line 263, in __init__
+    validated_self = self.__pydantic_validator__.validate_python(data, self_instance=self)
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+pydantic_core._pydantic_core.ValidationError: 1 validation error for LlmAgent
+sub_agents.1
+  Input should be a valid dictionary or instance of BaseAgent [type=model_type, input_value=<google.adk.tools.agent_t...bject at 0x7ff5d06afbf0>, input_type=AgentTool]
+    For further information visit https://errors.pydantic.dev/2.13/v/model_type
