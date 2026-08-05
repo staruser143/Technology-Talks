@@ -1,7 +1,7 @@
-When using redshift do we have to precompute the metrics and store them accordingly or we should compute them at request time.
+# Redshift precomputing aggregates vs request time computation
 
 
-With **Amazon Redshift**, the answer is **it depends on the metric and the expected query latency**. In practice, most organizations use a **hybrid approach** rather than computing everything either ahead of time or on demand.
+With **Amazon Redshift**,  **it depends on the metric and the expected query latency**. In practice, most organizations use a **hybrid approach** rather than computing everything either ahead of time or on demand.
 
 ### Option 1: Compute at Request Time
 
