@@ -1,3 +1,7 @@
+# Are Druid/Pinot/Clickhouse proprietary or open source. Also, is there a managed service for them instead of self-managing them and does AWS support them.
+
+
+
 ## License
 
 All three are **open source**, not proprietary:
