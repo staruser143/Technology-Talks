@@ -1,3 +1,7 @@
+# What is OLAP ?
+
+
+
 # OLAP (Online Analytical Processing)
 
 OLAP is a category of technology designed for fast, complex analysis of large volumes of data — typically used in business intelligence, reporting, and decision support.
