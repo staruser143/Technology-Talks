@@ -1,3 +1,9 @@
+
+
+Can you compare using a OLAP database like apache Pinot, nosql datastore like MongoDB and data warehouse like amazon Redshift for the requirement to build a dashboard which should support drill down options and rollup of data.
+
+
+
 For a dashboard that supports **roll-ups, drill-downs, filtering, and aggregation**, Apache Pinot, MongoDB, and Amazon Redshift have very different strengths. The right choice depends on whether you prioritize interactive performance, flexible data models, or enterprise analytics.
 
 | Capability             | Apache Pinot             | MongoDB                          | Amazon Redshift                                      |
