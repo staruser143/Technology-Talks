@@ -1,7 +1,8 @@
-# Examples to illustrate how slice and dice analytics and interactive dashboards requirements can be better handled  with apache Pinot
+# Examples to illustrate how slice and dice analytics and interactive dashboard requirements can be better handled  with apache Pinot
 
 
-Apache Pinot was designed as a **real-time OLAP serving layer** for highly interactive dashboards. It excels when users repeatedly change filters, dimensions, and time windows and expect results in **tens of milliseconds**, even over billions of events.
+Apache Pinot was designed as a **real-time OLAP serving layer** for highly interactive dashboards.
+It excels when users repeatedly change filters, dimensions, and time windows and expect results in **tens of milliseconds**, even over billions of events.
 
 Below are examples from the **healthcare insurance broker domain**.
 
@@ -338,14 +339,14 @@ Some workloads are better suited to a data warehouse like Redshift:
 
 ## For Your Healthcare Insurance Broker Scenario
 
-Given your requirements of:
+Given the requirements of:
 
 * Broker hierarchy (National Agency → Regional Agency → Agency → Broker)
 * Roll-ups and drill-downs
 * Interactive business dashboards
 * Potentially near real-time metrics
 
-a **hybrid architecture** is often the most effective:
+A **hybrid architecture** is often the most effective:
 
 * **Amazon Redshift** stores detailed historical data and supports complex SQL, dimensional models, and enterprise reporting.
 * **Apache Pinot** serves the interactive dashboard layer, ingesting curated fact data (or streams of business events) and delivering sub-second responses for filtering, slice-and-dice, Top-N, and time-series visualizations.
