@@ -1,6 +1,6 @@
 
 
-# Comparing using a OLAP database like apache Pinot, nosql datastore like MongoDB and data warehouse like amazon Redshift for the requirement to build a dashboard which should support drill down options and rollup of data.
+# Comparing OLAP database like apache Pinot, nosql datastore like MongoDB and data warehouse like amazon Redshift for the requirement to build a dashboard which should support drill down options and rollup of data.
 
 
 
@@ -223,9 +223,9 @@ Assume a dashboard with:
 
 ---
 
-# Recommendation for Your Use Case
+# Recommendation for Our Use Case
 
-Your requirements include:
+Our requirements include:
 
 * Healthcare insurance broker domain
 * Hierarchical agency and broker relationships
@@ -237,7 +237,7 @@ Your requirements include:
 A practical architecture would be:
 
 * **Amazon Redshift** as the primary analytical store, using a dimensional model (facts and dimensions) to support enterprise reporting, historical analysis, and flexible drill-downs.
-* **Apache Pinot** if you also need highly interactive operational dashboards with near real-time metrics (for example, quotes submitted in the last few minutes or live broker activity).
+* **Apache Pinot** if we also need highly interactive operational dashboards with near real-time metrics (for example, quotes submitted in the last few minutes or live broker activity).
 * **MongoDB** as the operational or read-model database if it is already part of your application architecture, but not as the primary analytics engine for enterprise BI.
 
 For most healthcare insurance organizations, **Redshift + Power BI/Tableau** provides the strongest foundation for business dashboards. If real-time responsiveness becomes a key requirement, adding **Apache Pinot** as a serving layer for operational KPIs creates a complementary architecture rather than replacing the data warehouse.
