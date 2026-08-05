@@ -1,5 +1,5 @@
 
-# How to create dashboards leveraging Pinot/Clickhouse/Druid. Can we use Tableau, amazon quicksight or custom dashboards using a frontend framework like Reacts.
+#  How to create dashboards leveraging Pinot/Clickhouse/Druid. Can we use Tableau, amazon quicksight or custom dashboards using a frontend framework like Reacts.
 
 Yes to all three — Tableau, QuickSight, and custom React dashboards are all viable, but they fit different needs and connect in different ways. Here's the breakdown.
 
