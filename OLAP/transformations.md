@@ -1,0 +1,42 @@
+Both layers do transformation work, but they handle fundamentally different *kinds* of transformation. Splitting this correctly is one of the more important design decisions in these pipelines.
+
+## Flink / stream processor layer — "transformation you can't undo later"
+
+This layer handles transformations that need to happen **before** the data lands anywhere, because they change the shape or meaning of individual events:
+
+- **Deduplication** — the commission engine might emit the same event twice due to retries; Flink dedupes using an event ID before it ever reaches the store
+- **Enrichment/joins** — attaching broker name or region to a raw commission event by joining against a broker reference stream or lookup table, so Druid/Pinot don't have to join at query time (they're weak at large joins)
+- **Schema normalization** — claims events and commission events might arrive in different formats from different source systems; Flink normalizes them into a consistent event schema
+- **Windowed aggregation** — e.g., pre-aggregating "commission per broker per 5-minute window" if you don't need row-level granularity downstream
+- **Late/out-of-order event handling** — using event-time watermarks to decide when a window is "final" vs. still waiting for stragglers
+- **Filtering** — dropping test/internal transactions before they ever hit the analytical store
+
+The general rule: **if a transformation requires state, joins across streams, or business logic that would be expensive to redo on every query, do it in Flink** — once, at ingestion time.
+
+## Druid / Pinot layer — "transformation you can afford to do repeatedly"
+
+These stores do transformation too, but it's lighter and happens either at ingestion or at query time:
+
+**At ingestion (their own indexing job, not Flink):**
+- **Rollup** — Druid in particular can pre-aggregate at ingest time (e.g., collapse all commission events for a broker within a minute into one summarized row), trading row-level detail for smaller storage and faster scans
+- **Type coercion, timestamp parsing, dimension/metric split** — deciding which columns are filterable dimensions vs. summable metrics
+- **Simple derived columns** — e.g., extracting `year_month` from a timestamp
+
+**At query time:**
+- Aggregations (`SUM`, `COUNT`, `AVG`) — computed fresh per query, not pre-stored
+- Filtering, group-by, top-N — the actual analytical work the dashboard asks for
+- Light calculated metrics (e.g., `commission / premium` as a ratio) — cheap enough to compute per query rather than precompute
+
+## The dividing line, practically
+
+| Do it in Flink if... | Do it in Druid/Pinot if... |
+|---|---|
+| It requires joining across topics/streams | It's a simple aggregation over one flat table |
+| It needs to correct/dedupe individual events | It's query-specific (different dashboards want different cuts) |
+| The logic is complex business rules | It's a standard SQL-style GROUP BY |
+| You want it done once, not on every query | Recomputing per query is cheap |
+
+## For the broker pipeline specifically
+Flink would likely handle: stitching a commission event to its broker/carrier/product metadata, deduping retried events, and filtering test data. Druid/Pinot would then just ingest that clean, enriched, flat row and let the live dashboard do fast group-bys ("commission by broker, last hour") without any further joins — which is exactly the query pattern they're built to make instant.
+
+One caveat: if you push *too much* logic into Flink, you lose flexibility — every new dashboard metric requires a pipeline code change instead of a new SQL query. Most teams keep Flink minimal (clean, dedupe, enrich) and let Druid/Pinot handle the actual analytical slicing, since that's cheap to change.
