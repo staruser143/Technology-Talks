@@ -1,4 +1,5 @@
-Can you explain with examples how Redshift is better for drill through reports and historical analyses so as to understand it better ?
+# Redshift is better for drill through reports and historical analyses
+
 
 This is an important distinction because **drill-down** and **drill-through** are often confused, and they have different implications for the underlying data platform.
 
