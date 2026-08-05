@@ -1,3 +1,6 @@
+# How about support for Kafka/ Kafka streams / Flink in AWS or any other vendor providing them as managed service.
+
+
 Yes — Kafka, Kafka Streams, and Flink all have solid managed-service options, and AWS in particular has native (first-party) offerings for two of the three.
 
 ## Kafka
