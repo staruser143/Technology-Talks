@@ -1,0 +1,19 @@
+That's the split: one Kafka backbone feeding two different destinations depending on latency needs.
+
+## Walking through the stages
+
+**Sources → Kafka**
+Every commission-relevant event — a new enrollment, a claim submitted, a commission calculated — gets published to Kafka topics as it happens. Kafka acts as the durable, replayable backbone; both downstream paths read from the same topics, so you're not duplicating ingestion logic.
+
+**The real-time path (teal)**
+A stream processor like **Flink** or **ksqlDB** does lightweight transforms — deduplication, type casting, maybe joining a commission event with the broker ID it belongs to — then writes straight into **Druid or Pinot**. These stores ingest directly from Kafka natively (both have built-in Kafka indexing services), so data can be queryable within seconds of the event happening. A broker-facing **live dashboard** or API queries this store directly for things like "commission earned this month, updating live."
+
+**The batch path (purple)**
+The same Kafka topics get periodically materialized into your data lake/warehouse, transformed by **dbt** into the star schema we built earlier (`Fact_Commission` + dimension tables), landing in **Snowflake or Redshift**. This feeds BI tools for board reporting, renewal analysis, and anything needing complex joins or long historical lookback — the kind of ad hoc, exploratory analysis Druid/Pinot aren't optimized for.
+
+## Why both paths exist
+- Druid/Pinot are fast but limited on join complexity and historical depth — great for "what's happening now," bad for "compare this year's loss ratio to the last five years by industry vertical"
+- Snowflake/Redshift are the opposite — deep, flexible, but not built for sub-second, high-concurrency lookups
+
+## A practical note for the broker use case
+You likely wouldn't stream *everything* through the real-time path — just the metrics brokers or ops teams need to see live (commission accrual, enrollment counts, claims volume). Slower-moving analytical questions (retention trends, carrier scorecards, loss ratios) stay on the batch/warehouse side since they don't need millisecond freshness.
