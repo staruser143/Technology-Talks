@@ -1,0 +1,23 @@
+That's the shape of it — one fact table in the middle surrounded by the dimensions that give it context.
+
+## How it works
+
+**Fact_Commission** (the center table) holds the numbers you actually measure — commission amount, premium, member count — plus foreign keys pointing to each dimension. This table grows fast (one row per policy transaction per period), so it's kept lean: mostly IDs and measures, no descriptive text.
+
+**The dimension tables** hold the descriptive attributes you slice and filter by:
+
+| Table | Sample columns |
+|---|---|
+| `Dim_Time` | date, month, quarter, plan_year vs. calendar_year flag |
+| `Dim_Broker` | broker_name, agency, hire_date, region |
+| `Dim_Carrier` | carrier_name, AM Best rating, carrier_type |
+| `Dim_Product` | plan_type (medical/dental/vision), metal_tier, network_type |
+| `Dim_Group` | employer_name, group_size_band, SIC industry code |
+| `Dim_Geography` | state, region (matters a lot given state-by-state insurance regulation) |
+
+## Example query this schema answers well
+"Total commission by broker, by carrier, for dental plans in the Midwest, this plan year" — you're just joining the fact table to four or five dimension tables and filtering/grouping on their attributes. That's the whole point of the star shape: one hop from fact to any dimension, so BI tools can generate these joins automatically without deep nested joins.
+
+## A note on granularity
+You'd likely want a **second fact table** for claims (`Fact_Claims`) sharing the same dimensions — that's what makes loss ratio calculations (claims ÷ premium) possible, since both facts roll up to the same broker/carrier/group/time dimensions. This pattern, where multiple fact tables share dimension tables, is sometimes called a **galaxy schema** or **fact constellation**.
+
