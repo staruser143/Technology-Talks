@@ -1,3 +1,6 @@
+
+# Does the transformations happen in Kafka/flink layer and/or Druid/Pinot layer
+
 Both layers do transformation work, but they handle fundamentally different *kinds* of transformation. Splitting this correctly is one of the more important design decisions in these pipelines.
 
 ## Flink / stream processor layer — "transformation you can't undo later"
