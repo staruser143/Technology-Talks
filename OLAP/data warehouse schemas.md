@@ -1,3 +1,6 @@
+
+# Is this type of scheme used in Data warehouses like AWS Redshift or snowflake
+
 Yes — star schemas (and their cousin, snowflake schemas) are exactly what you'd typically build inside Redshift, Snowflake, BigQuery, and similar cloud data warehouses. Here's how it plays out in practice.
 
 ## Star schema in a modern cloud warehouse
