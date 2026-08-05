@@ -1,3 +1,6 @@
+# How does this differ from OLAP stores like Apache Druid, Apache Pinot or Clickhouse
+
+
 These are a genuinely different category, even though people lump them all under "OLAP." Let me break down where they diverge.
 
 ## The core distinction: batch analytics vs. real-time analytics
