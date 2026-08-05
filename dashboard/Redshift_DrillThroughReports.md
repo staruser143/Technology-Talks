@@ -336,9 +336,9 @@ Redshift provides:
 
 ---
 
-## Applying This to Your Broker Dashboard
+## Applying This to the Broker Dashboard
 
-For the healthcare insurance broker domain we've discussed, a common pattern is:
+For the healthcare insurance broker domain , a common pattern is:
 
 1. **Executive dashboard**
 
@@ -366,4 +366,6 @@ For the healthcare insurance broker domain we've discussed, a common pattern is:
    * Evaluate broker performance before and after compensation plan changes
    * Measure retention and loss ratio trends by product and geography
 
-This is why many organizations use **Redshift as the analytical system of record**. If they also require highly responsive, near real-time dashboards with rapid filter changes and slice-and-dice exploration, they add **Apache Pinot** as a specialized serving layer rather than replacing the warehouse. Together, the two platforms complement each other by addressing different classes of analytical queries.
+- This is why many organizations use **Redshift as the analytical system of record**.
+- If we also require highly responsive, near real-time dashboards with rapid filter changes and slice-and-dice exploration, we can add **Apache Pinot** as a specialized -  serving layer rather than replacing the warehouse. T
+ogether, the two platforms complement each other by addressing different classes of analytical queries.
