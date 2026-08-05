@@ -1,3 +1,7 @@
+# For a healthcare insurance company in broker domain, how could OLAP be leveraged?
+
+
+
 # OLAP for a Healthcare Insurance Broker Business
 
 In the broker domain, you're sitting between insurance carriers, employer groups, individual policyholders, and agents/brokers themselves — which means a *lot* of dimensions worth slicing data by. Here's how OLAP fits in.
