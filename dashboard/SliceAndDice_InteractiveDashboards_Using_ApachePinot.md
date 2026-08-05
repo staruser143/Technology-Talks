@@ -1,4 +1,4 @@
-Can you provide  examples to illustrate how slice and dice analytics and interactive dashboards requirements can be better handled  with apache Pinot
+# Can you provide  examples to illustrate how slice and dice analytics and interactive dashboards requirements can be better handled  with apache Pinot
 
 
 Apache Pinot was designed as a **real-time OLAP serving layer** for highly interactive dashboards. It excels when users repeatedly change filters, dimensions, and time windows and expect results in **tens of milliseconds**, even over billions of events.
