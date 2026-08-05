@@ -1,3 +1,5 @@
+# Does druid/Pinot also support roll up and drill down queries
+
 Yes — rollup and drill-down are core to how both are designed, though they implement it a bit differently from each other and from traditional OLAP cubes.
 
 ## Rollup — built into ingestion, not just query time
