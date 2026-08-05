@@ -1,6 +1,6 @@
 
 
-Can you compare using a OLAP database like apache Pinot, nosql datastore like MongoDB and data warehouse like amazon Redshift for the requirement to build a dashboard which should support drill down options and rollup of data.
+# Comparing using a OLAP database like apache Pinot, nosql datastore like MongoDB and data warehouse like amazon Redshift for the requirement to build a dashboard which should support drill down options and rollup of data.
 
 
 
