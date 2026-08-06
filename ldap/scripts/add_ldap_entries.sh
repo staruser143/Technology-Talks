@@ -4,9 +4,9 @@
 # Exit on error
 set -e
 
-# Define LDAP admin credentials
+# Define LDAP admin credentials — load password from environment
 LDAP_ADMIN_DN="cn=admin,dc=example,dc=com"
-LDAP_ADMIN_PASSWORD="admin_password"
+LDAP_ADMIN_PASSWORD="${LDAP_ADMIN_PASSWORD:?Error: LDAP_ADMIN_PASSWORD environment variable is not set}"
 LDAP_CONTAINER="ldap"
 
 # Create LDIF for user

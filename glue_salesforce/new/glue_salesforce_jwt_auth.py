@@ -63,8 +63,8 @@ def main():
     # Authenticate with Salesforce
     token_response = request_access_token(jwt_assertion, LOGIN_URL)
 
-    # Output access token and instance URL
-    print("Access Token:", token_response['access_token'])
+    # Log success without exposing sensitive token values
+    print("Access token retrieved successfully.")
     print("Instance URL:", token_response['instance_url'])
 
 if __name__ == "__main__":
