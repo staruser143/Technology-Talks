@@ -248,14 +248,4 @@ Chain-of-thought
 Agent-based
 Graph-based
 Multi-agent
-✅ If you want next step (highly recommended)
 
-I can:
-
-✅ Map these patterns to LangGraph implementation nodes
- ✅ Show production-grade architecture blueprint (AWS + Azure neutral)
- ✅ Provide code for each pattern incrementally
- ✅ Do exam-style scenario questions (AIP-C01)
- ✅ Build a reference decision tree (when to use which RAG pattern)
-
-Just tell me 👍
