@@ -1,251 +1,295 @@
-RAG (Retrieval-Augmented Generation) patterns are architectural patterns that define how retrieval (from external knowledge sources) is combined with LLM generation to improve accuracy, grounding, and context-awareness.
+# RAG (Retrieval-Augmented Generation) patterns
 
-Below is a structured, architect-level breakdown of key RAG patterns, grouped from basic → advanced → production-grade.
+RAG (Retrieval-Augmented Generation) patterns define how retrieval from external knowledge sources is combined with LLM generation to improve accuracy, grounding, and relevance. This document is an architect-level reference that groups key RAG patterns from basic → advanced → production-grade, with recommended use-cases and characteristics.
 
-🔹 1. Basic RAG Patterns
-1. Simple (Naïve) RAG
+---
+
+## 1. Basic RAG Patterns
+
+### 1.1 Simple (Naïve) RAG
 
 Flow:
 
+```
 User Query → Embed → Vector Search → Top-K Docs → LLM → Response
+```
+
+Characteristics:
+
+- Single-shot retrieval
+- No iteration
+- Stateless
+
+Use cases:
+
+- FAQ bots
+- Internal document search
+
+Pros / Cons:
+
+- ✅ Simple, fast
+- ❌ Prone to hallucination if retrieval is weak
+
+---
+
+### 1.2 Query-Augmented RAG (Prompt Injection of Context)
+
+Description: retrieved chunks are injected directly into the prompt.
+
+Pattern:
+
+```
+Prompt = { Query + Retrieved Context }
+```
+
+Enhancements:
+
+- Add a guard instruction like: "Answer ONLY from the provided context."
+
+Pros / Cons:
+
+- ✅ Improves grounding
+- ❌ Limited reasoning
+
+---
+
+## 2. Retrieval Optimization Patterns
+
+### 2.1 Multi-Query RAG
+
+Idea: generate multiple reformulated queries to improve recall.
+
+Flow:
+
+```
+User Query → LLM → {Q1, Q2, Q3} → Retrieve per query → Merge results → LLM
+```
+
+- ✅ Better recall
+- ✅ Handles ambiguous queries
 
 
-Characteristics
+### 2.2 Hybrid Search RAG
 
-Single-shot retrieval
-No iteration
-Stateless
+Combine semantic and lexical search:
 
-Use cases
+- Vector search (semantic)
+- BM25 / keyword search (lexical)
 
-FAQ bots
-Internal document search
+When to use:
 
-✅ Simple, fast
- ❌ Prone to hallucination if retrieval is weak
+- Exact matches (IDs, codes)
+- Semantic meaning
 
-2. Query-Augmented RAG (Prompt Injection of Context)
-Retrieved chunks are directly injected into the prompt.
+### 2.3 Reranking Pattern
 
-Pattern
+Flow:
 
-Prompt = {Query + Retrieved Context}
+```
+Retrieve Top-N (e.g., 50) → Reranker model → Select Top-K (e.g., 5) → LLM
+```
 
+- ✅ Improves precision
+- ✅ Critical for production
 
-Enhancement
+### 2.4 Context Compression RAG
 
-Add instructions: “Answer ONLY from context”
+Reduce irrelevant text before sending to the LLM using:
 
-✅ Improves grounding
- ❌ Limited reasoning
+- Extractive summarization
+- Relevance filtering
 
-🔹 2. Retrieval Optimization Patterns
-3. Multi-Query RAG
+- ✅ Reduces token cost
+- ✅ Improves signal quality
 
-Idea: Generate multiple reformulated queries
+---
 
-User Query → LLM → {Q1, Q2, Q3}
-         → Retrieve per query → Merge results → LLM
+## 3. Iterative & Reasoning RAG Patterns
 
+### 3.1 Iterative (Self-Refinement) RAG
 
-✅ Better recall
- ✅ Handles ambiguous queries
+Flow:
 
-4. Hybrid Search RAG
-
-Combine:
-
-Vector search (semantic)
-BM25 / keyword search (lexical)
-
-✅ Handles:
-
-Exact matches (IDs, codes)
-Semantic meaning
-5. Reranking Pattern
-Retrieve Top-50 → Reranker Model → Select Top-5 → LLM
-
-
-✅ Improves precision
- ✅ Critical for production
-
-6. Context Compression RAG
-Reduce irrelevant text before sending to LLM
-
-Techniques:
-
-Extractive summarization
-Relevance filtering
-
-✅ Reduces token cost
- ✅ Improves signal quality
-
-🔹 3. Iterative & Reasoning RAG Patterns
-7. Iterative (Self-Refinement) RAG
+```
 Query → Retrieve → Answer → Evaluate → Re-retrieve → Refine
+```
 
+- ✅ Improves answer quality
+- ❌ Higher latency
 
-✅ Improves answer quality
- ❌ Higher latency
+### 3.2 Self-Ask / Decomposition RAG
 
-8. Self-Ask / Decomposition RAG
+Break complex queries into sub-questions and answer/compose them.
 
-Break query into sub-questions
+Example:
 
-"What is X and how does it compare to Y?"
-→ Q1: What is X?
-→ Q2: What is Y?
-→ Q3: Compare
+- "What is X and how does it compare to Y?"
+  - Q1: What is X?
+  - Q2: What is Y?
+  - Q3: Compare
 
+- ✅ Handles complex queries
 
-✅ Handles complex queries
+### 3.3 Chain-of-Thought + Retrieval
 
-9. Chain-of-Thought + Retrieval
-Retrieve → reason step-by-step
+Retrieve → reason step-by-step (use when you need better logical accuracy).
 
-✅ Better logical accuracy
+- ✅ Better logical accuracy
 
-🔹 4. Agentic RAG Patterns (Important for your current learning)
-10. Tool-Calling / Agent RAG
+---
 
-LLM decides:
+## 4. Agentic RAG Patterns (relevant for LangGraph & Agentic AI)
 
-When to retrieve
-What to retrieve
-Agent:
-  if insufficient knowledge → call Retriever Tool
+### 4.1 Tool-Calling / Agent RAG
 
+Description: the LLM (or an agent) decides when and what to retrieve. If knowledge is insufficient, the agent calls the retriever tool.
 
-✅ Dynamic
- ✅ Reduces unnecessary retrieval
+- ✅ Dynamic
+- ✅ Reduces unnecessary retrieval
 
-11. Multi-Agent RAG
+### 4.2 Multi-Agent RAG
 
-Specialized agents:
+Specialized agents with responsibilities (example mapping):
 
-Agent	ResponsibilityRetrieval Agent	Fetch context
-Reasoning Agent	Generate answer
-Critic/Reviewer	Validate
-Planner	Orchestrate
+- Retrieval Agent — fetch context
+- Reasoning Agent — generate the answer
+- Critic / Reviewer — validate
+- Planner — orchestrate
 
-✅ Production-grade pattern
- ✅ Aligns with LangGraph
+- ✅ Production-grade pattern
+- ✅ Aligns well with LangGraph
 
-12. Supervisor Pattern (LangGraph-style)
-Central controller manages workflow
+### 4.3 Supervisor Pattern (LangGraph-style)
+
+A central controller manages the workflow:
+
+```
 User → Supervisor
         ├── Retrieval Node
         ├── Reasoning Node
-        ├── Validation Node
+        └── Validation Node
+```
 
+- ✅ Deterministic control
+- ✅ Enterprise-friendly
 
-✅ Deterministic control
- ✅ Enterprise-friendly
+---
 
-🔹 5. Knowledge Structuring Patterns
-13. Graph RAG
-Use knowledge graphs instead of flat chunks
+## 5. Knowledge Structuring Patterns
 
-✅ Handles relationships
- ✅ Useful for:
+### 5.1 Graph RAG
 
-Healthcare
-Fraud detection
-14. Structured RAG (SQL / APIs)
-Retrieve from:
-SQL
-APIs
-Data lakes
+Use knowledge graphs instead of flat text chunks when relationships matter (e.g., healthcare, fraud detection).
 
-✅ Accurate for structured data
+- ✅ Handles relationships
 
-15. Metadata Filtering RAG
+### 5.2 Structured RAG (SQL / APIs)
 
-Filter before retrieval:
+Retrieve directly from structured sources like SQL, APIs, data lakes for high-accuracy answers.
 
-WHERE:
-  department = "claims"
-  year = 2025
+- ✅ Accurate for structured data
 
+### 5.3 Metadata Filtering RAG
 
-✅ Improves relevance
- ✅ Critical in enterprise
+Filter before retrieval, e.g.:
 
-🔹 6. Advanced Production Patterns
-16. Streaming RAG
-Retrieve while generating
+```sql
+WHERE department = 'claims'
+  AND year = 2025
+```
 
-✅ Lower latency
- ✅ Better UX
+- ✅ Improves relevance
+- ✅ Critical in enterprise
 
-17. Cached RAG
-Cache:
-embeddings
-query results
-responses
+---
 
-✅ Cost optimization
+## 6. Advanced Production Patterns
 
-18. Feedback / Learning RAG
+### 6.1 Streaming RAG
+
+Retrieve while generating to reduce latency and improve UX.
+
+- ✅ Lower latency
+- ✅ Better UX
+
+### 6.2 Cached RAG
+
+Cache embeddings, query results, and responses to optimize cost.
+
+- ✅ Cost optimization
+
+### 6.3 Feedback / Learning RAG
+
 Use user feedback to:
-retrain retriever
-improve ranking
 
-✅ Continuous improvement
+- Retrain the retriever
+- Improve ranking
 
-19. Guardrailed RAG
+- ✅ Continuous improvement
 
-Add:
+### 6.4 Guardrailed RAG
 
-Input filters (prompt injection)
-Output validation
+Add security and quality gates:
 
-✅ Secure RAG systems
+- Input filters (prompt injection mitigation)
+- Output validation (sanity checks, compliance)
 
-🔹 7. Enterprise RAG Composite Pattern
+- ✅ Secure RAG systems
 
-A real-world system typically combines:
+---
 
-Hybrid Search
- + Reranking
- + Metadata Filtering
- + Multi-Query
- + Agent Orchestration
- + Guardrails
+## 7. Enterprise RAG Composite Pattern
 
-🔶 Architect Cheat Sheet (Decision Mapping)
-Problem	PatternLow recall	Multi-query
-Low precision	Reranking
-High cost	Compression
-Complex reasoning	Decomposition
-Dynamic workflows	Agentic RAG
-Structured data	SQL/API RAG
-Compliance/security	Guardrailed RAG
-🔷 How This Aligns with Your Current Work
+A real-world production system typically combines many patterns:
 
-Given your focus (LangGraph + Agentic AI + Enterprise AI):
+- Hybrid Search + Reranking + Metadata Filtering + Multi-Query + Agent Orchestration + Guardrails
 
-➡️ Most relevant patterns:
 
-✅ Supervisor / Graph-based RAG
-✅ Multi-agent RAG
-✅ Hybrid + reranking pipeline
-✅ Guardrailed RAG
-✅ Structured + unstructured fusion
-✅ Recommended Mental Model
+## Architect Cheat Sheet (Decision Mapping)
 
-Think of RAG patterns across 3 axes:
+| Problem / Signal       | Recommended Pattern      |
+|------------------------|--------------------------|
+| Low recall             | Multi-query              |
+| Low precision          | Reranking                |
+| High cost              | Compression              |
+| Complex reasoning      | Decomposition            |
+| Dynamic workflows      | Agentic RAG              |
+| Structured data needs  | SQL / API RAG            |
+| Compliance / security  | Guardrailed RAG         |
 
-1. Retrieval Quality
-Multi-query
-Hybrid search
-Reranking
-2. Reasoning Depth
-Decomposition
-Iteration
-Chain-of-thought
-3. Orchestration
-Agent-based
-Graph-based
-Multi-agent
+---
 
+## How This Aligns with Your Current Work
+
+Given a focus on LangGraph + Agentic AI + Enterprise AI, most relevant patterns are:
+
+- ✅ Supervisor / Graph-based RAG
+- ✅ Multi-agent RAG
+- ✅ Hybrid + reranking pipeline
+- ✅ Guardrailed RAG
+- ✅ Structured + unstructured fusion
+
+### Recommended mental model
+
+Think of RAG patterns across three axes:
+
+1) Retrieval Quality
+- Multi-query, Hybrid search, Reranking
+
+2) Reasoning Depth
+- Decomposition, Iteration, Chain-of-thought
+
+3) Orchestration
+- Agent-based, Graph-based, Multi-agent
+
+---
+
+If you'd like the next step, I can:
+
+- Map these patterns to LangGraph implementation nodes
+- Provide a production-grade architecture blueprint (cloud-neutral)
+- Provide example code for each pattern incrementally
+- Create exam-style scenario questions (AIP-C01)
+- Build a reference decision tree for when to use which RAG pattern
+
+Tell me which of the above you'd like next.
