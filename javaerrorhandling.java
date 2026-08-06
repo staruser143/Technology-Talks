@@ -85,7 +85,8 @@ public class ChangeFeedProcessorExample {
         try {
             Thread.sleep(60000); // 1 minute delay to process changes
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            Thread.currentThread().interrupt();
+            System.err.println("Change feed processor interrupted: " + e.getMessage());
         }
 
         // Stop the Change Feed Processor
