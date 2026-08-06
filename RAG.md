@@ -259,15 +259,6 @@ A real-world production system typically combines many patterns:
 
 ---
 
-## How This Aligns with Your Current Work
-
-Given a focus on LangGraph + Agentic AI + Enterprise AI, most relevant patterns are:
-
-- ✅ Supervisor / Graph-based RAG
-- ✅ Multi-agent RAG
-- ✅ Hybrid + reranking pipeline
-- ✅ Guardrailed RAG
-- ✅ Structured + unstructured fusion
 
 ### Recommended mental model
 
@@ -283,13 +274,3 @@ Think of RAG patterns across three axes:
 - Agent-based, Graph-based, Multi-agent
 
 ---
-
-If you'd like the next step, I can:
-
-- Map these patterns to LangGraph implementation nodes
-- Provide a production-grade architecture blueprint (cloud-neutral)
-- Provide example code for each pattern incrementally
-- Create exam-style scenario questions (AIP-C01)
-- Build a reference decision tree for when to use which RAG pattern
-
-Tell me which of the above you'd like next.
