@@ -4,6 +4,7 @@ import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.interactive.form.PDAcroForm;
 import org.apache.pdfbox.pdmodel.interactive.form.PDField;
 import org.apache.pdfbox.pdmodel.interactive.form.PDNonTerminalField;
+import shared.json.JsonPathResolver;
 
 import java.io.File;
 import java.util.*;
@@ -74,21 +75,6 @@ public class HybridPdfFormFiller {
     }
 
     public static JsonNode resolveJsonPath(JsonNode root, String[] pathParts) {
-        JsonNode current = root;
-        for (String part : pathParts) {
-            if (current == null) return null;
-
-            if (part.matches("\\d+")) {
-                int index = Integer.parseInt(part) - 1;
-                if (current.isArray() && index < current.size()) {
-                    current = current.get(index);
-                } else {
-                    return null;
-                }
-            } else {
-                current = current.get(part);
-            }
-        }
-        return current;
+        return JsonPathResolver.resolve(root, pathParts, false);
     }
 }
