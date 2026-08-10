@@ -1,0 +1,39 @@
+**Scenario**
+
+A company runs Claude across several internal tools: a code-review assistant, a documentation-writing assistant, and a customer-ticket-drafting assistant. All three currently share one identical block of content in their system prompts: a 2,000-token "company writing style guide" (tone, terminology preferences, formatting conventions) that was originally written once and copy-pasted into all three system prompts. When the style guide was recently updated (a terminology change), an engineer had to manually find and edit all three separate system prompts to keep them in sync — and missed one, causing inconsistent terminology in the documentation tool for two weeks until someone noticed.
+
+Separately, the code-review assistant specifically also needs an occasional, fairly elaborate procedure for "how to review database migration files" — a fairly long, specialized set of steps only relevant when a migration file is actually part of what's being reviewed, which happens in maybe 1 in 20 review requests; the rest of the time, loading that whole procedure would just be wasted context.
+
+**Question**: What reuse strategy fits each of these two situations, and why?
+
+A) Both situations call for the same fix: enable prompt caching on all three assistants' system prompts, since caching is the general solution to any prompt reuse or content-duplication problem.
+
+B) The writing style guide problem calls for a modular prompt approach — extract the style guide into one shared, independently-maintained block that all three system prompts reference/compose from, so updating it once propagates everywhere instead of requiring manual edits across multiple copies. The migration-review procedure calls for a Skill — since it's long, only relevant in a minority of cases (1 in 20), and ideally should be discovered and loaded automatically by Claude only when a migration file is actually present, rather than permanently bloating the code-review assistant's system prompt for the 19 out of 20 cases that don't need it.
+
+C) Both situations call for Skills, since Skills are the most modern approach and should replace both modular prompts and manually-maintained shared content going forward.
+
+D) The writing style guide problem doesn't need any special reuse strategy — the two-week inconsistency was a one-time human error, not a structural issue, so no process change is needed. The migration-review procedure should just be added directly to the code-review assistant's permanent system prompt, since 1-in-20 relevance is common enough to justify always including it.
+
+Take your best guess and I'll walk through it.
+
+
+
+Correct — and this scenario deliberately places two different reuse problems side by side so you have to diagnose each on its own terms, rather than reaching for one tool because it worked on the first problem.
+
+**Why B is right**
+
+**The style guide problem** has a specific signature worth naming precisely: the *same, always-relevant* content (the writing style guide applies to every request across all three tools, not situationally) is duplicated across multiple independent prompts, and keeping duplicates in sync manually already failed once, silently, for two weeks. This is exactly the scenario the modular-prompts material was built around: "if your company's tone/brand-voice guidelines change, you edit the one shared block once, and every feature that includes that block picks up the change automatically — instead of hunting down and manually editing separate hand-written prompts." The fix isn't about *when* the content is needed (it's needed every time, for all three tools) — it's about *not maintaining the same content in multiple places*. That's a modular-prompt problem: extract to one shared block, compose all three system prompts from it, edit once.
+
+**The migration-review procedure** has a completely different signature: it's long, and specifically *situational* — relevant in only 1 of 20 requests. This is precisely the profile that calls for a Skill rather than a modular prompt block: you don't want this procedure permanently baked into the code-review assistant's system prompt (that would cost context on every single request, including the 19/20 that don't involve a migration file — the exact "monolithic loading" problem from Domain 3's progressive-discovery material). You want it discoverable and loaded only when actually relevant, which is precisely what a Skill's `SKILL.md` description-based discovery mechanism is for — Claude sees the lightweight description, recognizes "this review involves a migration file," and only then loads the full procedure.
+
+The scenario is testing exactly the distinction from the deep-dive: *is this content always relevant across multiple consumers (modular prompt), or is it situationally relevant and should be loaded on demand (Skill)?* Same underlying goal — don't duplicate/waste effort — but the actual mechanism needed is different because the *usage pattern* is different.
+
+**Why the others are wrong**
+
+- **A)** misapplies caching to a problem it doesn't solve. Caching addresses repeated *processing* cost across calls within the *same* stable prefix — it does nothing about the actual failure described (content duplicated across three *separate* system prompts, one of which got missed during a manual update). You could cache all three assistants' system prompts individually and still have the exact same "update three places, might miss one" maintenance problem; caching and de-duplication are unrelated axes, which is precisely the distinction the modular-prompts deep-dive drew out.
+- **C)** overcorrects into treating Skills as a universal replacement, ignoring that the style-guide problem doesn't have the "situational relevance" profile that justifies a Skill's discovery mechanism — the style guide is relevant to *every* request across all three tools, so there's nothing to "discover" or gate; you'd want it loaded every time regardless, which just makes it a shared modular block, not a Skill. Using a Skill here adds unnecessary discovery-mechanism overhead for content that never needed conditional loading in the first place.
+- **D)** dismisses the style-guide incident as a one-off human error rather than recognizing the structural cause: manually-synced duplicates *will* drift eventually, given enough updates and enough copies — that's not bad luck, it's the predictable failure mode of the architecture itself, the same "this will eventually fail even though each individual edit seemed fine" logic from your capability-bloat and guardrail-accumulation scenarios. And baking the migration-review procedure permanently into the system prompt directly contradicts the progressive-discovery principle — "common enough to justify always including it" ignores that 1-in-20 relevance is exactly the profile where on-demand loading saves real, measurable context cost across the other 19 cases, for zero loss of capability when it is needed.
+
+**Pattern to remember, tying all three reuse strategies together**: caching solves repeated-processing cost over time for a stable prefix; modular prompts solve duplicated-maintenance cost for content that's reused *and always relevant* across multiple prompts; Skills solve both duplication *and* unnecessary context cost for content that's reused but only *situationally* relevant. The exam's harder items in this sub-topic will likely give you multiple reuse problems in one scenario, each with a different usage-pattern signature, specifically to test whether you pick the mechanism that matches each pattern rather than defaulting to whichever one you learned most recently.
+
+That completes solid coverage of Domain 2's prompt-reuse sub-topic. Want to move to the last untouched Domain 2 sub-topic — optimizing context windows and managing token usage — or do a mixed review across all of Domain 2 first?
