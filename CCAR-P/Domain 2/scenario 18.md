@@ -1,0 +1,45 @@
+**Scenario**
+
+A nonprofit foundation runs a Claude-powered grant-proposal review system with three components:
+
+- **Component 1 — Eligibility screening**: a simple check (is the applicant a registered 501(c)(3), is the request within the funding range) run on every incoming proposal, currently using an Opus-class model. ~3,000 proposals/year.
+- **Component 2 — Budget narrative review**: reads the proposal's budget justification and produces a structured decision memo with three fixed sections ("Budget Summary," "Red Flags," "Recommendation"), where the reasoning behind flagging any red flag must be shown explicitly for board compliance review. Currently uses a single zero-shot prompt: "Review this budget narrative and produce a decision memo." Output section structure varies request to request, and red flags are sometimes stated as conclusions without the underlying reasoning shown.
+- **Component 3 — Payment disbursement**: once a grant is approved, this component can trigger an actual wire transfer to the grantee's bank account. It's currently gated only by a system prompt instruction: "Only initiate a disbursement if the grant has been marked 'Board Approved' in the system and the amount matches the approved amount exactly." No additional check exists beyond this instruction.
+
+Additionally, all three components share an identical 3,000-token "foundation compliance and ethics guidelines" block, currently copy-pasted separately into all three system prompts — when the guidelines were updated last quarter, one component's copy was missed and ran outdated guidelines for six weeks before anyone noticed.
+
+**Question**: Which of the following best identifies all the distinct problems present, each correctly matched to its Domain 2 sub-topic and fix?
+
+A) There's one root problem — the system prompts are too long — and shortening all of them uniformly would resolve every issue described.
+
+B) Four distinct problems: (1) model selection — Component 1's simple eligibility check doesn't need Opus-class reasoning at that volume, a smaller/faster model would suffice; (2) prompt engineering technique — Component 2 shows two separate signatures (structure inconsistency → needs few-shot examples; reasoning sometimes skipped → needs chain-of-thought), both addressable via well-constructed few-shot examples that also demonstrate the reasoning depth; (3) guardrails — Component 3 gates a real, consequential, hard-to-reverse action (an actual wire transfer) behind only an instructional guardrail, which the salary-change precedent shows is insufficient; it needs structural/system-level enforcement (e.g., a hard check against the system's "Board Approved" flag and exact amount match performed outside the model's judgment, not just requested of it); (4) prompt reuse — the compliance guidelines are duplicated across three system prompts with no shared source of truth, causing the six-week drift; this calls for a modular prompt approach, extracting the guidelines into one shared block all three compose from.
+
+C) The only real problem is the payment disbursement guardrail; the other three issues are minor and don't require architectural attention.
+
+D) All three components should be merged into a single agent to simplify the system, which would automatically resolve the model selection, prompt engineering, and reuse problems, though the guardrail issue would remain.
+
+Take your best guess and I'll walk through it, or ask me to explain any option first if you'd like.
+
+
+
+Correct — and this mixed review pulls from all four Domain 2 sub-topics we've drilled, deliberately structured the same way your Domain 3 mixed review was: multiple genuinely independent problems bundled into one system, each needing its own diagnosis and fix rather than one unifying explanation.
+
+**Why B is right — confirming each diagnosis**
+
+1. **Model selection (Component 1)**: eligibility screening — registered 501(c)(3), request within funding range — is close to rule-based classification, not deep reasoning. This is the same profile as your spam-classifier scenario: simple judgment, real volume (3,000/year), where Opus-class reasoning depth isn't needed and a smaller/faster model would perform the task just as reliably at meaningfully lower cost. Nothing about "is this applicant eligible per two straightforward criteria" resembles the multi-step, high-stakes, subtle-judgment profile that justified capable-tier models in your coding-assistant or intake-triage scenarios.
+
+2. **Prompt engineering technique (Component 2)**: two distinct failure signatures, correctly kept separate the way your insurance-claim-memo scenario taught you to. Structure varying request to request → the few-shot signature (format/consistency problem, content itself isn't wrong). Red flags stated as conclusions without shown reasoning → the chain-of-thought signature (reasoning-depth problem, directly echoing your loan-arithmetic and insurance-compliance scenarios, both of which involved "must show the reasoning chain, not just the conclusion" for compliance purposes). And exactly as in your insurance scenario, the fix isn't two separate additions — well-constructed few-shot examples that themselves demonstrate both the correct section structure *and* fully worked-out reasoning within the "Red Flags" section address both problems through the same demonstrated examples.
+
+3. **Guardrails (Component 3)**: an actual wire transfer — real money movement, hard to reverse — gated only by "only initiate if... system prompt says so." This is structurally identical to your salary-change scenario: a well-worded instruction, but still just a request for the model to correctly judge conditions before acting, with no system-level check verifying those conditions independently. The fix is the same: move the actual verification (is this genuinely marked Board Approved, does the amount genuinely match) to something the system enforces outside the model's judgment — a required-parameter check against the actual system state, not a instruction asking the model to remember to check.
+
+4. **Prompt reuse (the shared compliance block)**: identical content, needed by all three components, at all times (not situational) — this is precisely the modular-prompts signature from your writing-style-guide scenario, not a Skill (no situational relevance to gate on) and not fundamentally a caching problem (caching doesn't prevent one copy from silently drifting out of sync with the others). The six-week undetected drift is the same predictable failure mode as your style-guide scenario — manually-synced duplicates *will* eventually miss an update, and the fix is the same: one shared, single source of truth all three compose from, edited once.
+
+**Why the others are wrong**
+
+- **A)** repeats the "one fix solves everything" error you've now correctly rejected in every mixed-review scenario across both domains (the logistics scenario, the fraud-detection scenario, the healthtech Domain 3 mixed review). Shortening system prompts uniformly does nothing for an oversized model choice, a missing reasoning-demonstration technique, an unenforced consequential action, or duplicated content drifting out of sync — four causally unrelated problems don't share one mechanical fix.
+- **C)** arbitrarily elevates the guardrail issue (correctly identified as real and serious) while dismissing three other genuine, independently-diagnosable problems as "minor" with no principled basis — the same unjustified-ranking mistake as your Domain 3 healthtech mixed review's wrong answer D.
+- **D)** proposes merging three components with different purposes into one agent and claims this "automatically" resolves model selection, prompting, and reuse problems — but merging doesn't change what reasoning depth Component 1's task actually needs, doesn't add few-shot/CoT structure to Component 2's prompt, and doesn't create a shared compliance block by itself; it just relocates the same underlying issues into one bigger, harder-to-reason-about agent, echoing the same overcorrection pattern flagged in your retail capability-bloat scenario (merging unrelated functions doesn't solve a problem it wasn't designed to solve).
+
+**The meta-lesson, now confirmed across two full-domain mixed reviews**: production systems accumulate problems across genuinely independent sub-topics simultaneously, and professional-level competence is correctly enumerating and separately diagnosing *all* of them — not finding the most obvious one and stopping, and not reaching for a single sweeping architectural change that sounds like it should fix everything but doesn't actually address any of the specific, evidenced root causes.
+
+That's a strong, complete pass through Domain 2 — model selection, guardrails, prompt engineering techniques, and prompt reuse, all covered individually and now synthesized. Want to finish the last untouched sub-topic (optimizing context windows and managing token usage) before moving to Domain 4, or move to Domain 4 now?
