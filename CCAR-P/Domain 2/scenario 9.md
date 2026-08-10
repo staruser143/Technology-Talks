@@ -1,0 +1,41 @@
+**Scenario**
+
+A company's Claude-powered customer support assistant has accumulated guardrail instructions in its system prompt over 18 months, added incrementally after various past incidents: "Never discuss competitor products." "Never mention pricing without also mentioning the current promotional discount." "Always ask if the customer wants to speak to a human before answering any question about billing." "Never use the word 'guarantee' in any response." "Always include a satisfaction survey link at the end of every message." "Never answer more than one question per response, even if the customer asks multiple." "Always apologize first if the customer's message contains any negative sentiment word." The system prompt is now over 40 distinct instructions long.
+
+Support staff report that the assistant has become noticeably less helpful: it frequently asks unnecessary "do you want to speak to a human?" questions even for simple billing questions that don't need escalation, sometimes fragments a clearly simple two-part question into two separate unhelpful partial responses, and occasionally seems to miss or contradict some instructions while over-applying others inconsistently.
+
+**Question**: What's the core issue here, and what should the team do?
+
+A) The issue is that instructional guardrails are inherently unreliable and should be abandoned entirely in favor of pure model judgment with no system prompt instructions at all.
+
+B) This is guardrail accumulation/over-restriction: 40+ instructions, added incrementally over time in response to individual past incidents, are now competing for the model's attention and, in some cases, working against the assistant's core helpfulness (e.g., forcing question-fragmentation, unnecessary escalation prompts) — mirroring the same "too much competing for attention degrades performance" pattern seen in decomposition and progressive discovery. The team should audit the full guardrail set, remove or consolidate instructions that are outdated, redundant, or actively counterproductive, and keep only what's genuinely necessary — the same evidence-based audit discipline used for capability bloat, applied to guardrails instead of tools.
+
+C) The issue is that the guardrails aren't being enforced strictly enough; the fix is to convert every one of the 40+ instructions into a hard structural/system-level enforcement rule to guarantee full compliance.
+
+D) The issue is unrelated to the guardrails; the team should upgrade to a more capable model, which will be able to correctly balance all 40+ instructions simultaneously without dropping or over-applying any of them.
+
+Take your best guess and I'll walk through it.
+
+
+Correct — and this scenario is the guardrail-specific twin of your capability bloat scenarios (the retail agent with orphaned tools, the IT helpdesk agent that was correctly *not* bloated) — same underlying pattern, applied to instructions instead of tools.
+
+**Why B is right**
+
+Trace the mechanism the way you did for capability bloat: each of these 40+ guardrails was almost certainly added for a real reason at the time — some past incident where a competitor got mentioned, or pricing was quoted without the promo, or a frustrated customer wasn't offered escalation. Individually reasonable, each one, exactly like the retail agent's tools being added one at a time for real initiatives. But the aggregate effect described is unmistakable: **the guardrails are now competing with each other, and with the assistant's core job, for attention** — precisely the same "too much competing in one pass" signature from decomposition and lost-in-the-middle, just showing up as instruction-following degradation instead of task-execution degradation.
+
+The specific symptoms confirm this diagnosis rather than a different one:
+- **Unnecessary "speak to a human?" prompts on simple billing questions** — the escalation-offer guardrail is being over-applied indiscriminately, likely because it's just one voice among 40 competing instructions, with no way for the model to weigh "is this actually a case that needs it" against the sheer instruction volume.
+- **Fragmenting a clearly simple two-part question into unhelpful partial responses** — the "never answer more than one question per response" guardrail is actively working against the assistant's core purpose (being helpful) in a case where the two questions are simple and related. This is a guardrail applied rigidly regardless of context, exactly the "over-restrictive guardrails... can make the model unable to helpfully respond to legitimate edge cases" failure mode.
+- **Inconsistently missing some instructions while over-applying others** — this is the direct behavioral signature of instruction-count-induced attention dilution, not random model unreliability.
+
+The fix mirrors the capability bloat audit precisely: **measure and evaluate each guardrail against current relevance and actual necessity**, not against "was this ever justified when added." Some of these 40+ instructions may still be genuinely necessary (never mentioning competitors is plausibly a real, ongoing policy need). Others may be outdated (tied to an incident that's no longer relevant), redundant (multiple instructions effectively achieving the same constraint), or actively counterproductive in their current rigid form (the two guardrails causing the reported symptoms). The team should audit, consolidate, and prune — the same evidence-based discipline as your six-step legal-contract scenario and your retail-agent capability bloat scenario, just aimed at prompt instructions instead of pipeline steps or tools.
+
+**Why the others are wrong**
+
+- **A)** overcorrects into abandoning guardrails entirely, which is the same overcorrection pattern flagged repeatedly across this whole set (the CRM auth scenario's "credential is worthless, discard entirely" trap, applied here to instructions) — the presence of *too many, poorly-maintained* guardrails doesn't mean guardrails themselves are unreliable in principle; it means this particular set needs auditing, not elimination. Some of these instructions (never discuss competitors, never guarantee outcomes) are plausibly appropriate as ongoing policy and shouldn't be dropped along with the problematic ones.
+- **C)** moves in exactly the wrong direction — converting all 40+ instructions into hard structural enforcement doesn't address the root cause (too many competing constraints diluting focus and producing contradictory behavior); it would likely make the assistant more rigid and less helpful across the board, hard-coding the exact over-restriction problem the scenario describes rather than fixing it. This also ignores that not every one of these 40+ rules is consequential enough to warrant system-level enforcement (recall from the material: instructional guardrails are often appropriately lightweight for lower-stakes constraints like tone or format — forcing everything to hard enforcement is disproportionate).
+- **D)** repeats the misdiagnosis pattern from your pricing and multi-step-arithmetic model-selection scenarios — treating a structural problem (too many competing instructions) as a capability problem. A more capable model reasoning over the same 40+ competing, some-contradictory instructions would still face the same fundamental attention-dilution issue; model capability doesn't resolve a prompt design that's internally working against itself.
+
+**Pattern to remember, closing out guardrails**: guardrails accumulate the same way tools do — incrementally, each addition individually justified at the time, with nobody revisiting the aggregate over time. The same audit discipline applies to both: measure what's actually still necessary and actually still helping, versus what's stale, redundant, or now working against the system's core purpose, and prune accordingly rather than either abandoning the practice entirely or hard-locking everything that's accumulated.
+
+That's solid coverage of guardrails specifically. Want to try scenario practice on templates/caching next, or another guardrails scenario first?
