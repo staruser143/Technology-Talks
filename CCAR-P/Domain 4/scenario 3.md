@@ -1,0 +1,39 @@
+**Scenario**
+
+A news aggregation company builds a Claude-powered feature that generates one-paragraph summaries of longer news articles. To evaluate summary quality, the team uses a standard automated text-similarity metric (ROUGE-style, measuring word/phrase overlap between the generated summary and a set of human-written "reference" summaries) and reports that their system scores well — comparable to or better than their previous summarization approach.
+
+After launch, a content reviewer manually reading a sample of live summaries flags a different problem: several summaries include specific claims — a statistic, a quote, or a causal claim ("the policy caused a 20% drop in applications") — that don't actually appear anywhere in the source article. The language is fluent and reads naturally, using phrasing and structure similar to how the reference summaries in the eval set were typically written, which is likely why these summaries still scored well on the overlap-based metric despite containing fabricated content.
+
+**Question**: What's the core issue with the evaluation approach here, and what should the team do?
+
+A) There's no real issue — since the automated metric score was strong and comparable to the previous approach, the fabricated-content reports are likely rare outliers not worth changing the evaluation methodology over.
+
+B) The core issue is a metric-task mismatch: a word/phrase-overlap metric measures surface similarity to reference summaries (fluency, style, structural resemblance) but has no mechanism for checking whether claims in the summary are actually supported by the source article — a fluent, well-structured summary can score well on overlap while still containing fabricated content, since overlap doesn't verify faithfulness. The team should add a faithfulness/groundedness evaluation dimension — e.g., checking each claim in the summary against the source article (via automated entailment checking, model-based judging, or human review) specifically for whether it's supported, in addition to (not instead of) the overlap-based fluency metric.
+
+C) The issue is that automated metrics should never be used for generative tasks; the team should switch to 100% human review of every summary before publication.
+
+D) The issue is that the source articles themselves are unreliable, so any summary based on them will inherit factual problems; the team should stop summarizing news content altogether.
+
+Take your best guess and I'll walk through it.
+
+
+
+Correct — and this scenario completes a clean trio with your last two: three different ways a metric can be technically well-computed while missing the dimension that actually matters, and this one is arguably the most consequential, because it's directly measuring hallucination — the exact failure mode named in objective 4 of this domain.
+
+**Why B is right**
+
+Trace precisely what an overlap-based metric like ROUGE actually measures: how much word/phrase overlap exists between the generated summary and reference summaries. That's fundamentally a *style and coverage* signal — does this summary read like the kind of summary a human would write, using similar phrasing and touching similar points. It has no mechanism whatsoever for checking whether a *specific claim* in the generated summary is actually traceable back to the source article, because it was never designed to compare the summary against the source — only against other summaries.
+
+This creates exactly the failure the content reviewer caught: a summary can be fluent, well-structured, and phrased the way reference summaries typically are (scoring well on overlap) while simultaneously containing a fabricated statistic or causal claim that appears nowhere in the actual source (scoring undetected on faithfulness, because faithfulness was never being measured at all). The scenario even tells you *why* this happens mechanically — the fabricated content uses "phrasing and structure similar to how reference summaries were typically written," meaning the hallucination is stylistically indistinguishable from a faithful summary to a metric that only checks style and structural resemblance.
+
+This is precisely the diagnostic definition from the concepts overview: hallucination's signature is "confident, plausible-sounding content that isn't actually supported by anything real" — and the fix named there is directly what B proposes: check whether the claim is actually traceable to real, provided context. Concretely, that means adding a faithfulness/groundedness check — comparing each claim in the summary against the source article specifically (not against reference summaries), via automated entailment checking, model-based judging with the source as ground truth, or targeted human review — layered *alongside* the overlap metric, not replacing it, since fluency/coverage still matters too; the two dimensions catch genuinely different failure modes.
+
+**Why the others are wrong**
+
+- **A)** dismisses fabricated statistics and false causal claims in published news summaries as a minor outlier not worth addressing — but the scenario gives no basis for assuming this is rare; it was caught by *one* reviewer sampling a *small* set of live summaries, which is itself evidence the actual rate could be much higher across full production volume. This repeats the "strong aggregate score means no real problem" complacency from your fraud-detection scenario, just with the added severity that the undetected failure here is factual fabrication in published content, not merely a missed classification.
+- **C)** overcorrects into abandoning automated metrics entirely — but the overlap metric isn't wrong or useless, it's *incomplete*; it correctly measures what it was designed to measure (style/coverage similarity), it just doesn't measure faithfulness. Moving to 100% human review for every summary discards a scalable, legitimately useful signal to compensate for a gap that a much more targeted addition (a faithfulness check layered on top) would close directly, at a fraction of the cost — the same "discard the whole tool because one dimension of it doesn't cover everything" overcorrection you've rejected in essentially every guardrails and capability-bloat scenario.
+- **D)** misattributes the problem to the source material rather than the generation process — nothing in the scenario suggests the source articles themselves are unreliable; the fabricated claims are described as not appearing in the source at all, meaning the model is generating content the source doesn't support, not faithfully reproducing something wrong that was already there. This sidesteps the actual, evidenced cause (a generation/hallucination problem, undetected by the wrong metric) in favor of an explanation the scenario doesn't support and that would require abandoning a viable product entirely rather than fixing a diagnosable gap.
+
+**Pattern to remember, completing this three-scenario metric-selection arc**: you've now seen a metric be too *strict* (exact-match penalizing correct-but-differently-formatted extraction), too *insensitive to what matters most* (aggregate accuracy hiding minority-class fraud-detection failure), and too *narrow in dimension* (overlap measuring style while missing faithfulness entirely). All three are the same underlying lesson wearing different clothes: **a metric only tells you what it was actually designed to measure, and a strong score is worthless — or worse, actively misleading — if the thing being measured isn't the thing that actually matters for the task.** Before trusting any evaluation number, the real question is always "what specifically does this metric check, and does that match what I actually need to know."
+
+Want to move to eval dataset design now, or keep going with metric-selection scenarios?
