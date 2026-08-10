@@ -1,0 +1,16 @@
+What is the relevance of token counting, would we need to use it in any scenario
+
+
+Good — this is a real, documented API feature, and it's worth being precise about what it actually is and when it matters for the exam.
+
+**What it is**: Anthropic exposes a `count_tokens` endpoint that accepts the exact same structured input as a normal message request — system prompt, messages, tools, images, PDFs — and returns the token count *without actually generating a response* (no output tokens billed, no completion cost). It's a pure preflight check.
+
+**Why it's relevant, concretely — three real use cases:**
+
+1. **Fitting prompts to context/rate limits before sending**: rather than discovering a request is too large only when it fails, you count first and trim or restructure accordingly — this is the "measured at build-time, not an afterthought" principle from the material made literal.
+2. **Cost estimation and budgeting**: since token count directly drives cost, counting before sending lets you estimate spend for a given design *before* committing to it in production — directly relevant to every accuracy-latency-cost trade-off scenario we've done, where knowing the actual token cost of a design (e.g., how much a few-shot block or a chain-of-thought instruction actually adds) turns "this feels expensive" into a measured number.
+3. **Model-routing decisions**: since token counting works per-model and the docs explicitly warn that the same text can produce meaningfully different counts across model generations (the newer tokenizer produces roughly 30% more tokens for the same input than earlier models), token counting is genuinely tied to *which* model you're evaluating for — this connects directly to your model-selection scenarios: if you're deciding between two model tiers for a task, counting tokens against each candidate model specifically (not just eyeballing prompt length) is how you'd actually validate a cost comparison rather than assuming.
+
+**Would we need to reference it directly in a scenario?** It's a fair candidate for a Domain 2 exam item, but it'd most likely show up as *supporting evidence within a broader trade-off scenario* rather than as a standalone "what does count_tokens do" trivia question — e.g., a scenario where an engineer needs to validate whether a proposed prompt redesign actually reduces cost before shipping it, and the correct answer involves measuring token counts pre- and post-change rather than assuming a redesign helped. That maps directly onto something you've already reasoned through correctly: your PII-redaction scenario, where the team shipped a latency-improving change without re-measuring the metric on the other side of the trade-off. Token counting is the concrete mechanism that would let a team actually *verify* a token-reduction claim (like a caching fix, a trimmed few-shot block, or a summarized conversation history) rather than assuming it worked.
+
+Want a scenario built around exactly that — validating a token-optimization claim with actual measurement rather than assumption — or should we move to Domain 4 now?
