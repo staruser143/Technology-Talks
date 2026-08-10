@@ -1,0 +1,40 @@
+**Scenario**
+
+A company runs a Claude-powered API that generates structured incident post-mortem reports (root cause, timeline, remediation steps) from raw incident logs. The team set `max_tokens: 1024` when they built this six months ago, based on what seemed reasonable at the time. Over the past month, engineering notices that `stop_reason: "max_tokens"` is now showing up on roughly 40% of all requests — a sharp increase from near-zero when the feature launched. Their current fix, deployed as a quick patch: whenever `stop_reason` is `max_tokens`, automatically fire a "please continue" follow-up request, chaining as many continuations as needed until `end_turn` is reached. This works, but average requests now take 2-3 API round-trips instead of 1, and costs have risen accordingly.
+
+Digging into *why* truncation increased, an engineer discovers the actual cause: three months ago, a prompt change was introduced asking the model to "explain your reasoning in detail before stating the root cause," intended to make the analysis more thorough (a chain-of-thought-style addition) — but no one revisited the `max_tokens` limit to account for the extra reasoning content this instruction now generates before the model even gets to the structured report itself.
+
+**Question**: Given this root cause, what's the most appropriate fix — and is the current "auto-continue on max_tokens" patch the right long-term solution?
+
+A) The auto-continue patch is fine as the permanent solution — chaining continuation requests is the standard, correct way to handle any max_tokens truncation regardless of cause, and no further investigation is needed.
+
+B) The auto-continue patch is treating a symptom, not the cause. The actual root cause is that a chain-of-thought instruction was added three months ago without correspondingly raising `max_tokens` to accommodate the extra reasoning content it generates — so the model is now reliably running out of budget before completing the structured report. The fix is to raise `max_tokens` to a level that reflects the prompt's actual current output needs (verified via token counting against real examples), addressing the mismatch directly; auto-continue chaining should be a fallback for genuine edge cases, not the primary mechanism papering over a known, systematic budget mismatch.
+
+C) The chain-of-thought instruction should be removed entirely, since it's the reason truncation is happening, regardless of whether it was improving report quality.
+
+D) The problem is unrelated to the prompt change; the team should upgrade to a more capable model, which would generate more concise reasoning and avoid hitting the token limit.
+
+Take your best guess and I'll walk through it.
+
+
+Correct — and this scenario is a clean capstone to the `max_tokens` thread, because it shows the auto-continue patch working (in the narrow sense that it prevents broken outputs) while completely failing to address why the problem exists, which is exactly the "measure the actual cause, don't just paper over the symptom" discipline this whole session has been building toward.
+
+**Why B is right**
+
+The diagnostic chain here is precise, and worth tracing fully:
+
+- **The symptom**: `max_tokens` truncation jumped from near-zero to 40% of requests — a sharp, sudden-looking change in the data, not steady background noise. That kind of step-change pattern is itself a clue: something specific shifted, rather than gradual drift.
+- **The cause, once investigated**: three months ago, a chain-of-thought-style instruction was added — "explain your reasoning in detail before stating the root cause" — which is exactly the kind of technique addition you already know costs real output tokens (from the domain overview: "CoT reliably improves accuracy... but it costs real output tokens... for the reasoning trace itself"). Nobody revisited `max_tokens` when that instruction was added, so the budget that was previously sufficient for "just the structured report" is now being consumed substantially by reasoning content *before* the model even reaches the report — and increasingly, running out before it gets there.
+- **The current patch's actual role**: auto-continuing on every truncation doesn't fix the mismatch between what the prompt now asks for and what budget was allocated — it just absorbs the consequence of that mismatch, at real ongoing cost (2-3 round-trips instead of 1, on 40% of traffic, indefinitely). This is structurally identical to your PII-redaction scenario's mistake: shipping a fix that changes the *symptom* the team is monitoring (truncation no longer breaks the output) without addressing or even measuring the actual root cause, and paying a recurring cost to keep doing so.
+
+The correct fix — raise `max_tokens` to reflect the prompt's actual current needs, verified via token counting against real examples (directly the token-counting-as-a-design-input principle from earlier: measure, don't guess) — addresses the mismatch at its source. This also directly reduces cost rather than just relocating it: a correctly-sized single request is cheaper than a correctly-sized request plus a 40%-of-the-time continuation round-trip. Auto-continue chaining still has a legitimate place as a genuine edge-case fallback (an unusually long incident, a rare outlier) — but it shouldn't be the mechanism silently compensating for a known, systematic, three-months-old budget mismatch.
+
+**Why the others are wrong**
+
+- **A)** repeats exactly the "the current workaround is fine, don't investigate further" complacency you've correctly rejected throughout this session (the flat thumbs-down volume trap, the "aggregate metrics look healthy" trap) — the patch technically prevents broken output, but 40% of requests needing 2-3x the round-trips is a real, worsening cost signal that a working-but-symptomatic fix was masking rather than solving.
+- **C)** overcorrects by discarding a deliberate quality improvement (the chain-of-thought addition was "intended to make the analysis more thorough") without evidence it isn't working as intended — the actual problem isn't that detailed reasoning is bad, it's that the token budget wasn't updated to accommodate it. Removing the instruction entirely sacrifices real analysis quality to fix a budgeting oversight that has a much more targeted, cheaper fix (raise the limit to match actual need).
+- **D)** reaches for the model-capability explanation one more time — a pattern you've now correctly rejected in essentially every scenario that offered it (pricing grounding, loan arithmetic, product description format, orchestrator synthesis). A more capable model given the same "explain your reasoning in detail" instruction has no particular reason to produce shorter reasoning — if anything, a more capable model might reason even more thoroughly given an instruction explicitly asking for detail, potentially worsening the token-budget mismatch rather than fixing it. This sidesteps the actual, evidenced cause (a specific prompt change three months ago, an unrevised token budget) in favor of an unrelated, expensive change.
+
+**Pattern to remember, closing out this entire cross-domain thread**: `stop_reason: max_tokens` firing systematically across a meaningful share of traffic is diagnostic evidence, exactly like an accuracy metric or a cache-hit-rate metric — it should be investigated back to its actual cause (what changed, when, and why the budget no longer matches actual output needs) rather than reflexively engineered around with a continuation loop that treats every truncation as equally acceptable to absorb. A workaround that makes broken output *stop happening* is not the same as a workaround that makes the *underlying mismatch* stop existing — and conflating the two is the single throughline connecting nearly every misdiagnosis scenario you've correctly solved across this entire session.
+
+That's an exceptionally thorough pass through Domain 2, well past the blueprint's surface description into genuinely deep, production-relevant mechanics. Ready to move to Domain 4 (Evaluation, Testing & Optimization, 16%) now?
