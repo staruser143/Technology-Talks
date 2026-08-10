@@ -1,0 +1,37 @@
+**Scenario**
+
+A B2B software company's Claude-powered onboarding assistant guides new customers through account setup, integrating with an identity-verification API as one step. The engineering team built a comprehensive Grafana dashboard tracking dozens of metrics: request volume, latency percentiles, error rates by endpoint, tool call success rates, and a specific metric called "identity verification failure rate," updated in real time. The team considers this excellent observability — "we have visibility into everything that matters" — and reviews the dashboard during their weekly engineering sync.
+
+Three weeks ago, a change on the identity-verification provider's side caused their API to start rejecting a specific category of valid international phone numbers, spiking the "identity verification failure rate" metric from its normal ~2% baseline to ~35%. This metric sat clearly visible on the dashboard the entire time — anyone glancing at that specific panel would have immediately seen the spike. But no one did, because no one was watching that particular panel in real time; it only came up during the weekly sync, three weeks after the spike began, by which point hundreds of legitimate international customers had been unable to complete onboarding and had likely churned or contacted support through other channels.
+
+**Question**: What's the core gap here, and what should the team do?
+
+A) The dashboard is fine and comprehensive; the real gap is that engineers weren't disciplined enough about checking it more frequently — the fix is to move from a weekly sync to a daily one so metrics get reviewed sooner.
+
+B) The core gap is relying on a dashboard (a passive, pull-based mechanism requiring someone to actively look) as the sole mechanism for surfacing a significant, urgent problem, rather than an alert (a push-based mechanism that notifies someone automatically when a metric crosses a threshold). Tracking the right metric isn't sufficient if surfacing it depends on human initiative to go looking — the fix is to add threshold-based alerting on key metrics like identity-verification failure rate (e.g., alert if failure rate exceeds some multiple of baseline), so a spike triggers immediate notification rather than waiting for someone to notice it during a scheduled review.
+
+C) The core gap is the identity-verification provider's API change; the fix is entirely on their side, and there's nothing the team could have done differently.
+
+D) The core gap is that the dashboard has too many metrics, making it hard to notice any single one; the fix is to remove most metrics and keep only 2-3 to reduce visual clutter.
+
+Take your best guess and I'll walk through it.
+
+
+
+Correct — and this scenario is the cleanest possible demonstration of why "we're tracking the right metric" and "we'll actually find out in time" are two completely different guarantees.
+
+**Why B is right**
+
+Everything about the dashboard's *content* was right — the team correctly identified "identity verification failure rate" as a metric worth tracking, and it correctly captured the spike, in real time, the entire three weeks. Nothing about *what* was measured failed. What failed is *how the information reaches a human*: a dashboard is a **pull mechanism** — it only surfaces information when someone actively chooses to look at that specific panel at that specific moment. A weekly sync means, structurally, the maximum possible detection delay for anything not independently noticed is a full week — and this scenario shows even that was optimistic, since it took three weeks for the metric to actually come up in conversation. The information was always "visible," in the sense that it was rendered on a screen somewhere — but visible and *surfaced* are not the same thing, and that gap is exactly what cost the company hundreds of legitimate customers over three weeks.
+
+An alert is a **push mechanism** — it doesn't wait for anyone to think to look; it actively notifies someone the moment a defined threshold is crossed (say, failure rate exceeding 3x baseline). That directly closes the gap this scenario is built around: the *same* metric, with alerting added, would have flagged this within minutes or hours of the spike starting, not three weeks later. This is exactly the distinction named in the material — "having a metric tracked somewhere isn't the same as having a system that will actually surface a problem to a human in time to act on it."
+
+**Why the others are wrong**
+
+- **A)** treats this as a discipline/cadence problem rather than a structural one. Even daily syncs still leave up to 24 hours of undetected impact for a fast-moving spike, and — more importantly — this "fix" doesn't scale. It assumes engineers can and should manually scan dozens of metrics on some fixed schedule indefinitely, which is exactly the kind of fragile, human-dependent process that alerting exists to remove. The real fix isn't "look more often," it's "get notified automatically when it matters."
+- **C)** correctly identifies that the *root cause* originated externally (the provider's API change), but conflates root cause with the actual question being asked — the scenario isn't asking "whose fault was the API change," it's asking "why did it take three weeks to notice a self-inflicted, entirely internally-visible metric spike." The team has zero control over the provider's change, but full control over how quickly they'd detect its impact — and that detection gap is squarely a fixable, internal observability failure, independent of whoever caused the underlying issue.
+- **D)** misreads the actual failure. Trimming the dashboard down to fewer metrics doesn't address the real issue — the identity-verification failure rate panel was already specific, clearly present, and would have been just as easy to notice with 3 metrics on the dashboard as with 30, *if someone had been looking at the right moment*. The problem was never "too much visual noise to find the right panel," it was "nobody was looking at any panel in real time" — reducing the metric count doesn't create a push notification where none existed.
+
+**Pattern to remember, closing out this sub-topic**: a dashboard proves you *can* see a problem if you look; an alert proves you *will* be told about a problem without having to look. For anything time-sensitive or business-critical — and "hundreds of customers unable to complete onboarding" clearly qualifies — relying on scheduled human review of a dashboard as the sole detection mechanism means your actual detection latency is bounded by your review cadence, not by how fast the problem itself developed. The exam's version of this test is usually: does the described system have alerting on its important metrics, or only visibility into them? Those aren't the same safety guarantee, even when the underlying metric being tracked is exactly right.
+
+That completes solid coverage of Observability at Scale — silent failures, distributed tracing, and alerting vs. dashboards, each isolated and tested. Want to move to the last Integration sub-topic, protocol selection (MCP vs. API/CLI vs. agent-to-agent), or should we do a mixed review across everything in Domain 3 so far?
