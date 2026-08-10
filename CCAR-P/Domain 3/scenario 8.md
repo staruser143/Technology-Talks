@@ -1,0 +1,38 @@
+**Scenario**
+
+A hospital network deploys a Claude-powered assistant that lets clinical staff quickly pull up patient records and generate visit summaries. The assistant uses a single backend service account with legitimate, broad read access to the patient records system (justified — many different staff members across departments need to look up many different patients, so a shared, properly-scoped read service account is a reasonable design here, unlike the earlier CRM scenario). All queries run through this service account, and the system logs simply record: `[timestamp] service_account_ehr_assistant queried patient record #48213`.
+
+Six months in, a patient formally disputes that their record was inappropriately accessed, and compliance needs to determine exactly which staff member looked up their record, when, and in the context of what stated reason (e.g., "was treating this patient" vs. no legitimate clinical reason). The team pulls the logs and finds only the service account's queries — with no way to determine which of the hospital's 400 staff members initiated any specific query, because the assistant's frontend never captured or forwarded the requesting user's identity into the query or the log.
+
+**Question**: What's the core gap here, and how should it be fixed — and is the earlier decision to use a shared service account itself the mistake?
+
+A) The shared service account itself was the mistake — the team should have used per-user delegated credentials from the start, exactly like the CRM scenario, since any shared credential is inherently a compliance risk in healthcare.
+
+B) The shared service account for broad read access was reasonable given the legitimate need (many staff, many patients) — the actual gap is missing attribution: the system never captured and logged which authenticated end-user initiated each query alongside the service account's action. The fix is to pass and log the requesting user's identity with every query (and ideally the stated clinical reason/context) even while the service account itself remains the thing executing the database call, so audit logs answer "who and why," not just "which credential."
+
+C) There's no real gap — since the service account's access was legitimately scoped for this use case, and compliance can simply ask each of the 400 staff members whether they recall accessing this specific record.
+
+D) The fix is to stop logging entirely at the service-account level and only log at the individual query level, since query-level logs are inherently more secure than account-level logs.
+
+Take your best guased and I'll walk through it.
+
+
+Correct — and this scenario is deliberately designed to test whether you can separate two decisions that look similar on the surface but aren't: "was the credential architecture reasonable?" versus "was the logging sufficient?" Those are independent questions, and this scenario is built so the first answer is *yes* while the second is *no*.
+
+**Why B is right**
+
+This is the direct counterpoint to your first auth scenario, and the contrast is the whole point. In the CRM scenario, the shared service account itself *was* the problem — it granted broad, unnecessary, cross-tenant access for a task that only ever needed one user's own scoped data. Here, the shared service account is legitimately justified: many different clinical staff genuinely need broad read access across many different patients as part of normal hospital operation, so a single, properly-scoped read service account is a reasonable architecture — not every shared credential is inherently wrong, which is exactly the nuance A gets wrong by treating "shared credential" as an automatic red flag rather than evaluating whether it fits the actual access pattern needed.
+
+The actual gap is narrower and more specific: **the system captured what happened (a record was queried) but not who caused it.** This is precisely the attribution failure named in the material — "logs may only show 'the service account did X' — not which end user's request actually triggered it." For a hospital, where a legitimate access pattern (staff treating a patient) and an inappropriate one (staff browsing a record with no clinical relationship) can produce *identical* log entries, that missing piece isn't a minor gap — it's the exact piece compliance needed to answer the dispute, and it's unrecoverable after the fact because the identity was never captured at query time.
+
+The fix is architecturally simple and doesn't require abandoning the service account: pass the authenticated end-user's identity through to the query and the log alongside the service account's action, so every log entry answers "who initiated this, and under what stated context" — not just "which credential executed it." The service account remains the thing that talks to the database; the user identity travels with the request as metadata for accountability, not as the access-control mechanism itself.
+
+**Why the others are wrong**
+
+- **A)** overcorrects by conflating this scenario with the CRM one. The CRM case had *two* independent problems (confused deputy identity *and* scope creep); this case has *neither* of those — the identity boundary (staff need broad patient access) and the permission scope (read-only, appropriately broad for the role) are both fine. Recommending per-user delegated credentials here would mean re-architecting a system that wasn't actually broken on that axis, to fix a completely different problem (missing attribution) that delegation would only fix incidentally, not by design. It also treats "shared credential" as inherently disqualifying rather than evaluating it against the actual need, which is the opposite of the case-by-case discipline this whole sub-topic has been building.
+- **C)** gives up on the systemic fix and substitutes an unreliable manual process — asking 400 staff members to recall whether they accessed one specific record six months ago is not a functioning accountability mechanism, and it's exactly the kind of gap that shouldn't exist in a compliance-sensitive system in the first place. This also fails the patient whose formal dispute triggered the whole audit, since "we asked around and nobody remembers" isn't a real answer to "who accessed my record and why."
+- **D)** solves nothing — swapping which layer you log at doesn't add the missing information (user identity) that was never captured or forwarded in the first place. Whether you call it "account-level" or "query-level" logging, if the requesting user's identity was never passed into the request path, no amount of restructuring where you log will recover attribution that was never captured to begin with.
+
+**Pattern to remember, completing the auth/authz set**: identity boundary (who's really acting), permission scope (what they can do), and attribution (who caused this specific action) are three genuinely separate checks — a system can pass on one or two and still fail on the third, as this scenario shows. Don't let a scenario's "this part is fine" lull you into assuming the whole design is fine; each axis needs to be evaluated independently, and the correct diagnosis names precisely which axis has the gap rather than reaching for the fix that worked in a different scenario.
+
+That rounds out auth/authz gap analysis solidly — confused deputy/identity, scope minimization, and attribution, each isolated and tested. Want to move to observability at scale next, or keep going deeper here?
