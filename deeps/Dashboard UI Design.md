@@ -1,315 +1,263 @@
-Given your preference for on-demand aggregation from MongoDB and the need for drill-down across Agency → Sub-agency → Broker → Producer, I would think of the dashboard page as having three zones:
+# Dashboard UI Design
 
-+------------------------------------------------------+
-|  FILTER PANEL                                        |
+This document describes a recommended dashboard layout and API pattern for on-demand aggregation from MongoDB, with drill-down across Agency → Sub-agency → Broker → Producer.
+
+## Layout overview
+
+Top-level zones on the dashboard:
+
+- Filter panel (left or top)
+- KPI summary cards (top)
+- Drill-down hierarchy (left column)
+- Visual analytics (right column)
+- Detail grid (bottom)
+
+### Visual layout (conceptual)
+
+```
++------------------------------------------------------+ 
+| FILTER PANEL                                        |
 |------------------------------------------------------|
 | Date Range | State | Agency | Broker | Product | ... |
-+------------------------------------------------------+
++------------------------------------------------------+ 
 
-+------------------------------------------------------+
++------------------------------------------------------+ 
 | KPI SUMMARY CARDS                                    |
 |------------------------------------------------------|
 | Applications | Renewals | Premium | Commission | ... |
-+------------------------------------------------------+
++------------------------------------------------------+ 
 
 +----------------------+-------------------------------+
 | DRILL-DOWN HIERARCHY | VISUAL ANALYTICS              |
 |                      |                               |
-| Agency               | Trend Charts                 |
-|  -> Sub Agency       | Commission Charts            |
-|    -> Broker         | Renewal Charts               |
+| Agency               | Trend Charts                  |
+|  -> Sub Agency       | Commission Charts             |
+|    -> Broker         | Renewal Charts                |
 |      -> Producer     |                               |
 +----------------------+-------------------------------+
 
-+------------------------------------------------------+
++------------------------------------------------------+ 
 | DETAIL GRID                                           |
 |------------------------------------------------------|
 | Search | Export | Filter                              |
 | Agency | Applications | Premium | Commission | ...    |
-+------------------------------------------------------+
++------------------------------------------------------+ 
+```
 
-1. User Input Capture Layer
+> Note: The ASCII layout above is a conceptual guide — implement using responsive UI components so the hierarchy panel and analytics rearrange on smaller screens.
 
-This is where user selections drive aggregations.
+---
 
-Global Filters
+## 1. User Input / Filter layer
 
-Typically:
+This layer captures user selections that drive aggregations.
 
-Time
-Today
-Yesterday
-Last 7 Days
-Last 30 Days
-Month To Date
-Year To Date
-Custom Range
-Organization
-Region
-State
-Agency
-Sub Agency
-Broker
-Producer
-Business
-Product
-Carrier
-Market Segment
-New Business
-Renewal
-Search
+Common global filters:
 
-Free text search:
+- Time: Today, Yesterday, Last 7 Days, Last 30 Days, Month To Date, Year To Date, Custom Range
+- Organization / Region / State
+- Agency / Sub Agency / Broker / Producer
+- Business / Product / Carrier / Market Segment
+- New Business / Renewal
+- Search (free text)
 
-Agency Name
-Broker Name
-Producer Name
-Application Number
+Free text search fields (examples):
 
-2. KPI Cards
+- Agency Name
+- Broker Name
+- Producer Name
+- Application Number
 
-At top of page.
+All filter selections should be part of a single filter context object that the frontend sends to the metrics API.
 
-Example:
+---
 
-Applications      25,432
-Renewals           9,842
-Premium         $125.4M
-Commission       $11.2M
-Conversion Rate   68%
+## 2. KPI Cards
 
+Show top-level KPIs grouped as cards at the top of the page. They should update immediately after filter selection.
 
-These should update immediately after filter selection.
+Example KPIs:
 
-Query Example:
+- Applications: 25,432
+- Renewals: 9,842
+- Premium: $125.4M
+- Commission: $11.2M
+- Conversion Rate: 68%
 
+Example query context:
+
+```json
 {
-   state:"NJ",
-   agencyId:"A123",
-   product:"Senior"
+  "state": "NJ",
+  "agencyId": "A123",
+  "product": "Senior"
 }
+```
 
+Backend executes a MongoDB aggregation pipeline for the provided filter context and returns metric values.
 
-Backend executes aggregation pipeline.
+---
 
-3. Hierarchy Navigation Panel
+## 3. Hierarchy navigation panel
 
-This is critical for broker organizations.
+A critical control for broker organizations to avoid showing thousands of rows immediately. Use a tree view with the following levels:
 
-Instead of thousands of rows immediately.
+- Agency
+  - Sub Agency
+    - Broker
+      - Producer
 
-Show:
+Clicking a node should push hierarchy filters into the global filter context and refresh all metrics/charts.
 
-Agency
- ├─ Sub Agency
-     ├─ Broker
-          ├─ Producer
+Example flows:
 
+- Select Agency ABC → show aggregated KPIs for that agency
+- Drill into Broker John → show KPIs filtered by broker
 
-Clicking a node pushes hierarchy filters.
+Each node click should trigger a new aggregation with the updated filter context.
 
-Example:
+---
 
-Agency ABC
+## 4. Visual analytics section
 
-returns:
+Charts to include (examples):
 
-Applications: 1200
-Premium: $4.5M
+- Applications trend (group by month)
+- Commission by Agency (bar chart, grouped by agency, sum commission)
+- New vs Renewal (pie/donut)
+- Product mix (stacked bar or pie)
 
+These charts are driven by the same filter context and should update on filter/node selection.
 
-Click Broker X:
+---
 
-Applications: 230
-Premium: $900K
+## 5. Detail grid
 
+This table is where users spend a lot of time. Provide these capabilities:
 
-Same metrics recalculated.
+- Sort
+- Search (within table)
+- Export CSV
+- Pagination
+- Row-level drill-down (click an agency row to open brokers, then producers)
 
-4. Visual Analytics Section
-Applications Trend
-Jan ████
-Feb █████
-Mar ███████
-Apr ████████
+Example columns:
 
+- Agency | Applications | Premium | Commission | ...
 
-Query:
+Example rows:
 
-group by month
+- ABC | 100 | $500k | $40k
+- XYZ | 200 | $900k | $80k
 
-Commission By Agency
-Agency A   █████████
-Agency B   ██████
-Agency C   ████
+---
 
+## 6. Example user journey
 
-Query:
+Regional manager selects:
 
-group by agency
-sum(commission)
-
-New vs Renewal
-           New
-           Renewal
-
-
-Pie/Donut Chart.
-
-Product Mix
-Senior
-Commercial
-Individual
-Group
-
-
-Useful for leadership.
-
-5. Detail Grid
-
-This is often where users spend most time.
-
-Example:
-
-Agency	Apps	Premium	CommissionABC	100	500k	40k
-XYZ	200	900k	80k
-
-Capabilities:
-
-Sort
-Search
-Export CSV
-Pagination
-Drill Down
-
-Clicking row:
-
-Agency
- -> Brokers
- -> Producers
-
-6. Example User Journey
-Regional Manager
-
-Selects:
-
-State = NJ
-Month = July
-
+- State = NJ
+- Month = July
 
 Dashboard shows:
 
-Applications = 5,200
-Premium = $12M
-Commission = $1.4M
+- Applications = 5,200
+- Premium = $12M
+- Commission = $1.4M
 
+Clicks Agency ABC, filter context becomes:
 
-Clicks:
-
-Agency ABC
-
-
-Now query becomes:
-
+```json
 {
-  state:"NJ",
-  agency:"ABC"
+  "state": "NJ",
+  "agency": "ABC"
 }
+```
 
+Clicks Broker John, filter context becomes:
 
-Metrics refresh.
-
-Clicks:
-
-Broker John
-
-
-Now:
-
+```json
 {
-   state:"NJ",
-   agency:"ABC",
-   broker:"John"
+  "state": "NJ",
+  "agency": "ABC",
+  "broker": "John"
 }
+```
 
+All metrics and charts refresh dynamically with each selection.
 
-Everything refreshes dynamically.
+---
 
-7. API Design Pattern
+## 7. API design pattern
 
-Frontend never asks for precomputed metrics.
+Frontend never asks for precomputed metrics. Instead it sends the filter context and the backend generates aggregation pipelines on demand.
 
-Instead sends filter context.
+Example request:
 
-Example:
-
+```http
 POST /metrics/query
+Content-Type: application/json
 
 {
-  "dateFrom":"2026-08-01",
-  "dateTo":"2026-08-31",
-  "state":"NJ",
-  "agency":"ABC",
-  "broker":"John"
+  "dateFrom": "2026-08-01",
+  "dateTo": "2026-08-31",
+  "state": "NJ",
+  "agency": "ABC",
+  "broker": "John"
 }
+```
 
+Example response shape:
 
-Backend generates Mongo aggregation pipeline dynamically.
-
-Response:
-
+```json
 {
-   "kpis":{},
-   "charts":{},
-   "table":[]
+  "kpis": { /* numeric KPI values */ },
+  "charts": { /* series / chart data */ },
+  "table": [ /* rows for the detail grid */ ]
 }
+```
 
-8. Architecture I Would Recommend
+---
 
-For your specific requirement:
+## 8. Recommended architecture
 
-React Dashboard
-      |
-      v
-Metrics API
-      |
-      v
-MongoDB Aggregation Framework
-      |
-      v
-Applications Collection
-(enriched with hierarchy data)
+- React dashboard (frontend)
+- Metrics API (backend) — single endpoint that accepts filter context and returns KPIs, chart series, and table data
+- MongoDB aggregation framework performing on-demand aggregations against an Applications collection (denormalized with hierarchy attributes)
 
+Example denormalized document structure (recommended):
 
-Since you've already indicated that:
-
-Data changes frequently
-You prefer on-demand aggregations
-You are considering enriching hierarchy attributes into each document
-
-I would denormalize hierarchy attributes into the application document:
-
+```json
 {
-  "applicationId":"A123",
-  "state":"NJ",
-  "agencyId":"AG01",
-  "agencyName":"ABC",
-  "subAgencyId":"SUB01",
-  "brokerId":"BR01",
-  "producerId":"PR01",
-  "marketCategory":"Senior",
-  "premium":1200,
-  "commission":150
+  "applicationId": "A123",
+  "state": "NJ",
+  "agencyId": "AG01",
+  "agencyName": "ABC",
+  "subAgencyId": "SUB01",
+  "brokerId": "BR01",
+  "producerId": "PR01",
+  "marketCategory": "Senior",
+  "premium": 1200,
+  "commission": 150
 }
+```
 
+Denormalizing hierarchy attributes into each application document allows a single aggregation pipeline to power KPI cards, drill-downs, charts and the grid without joins or cache refresh concerns.
 
-This allows a single aggregation pipeline to power:
+---
 
-KPI Cards
-Drill-downs
-Charts
-Grid
+## Implementation notes
 
-without joins, hierarchy lookups, or cache refresh concerns.
+- Because data changes frequently and you prefer on-demand aggregations, avoid long-lived caches for core KPIs unless you identify a clear performance bottleneck.
+- Index fields commonly used for filtering (dates, state, agencyId, brokerId, producerId) to help aggregation performance.
+- Consider pagination and server-side sorting for the detail grid to avoid loading very large result sets into the browser.
 
-For an enterprise broker dashboard, this "filter bar + KPI cards + drill-down hierarchy + charts + detail grid" pattern is typically the most scalable and user-friendly design.
+---
+
+For readability I reformatted the document into clear sections, aligned the ASCII layout, and converted inline JSON and API examples into fenced code blocks. If you'd like, I can also:
+
+- Convert the ASCII layout into a responsive UI mock (HTML/CSS/React prototype)
+- Add example MongoDB aggregation pipeline snippets for the KPIs and charts
+- Add a sample TypeScript client for calling the /metrics/query endpoint
+
+Tell me which of the above you'd like next.
