@@ -1,10 +1,11 @@
-This changes everything. Since your hierarchy lives outside MongoDB, you have two solid approaches. I strongly recommend Option 1 for your use case.
+# Accessing Agency Hierarchial Data
+ Since your hierarchy lives outside MongoDB, we have two solid approaches.
 
 ---
 
-Option 1: Pre-compute Access Rules (Recommended)
+## Option 1: Pre-compute Access Rules (Recommended)
 
-Before hitting MongoDB, resolve the user's entire hierarchy in your backend and generate a flat list of accessible IDs.
+Before hitting MongoDB, resolve the user's entire hierarchy in the backend and generate a flat list of accessible IDs.
 
 ```javascript
 // BACKEND (Node.js example)
@@ -58,14 +59,14 @@ async function getBrokerDashboard(userId, filters) {
 }
 ```
 
-Pros: Simple, fast, uses indexes efficiently, easy to cache.
-Cons: If a broker manages 10,000+ sub-brokers, the $in array gets large (but MongoDB handles this well up to ~50,000 IDs).
+- Pros: Simple, fast, uses indexes efficiently, easy to cache.
+- Cons: If a broker manages 10,000+ sub-brokers, the $in array gets large (but MongoDB handles this well up to ~50,000 IDs).
 
 ---
 
-Option 2: Hierarchy-Aware Grouping with $lookup (If Hierarchy Were in MongoDB)
+## Option 2: Hierarchy-Aware Grouping with $lookup (If Hierarchy Were in MongoDB)
 
-If you could store hierarchy in MongoDB, you'd use $lookup to join and aggregate at each level:
+If we could store hierarchy in MongoDB, we'd use $lookup to join and aggregate at each level:
 
 ```javascript
 db.applications.aggregate([
@@ -94,7 +95,7 @@ But since your hierarchy is external, this isn't viable.
 
 ---
 
-Best Practice: Hybrid Approach with Caching
+## Best Practice: Hybrid Approach with Caching
 
 For a production dashboard, implement this pattern:
 
@@ -130,17 +131,16 @@ class BrokerDashboardService {
 
 ---
 
-Critical Considerations for Your Hierarchy
+## Critical Considerations for Your Hierarchy
 
-1. Aggregate vs. Individual Metrics
+1. **Aggregate vs. Individual Metrics**
 
 · Agency-level users see totals across all sub-agencies and brokers.
 · Broker-level users see only their own applications.
 · Your $facet automatically handles this because the $match stage filters the dataset before aggregation.
 
-2. Performance Optimization
-
-If an agency has 50,000+ brokers and the $in array is huge, use this alternative:
+2. **Performance Optimization**
+If an agency has 50,000+ brokers and the $in array is huge, we can use this alternative:
 
 ```javascript
 // Instead of $in with 50k IDs, pre-filter via a separate collection
@@ -170,7 +170,7 @@ db.applications.aggregate([
 
 3. Drill-Down by Hierarchy Level
 
-When a user clicks "View by County", should they see their agency's county breakdown or all counties? Your $facet already handles this—just ensure the initial $match applies the correct access filter.
+When a user clicks "View by County", should they see their agency's county breakdown or all counties? The $facet already handles this—we just have to ensure the initial $match applies the correct access filter.
 
 ---
 
@@ -202,10 +202,8 @@ Sample Response for Agency vs. Broker
 
 ---
 
-Recommendation
+## Recommendation
 
-Go with Option 1—resolve hierarchy externally, pass flat ID lists to MongoDB, and use $facet for all metrics. It's clean, performant, and keeps your external hierarchy system decoupled from your database.
-
-Add Redis caching for the access resolution (5-minute TTL) to avoid hitting the external system on every dashboard load.
-
-Would you like me to help you design the webhook/event system to keep MongoDB's userAccess collection in sync with your external hierarchy?
+- Go with Option 1—resolve hierarchy externally, pass flat ID lists to MongoDB, and use $facet for all metrics. 
+- It's clean, performant, and keeps your external hierarchy system decoupled from your database.
+- Add Redis caching for the access resolution (5-minute TTL) to avoid hitting the external system on every dashboard load.
