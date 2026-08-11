@@ -1,10 +1,12 @@
 # MongoDB Faceted Queries
 
-In MongoDB, faceted queries (built using the **$facet** aggregation stage) let's us  run multiple independent aggregations on the same dataset in a single database request. It's like getting several different analytical views of the data all at once, without needing to make multiple round trips to the database.
+- Faceted queries (built using the **$facet** aggregation stage) let's us  run multiple independent aggregations on the same dataset in a single database request.
+- It's like getting several different analytical views of the data all at once, without needing to make multiple round trips to the database.
 
 ## How $facet Works
 
-The **$facet** stage processes the data through several "sub-pipelines" simultaneously. Each sub-pipeline can contain its own operations like $match, $group, or $sort, and the results for each are returned as separate fields in a single output document.
+- The **$facet** stage processes the data through several "sub-pipelines" simultaneously.
+- Each sub-pipeline can contain its own operations like $match, $group, or $sort, and the results for each are returned as separate fields in a single output document.
 
 ```javascript
 db.collection.aggregate([
