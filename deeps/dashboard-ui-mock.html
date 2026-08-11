@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard UI Mock - Responsive</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background-color: #f5f7fa;
+      color: #333;
+    }
+
+    /* ============ HEADER ============ */
+    header {
+      background: #fff;
+      border-bottom: 1px solid #e0e6ed;
+      padding: 16px 24px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    header h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #1a202c;
+    }
+
+    /* ============ FILTER PANEL ============ */
+    .filter-panel {
+      background: #fff;
+      border-bottom: 1px solid #e0e6ed;
+      padding: 16px 24px;
+      margin-bottom: 24px;
+    }
+
+    .filter-panel h2 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a5568;
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .filter-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 160px;
+    }
+
+    .filter-group label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #4a5568;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .filter-group input,
+    .filter-group select {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 4px;
+      font-size: 14px;
+      background: #fff;
+      color: #2d3748;
+      transition: border-color 0.2s;
+    }
+
+    .filter-group input:focus,
+    .filter-group select:focus {
+      outline: none;
+      border-color: #4299e1;
+      box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+    }
+
+    /* ============ KPI CARDS ============ */
+    .kpi-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 32px;
+      padding: 0 24px;
+    }
+
+    .kpi-card {
+      background: #fff;
+      border: 1px solid #e0e6ed;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .kpi-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    }
+
+    .kpi-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: #718096;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      color: #1a202c;
+      margin-bottom: 8px;
+    }
+
+    .kpi-change {
+      font-size: 12px;
+      color: #48bb78;
+      font-weight: 500;
+    }
+
+    .kpi-change.negative {
+      color: #f56565;
+    }
+
+    /* ============ MAIN CONTENT AREA ============ */
+    .main-content {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 24px;
+      padding: 0 24px;
+      margin-bottom: 32px;
+    }
+
+    /* ============ HIERARCHY PANEL ============ */
+    .hierarchy-panel {
+      background: #fff;
+      border: 1px solid #e0e6ed;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      height: fit-content;
+      position: sticky;
+      top: 24px;
+    }
+
+    .hierarchy-panel h3 {
+      background: #f7fafc;
+      padding: 16px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+      border-bottom: 1px solid #e0e6ed;
+    }
+
+    .hierarchy-tree {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .tree-item {
+      padding: 12px 16px;
+      border-bottom: 1px solid #edf2f7;
+      cursor: pointer;
+      transition: background 0.15s;
+      font-size: 13px;
+      color: #4a5568;
+    }
+
+    .tree-item:hover {
+      background: #f7fafc;
+    }
+
+    .tree-item.active {
+      background: #edf2f7;
+      color: #2d3748;
+      font-weight: 600;
+      border-left: 3px solid #4299e1;
+      padding-left: 13px;
+    }
+
+    .tree-item-level-1 {
+      padding-left: 16px;
+      font-weight: 500;
+    }
+
+    .tree-item-level-2 {
+      padding-left: 32px;
+      font-size: 12px;
+    }
+
+    .tree-item-level-3 {
+      padding-left: 48px;
+      font-size: 12px;
+    }
+
+    .tree-item-level-4 {
+      padding-left: 64px;
+      font-size: 12px;
+    }
+
+    /* ============ ANALYTICS PANEL ============ */
+    .analytics-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .chart-container {
+      background: #fff;
+      border: 1px solid #e0e6ed;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .chart-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+      margin-bottom: 16px;
+    }
+
+    .chart-placeholder {
+      width: 100%;
+      height: 250px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0.8;
+    }
+
+    .chart-placeholder.alt {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .chart-placeholder.alt2 {
+      background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .chart-placeholder.alt3 {
+      background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    }
+
+    /* ============ DETAIL GRID ============ */
+    .detail-section {
+      background: #fff;
+      border: 1px solid #e0e6ed;
+      border-radius: 8px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .detail-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .detail-header h3 {
+      font-size: 14px;
+      font-weight: 600;
+      color: #2d3748;
+    }
+
+    .detail-controls {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      background: #4299e1;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: #3182ce;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #2d3748;
+    }
+
+    .btn-secondary:hover {
+      background: #cbd5e0;
+    }
+
+    .search-input {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e0;
+      border-radius: 4px;
+      font-size: 13px;
+      min-width: 200px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: #f7fafc;
+      border-bottom: 2px solid #e0e6ed;
+    }
+
+    th {
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+      color: #2d3748;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #edf2f7;
+      color: #4a5568;
+    }
+
+    tbody tr:hover {
+      background: #f7fafc;
+    }
+
+    tbody tr:active {
+      background: #edf2f7;
+      cursor: pointer;
+    }
+
+    /* ============ PAGINATION ============ */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 16px;
+      font-size: 13px;
+    }
+
+    .pagination button {
+      padding: 6px 10px;
+      border: 1px solid #cbd5e0;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .pagination button:hover:not(:disabled) {
+      background: #edf2f7;
+    }
+
+    .pagination button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .pagination .page-info {
+      color: #718096;
+    }
+
+    /* ============ RESPONSIVE DESIGN ============ */
+    @media (max-width: 1200px) {
+      .kpi-section {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+
+      .analytics-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .chart-placeholder {
+        height: 200px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      header {
+        padding: 12px 16px;
+      }
+
+      .filter-panel {
+        padding: 12px 16px;
+      }
+
+      .filters {
+        flex-direction: column;
+      }
+
+      .filter-group {
+        width: 100%;
+        min-width: unset;
+      }
+
+      .kpi-section {
+        grid-template-columns: 1fr 1fr;
+        padding: 0 16px;
+        gap: 12px;
+      }
+
+      .kpi-card {
+        padding: 16px;
+      }
+
+      .kpi-value {
+        font-size: 22px;
+      }
+
+      .main-content {
+        grid-template-columns: 1fr;
+        padding: 0 16px;
+        gap: 16px;
+      }
+
+      .hierarchy-panel {
+        position: static;
+      }
+
+      .hierarchy-tree {
+        max-height: 300px;
+      }
+
+      .detail-section {
+        padding: 16px;
+      }
+
+      .detail-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .detail-controls {
+        width: 100%;
+        flex-direction: column;
+      }
+
+      .search-input {
+        width: 100%;
+        min-width: unset;
+      }
+
+      .btn {
+        flex: 1;
+      }
+
+      table {
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      header h1 {
+        font-size: 18px;
+      }
+
+      .kpi-section {
+        grid-template-columns: 1fr;
+      }
+
+      .kpi-value {
+        font-size: 20px;
+      }
+
+      .chart-placeholder {
+        height: 150px;
+        font-size: 12px;
+      }
+
+      th,
+      td {
+        padding: 6px;
+        font-size: 11px;
+      }
+
+      .pagination {
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- HEADER -->
+  <header>
+    <h1>📊 Insurance Dashboard</h1>
+  </header>
+
+  <!-- FILTER PANEL -->
+  <section class="filter-panel">
+    <h2>Filters</h2>
+    <div class="filters">
+      <div class="filter-group">
+        <label for="dateRange">Date Range</label>
+        <select id="dateRange">
+          <option>Today</option>
+          <option>Yesterday</option>
+          <option selected>Last 7 Days</option>
+          <option>Last 30 Days</option>
+          <option>Month to Date</option>
+          <option>Year to Date</option>
+          <option>Custom</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="state">State</label>
+        <select id="state">
+          <option>All States</option>
+          <option selected>NJ</option>
+          <option>NY</option>
+          <option>PA</option>
+          <option>CT</option>
+        </select>
+      </div>
+      <div class="filter-group">
+        <label for="agency">Agency</label>
+        <input type="text" id="agency" placeholder="All Agencies">
+      </div>
+      <div class="filter-group">
+        <label for="broker">Broker</label>
+        <input type="text" id="broker" placeholder="All Brokers">
+      </div>
+      <div class="filter-group">
+        <label for="product">Product</label>
+        <select id="product">
+          <option>All Products</option>
+          <option selected>Senior</option>
+          <option>Life</option>
+          <option>Health</option>
+          <option>Commercial</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <!-- KPI CARDS SECTION -->
+  <section class="kpi-section">
+    <div class="kpi-card">
+      <div class="kpi-label">Applications</div>
+      <div class="kpi-value">25,432</div>
+      <div class="kpi-change">↑ 12.5% vs last period</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Renewals</div>
+      <div class="kpi-value">9,842</div>
+      <div class="kpi-change">↑ 8.3% vs last period</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Premium</div>
+      <div class="kpi-value">$125.4M</div>
+      <div class="kpi-change">↑ 15.2% vs last period</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Commission</div>
+      <div class="kpi-value">$11.2M</div>
+      <div class="kpi-change">↑ 10.1% vs last period</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Conversion Rate</div>
+      <div class="kpi-value">68%</div>
+      <div class="kpi-change negative">↓ 2.1% vs last period</div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT: HIERARCHY + ANALYTICS -->
+  <section class="main-content">
+    <!-- HIERARCHY PANEL -->
+    <aside class="hierarchy-panel">
+      <h3>Drill-Down Hierarchy</h3>
+      <div class="hierarchy-tree">
+        <div class="tree-item tree-item-level-1 active">🏢 Agency ABC</div>
+        <div class="tree-item tree-item-level-2">└─ Sub Agency ABC-East</div>
+        <div class="tree-item tree-item-level-3">├─ Broker John</div>
+        <div class="tree-item tree-item-level-4">├─ Producer Smith</div>
+        <div class="tree-item tree-item-level-4">└─ Producer Johnson</div>
+        <div class="tree-item tree-item-level-3">└─ Broker Mary</div>
+        <div class="tree-item tree-item-level-2">└─ Sub Agency ABC-West</div>
+        <div class="tree-item tree-item-level-3">└─ Broker James</div>
+
+        <div class="tree-item tree-item-level-1">🏢 Agency XYZ</div>
+        <div class="tree-item tree-item-level-2">└─ Sub Agency XYZ-North</div>
+        <div class="tree-item tree-item-level-3">├─ Broker Michael</div>
+        <div class="tree-item tree-item-level-3">└─ Broker Sarah</div>
+
+        <div class="tree-item tree-item-level-1">🏢 Agency DEF</div>
+        <div class="tree-item tree-item-level-2">└─ Sub Agency DEF-Central</div>
+        <div class="tree-item tree-item-level-3">└─ Broker Robert</div>
+      </div>
+    </aside>
+
+    <!-- ANALYTICS PANEL -->
+    <div class="analytics-panel">
+      <div class="chart-container">
+        <div class="chart-title">Applications Trend (Monthly)</div>
+        <div class="chart-placeholder">📈 Trend Chart Placeholder</div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Commission by Agency</div>
+        <div class="chart-placeholder alt">📊 Bar Chart Placeholder</div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">New vs Renewal</div>
+        <div class="chart-placeholder alt2">🍰 Pie Chart Placeholder</div>
+      </div>
+      <div class="chart-container">
+        <div class="chart-title">Product Mix</div>
+        <div class="chart-placeholder alt3">📊 Stacked Bar Placeholder</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DETAIL GRID SECTION -->
+  <section class="detail-section" style="margin: 0 24px 32px 24px;">
+    <div class="detail-header">
+      <h3>Detail Grid — Agency Breakdown</h3>
+      <div class="detail-controls">
+        <input type="text" class="search-input" placeholder="Search table...">
+        <button class="btn btn-secondary">📥 Export CSV</button>
+        <button class="btn">⚙️ Settings</button>
+      </div>
+    </div>
+
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Agency Name</th>
+            <th>Applications</th>
+            <th>Premium</th>
+            <th>Commission</th>
+            <th>Conversion Rate</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>ABC</strong></td>
+            <td>5,200</td>
+            <td>$12.0M</td>
+            <td>$1.4M</td>
+            <td>72%</td>
+            <td><button class="btn" style="padding: 4px 8px; font-size: 12px;">Drill-down</button></td>
+          </tr>
+          <tr>
+            <td><strong>XYZ</strong></td>
+            <td>8,100</td>
+            <td>$18.5M</td>
+            <td>$2.1M</td>
+            <td>69%</td>
+            <td><button class="btn" style="padding: 4px 8px; font-size: 12px;">Drill-down</button></td>
+          </tr>
+          <tr>
+            <td><strong>DEF</strong></td>
+            <td>3,500</td>
+            <td>$8.2M</td>
+            <td>$0.95M</td>
+            <td>65%</td>
+            <td><button class="btn" style="padding: 4px 8px; font-size: 12px;">Drill-down</button></td>
+          </tr>
+          <tr>
+            <td><strong>GHI</strong></td>
+            <td>4,800</td>
+            <td>$11.1M</td>
+            <td>$1.3M</td>
+            <td>70%</td>
+            <td><button class="btn" style="padding: 4px 8px; font-size: 12px;">Drill-down</button></td>
+          </tr>
+          <tr>
+            <td><strong>JKL</strong></td>
+            <td>3,932</td>
+            <td>$9.6M</td>
+            <td>$1.1M</td>
+            <td>68%</td>
+            <td><button class="btn" style="padding: 4px 8px; font-size: 12px;">Drill-down</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="pagination">
+      <button>← Previous</button>
+      <span class="page-info">Page 1 of 12 (120 total records)</span>
+      <button>Next →</button>
+    </div>
+  </section>
+
+  <script>
+    // Simple interactivity demo
+    document.querySelectorAll('.tree-item').forEach(item => {
+      item.addEventListener('click', function() {
+        document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        console.log('Selected:', this.textContent.trim());
+      });
+    });
+
+    document.querySelectorAll('select, input').forEach(filter => {
+      filter.addEventListener('change', function() {
+        console.log('Filter changed:', this.name || this.id, this.value);
+      });
+    });
+  </script>
+</body>
+</html>
