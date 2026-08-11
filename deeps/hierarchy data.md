@@ -1,5 +1,5 @@
 # Accessing Agency Hierarchial Data
- Since your hierarchy lives outside MongoDB, we have two solid approaches.
+ Since the hierarchy lives outside MongoDB, we have two solid approaches.
 
 ---
 
@@ -91,7 +91,7 @@ db.applications.aggregate([
 ])
 ```
 
-But since your hierarchy is external, this isn't viable.
+But since the hierarchy is external, this isn't viable.
 
 ---
 
@@ -131,13 +131,13 @@ class BrokerDashboardService {
 
 ---
 
-## Critical Considerations for Your Hierarchy
+## Critical Considerations for the Hierarchy
 
 1. **Aggregate vs. Individual Metrics**
 
-· Agency-level users see totals across all sub-agencies and brokers.
-· Broker-level users see only their own applications.
-· Your $facet automatically handles this because the $match stage filters the dataset before aggregation.
+- Agency-level users see totals across all sub-agencies and brokers.
+- Broker-level users see only their own applications.
+· The $facet automatically handles this because the $match stage filters the dataset before aggregation.
 
 2. **Performance Optimization**
 If an agency has 50,000+ brokers and the $in array is huge, we can use this alternative:
@@ -170,7 +170,8 @@ db.applications.aggregate([
 
 3. Drill-Down by Hierarchy Level
 
-When a user clicks "View by County", should they see their agency's county breakdown or all counties? The $facet already handles this—we just have to ensure the initial $match applies the correct access filter.
+- When a user clicks "View by County", should they see their agency's county breakdown or all counties? 
+- The $facet already handles this—we just have to ensure the initial $match applies the correct access filter.
 
 ---
 
@@ -205,5 +206,5 @@ Sample Response for Agency vs. Broker
 ## Recommendation
 
 - Go with Option 1—resolve hierarchy externally, pass flat ID lists to MongoDB, and use $facet for all metrics. 
-- It's clean, performant, and keeps your external hierarchy system decoupled from your database.
+- It's clean, performant, and keeps the external hierarchy system decoupled from the database.
 - Add Redis caching for the access resolution (5-minute TTL) to avoid hitting the external system on every dashboard load.
