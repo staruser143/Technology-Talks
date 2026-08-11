@@ -1,8 +1,9 @@
-Excellent! Here's a complete monitoring strategy to help you make a data-driven decision about when to switch to pre-computation.
+# Monitoring Strategy
+Here's a complete monitoring strategy to help us make a data-driven decision about when to switch to pre-computation.
 
 ---
 
-Monitoring Framework Overview
+## Monitoring Framework Overview
 
 ```javascript
 // Monitoring Dashboard Structure
@@ -20,11 +21,11 @@ Monitoring Framework Overview
 
 ---
 
-1. Query Performance Monitoring
+1. **Query Performance Monitoring**
 
-MongoDB Aggregation Profiler
+- MongoDB Aggregation Profiler
 
-Enable slow query logging and analyze patterns:
+- Enable slow query logging and analyze patterns:
 
 ```javascript
 // Enable profiling (run once)
@@ -73,7 +74,7 @@ class DashboardMonitor {
 }
 ```
 
-Performance Analysis Query
+## Performance Analysis Query
 
 ```javascript
 // Run daily to check performance trends
@@ -115,9 +116,9 @@ db.dashboardPerformance.aggregate([
 
 ---
 
-2. MongoDB Resource Monitoring
+2. **MongoDB Resource Monitoring**
 
-Collection Stats Tracking
+## Collection Stats Tracking
 
 ```javascript
 // Run this every hour
@@ -142,7 +143,7 @@ async function trackCollectionStats() {
 }
 ```
 
-Query Execution Stats
+## Query Execution Stats
 
 ```javascript
 // Monitor $facet performance
@@ -164,9 +165,9 @@ async function analyzeFacetPerformance() {
 
 ---
 
-3. User Behavior Monitoring
+3. **User Behavior Monitoring**
 
-Track Query Patterns
+## Track Query Patterns
 
 ```javascript
 // Monitor what filters users actually apply
@@ -210,7 +211,7 @@ db.filterUsageLog.aggregate([
 
 ---
 
-4. Real-time Alert System
+4. **Real-time Alert System**
 
 ```javascript
 // Monitor and alert when thresholds are breached
@@ -272,9 +273,9 @@ class PerformanceAlertSystem {
 
 ---
 
-5. Monitoring Dashboard Query
+5. **Monitoring Dashboard Query**
 
-Weekly Performance Report
+## Weekly Performance Report
 
 ```javascript
 // Generate weekly report for decision making
@@ -362,9 +363,9 @@ async function generateWeeklyReport() {
 
 ---
 
-6. Implementation Checklist
+6. **Implementation Checklist**
 
-Phase 1: Setup (Week 1)
+## Phase 1: Setup (Week 1)
 
 ```javascript
 // 1. Create monitoring collections
@@ -383,7 +384,7 @@ db.setProfilingLevel(1, { slowms: 1000 });
 // (Add the generateWeeklyReport function)
 ```
 
-Phase 2: Monitor (Week 2-4)
+## Phase 2: Monitor (Week 2-4)
 
 ```javascript
 // 5. Let it run for 2-4 weeks collecting data
@@ -394,7 +395,7 @@ Phase 2: Monitor (Week 2-4)
 //    - When are peak hours?
 ```
 
-Phase 3: Decide (Week 4+)
+### Phase 3: Decide (Week 4+)
 
 ```javascript
 // If ANY of these are true, switch to pre-computation:
@@ -412,7 +413,7 @@ if (
 
 ---
 
-Quick Decision Dashboard
+## Quick Decision Dashboard
 
 ```javascript
 // Quick health check - run daily
@@ -453,9 +454,9 @@ async function getDashboardHealth() {
 
 ---
 
-Summary
+## Summary
 
-Start monitoring NOW, even if performance is fine today. This gives you historical data to:
+Start monitoring NOW, even if performance is fine today. This gives us historical data to:
 
 1. See degradation trends before they become critical
 2. Justify the investment in pre-computation with real numbers
@@ -468,4 +469,3 @@ The 4 Red Flags that trigger pre-computation:
 · 🚨 MongoDB CPU consistently > 70% during peak hours
 · 🚨 Collection grows > 50% in a month
 
-Would you like me to help you set up the alert notifications (Slack/Email) or the pre-computation implementation plan?
