@@ -1,12 +1,11 @@
-Great question! Webhooks are only needed for Option 2 (the $lookup approach). For Option 1 (flat ID lists), you don't need webhooks at all.
-
-Here's why:
-
+# Webhooks
+- Webhooks are only needed for Option 2 (the $lookup approach).
+- For Option 1 (flat ID lists), we don't need webhooks at all.
 ---
 
-Option 1: NO Webhooks Required ✅
+## Option 1: NO Webhooks Required ✅
 
-Since you're resolving the hierarchy at query time by calling your external system directly, MongoDB doesn't store or care about the hierarchy structure.
+Since we're resolving the hierarchy at query time by calling the external system directly, MongoDB doesn't store or care about the hierarchy structure.
 
 ```javascript
 // Each dashboard request:
@@ -16,22 +15,22 @@ const results = await db.applications.find({
 })
 ```
 
-Benefits:
+## *benefits:*
 
 · Zero data synchronization overhead
 · Hierarchy changes are reflected immediately (no sync delays)
-· Single source of truth remains your external system
+· Single source of truth remains on the external system
 · No complex webhook error handling or retry logic
 
-Drawback:
+## *Drawback:*
 
 · Every dashboard request makes an external API call (mitigate with Redis caching)
 
 ---
 
-Option 2: Webhooks Required ❗
+## Option 2: Webhooks Required ❗
 
-If you store hierarchy data in MongoDB (the userAccess collection approach), you need webhooks to keep it in sync:
+If we store hierarchy data in MongoDB (the userAccess collection approach), we need webhooks to keep it in sync:
 
 ```javascript
 // External system sends webhook when hierarchy changes:
@@ -52,15 +51,15 @@ app.post('/webhook/hierarchy-update', async (req, res) => {
 });
 ```
 
-Why webhooks are necessary:
+## Why webhooks are necessary:
 
-· MongoDB's userAccess collection becomes stale when hierarchy changes
-· Without webhooks, users would see incorrect data until a daily sync runs
-· Real-time accuracy requires push notifications from the external system
+- MongoDB's userAccess collection becomes stale when hierarchy changes
+- Without webhooks, users would see incorrect data until a daily sync runs
+- Real-time accuracy requires push notifications from the external system
 
 ---
 
-Recommendation: Hybrid Approach (Best of Both)
+### Recommendation: Hybrid Approach (Best of Both)
 
 ```javascript
 class AccessService {
@@ -80,7 +79,7 @@ class AccessService {
 }
 ```
 
-Why this works without webhooks:
+## Why this works without webhooks:
 
 · Cache expires every 5 minutes, so hierarchy changes propagate quickly
 · No webhook infrastructure to maintain
@@ -89,9 +88,9 @@ Why this works without webhooks:
 
 ---
 
-When Webhooks Become Necessary
+## When Webhooks Become Necessary
 
-Only consider webhooks if:
+### Only consider webhooks if:
 
 1. Sub-second latency is critical - You can't afford the 50-100ms external API call even on cache hits
 2. Hierarchy changes frequently - Every 5 minutes is too slow for your use case
@@ -100,12 +99,12 @@ Only consider webhooks if:
 
 ---
 
-Final Answer
+## Final Answer
 
-For your healthcare broker dashboard:
+### For the healthcare broker dashboard:
 
-· Start with Option 1 + Redis caching (no webhooks)
-· Add webhooks only if you hit performance or rate-limiting issues
-· The 5-minute cache delay is usually acceptable for insurance dashboards (hierarchies don't change by the second)
+- Start with Option 1 + Redis caching (no webhooks)
+- Add webhooks only if we hit performance or rate-limiting issues
+- The 5-minute cache delay is usually acceptable for insurance dashboards (hierarchies don't change by the second)
 
 Would you like me to show you how to implement the Redis caching layer with proper invalidation strategy?
