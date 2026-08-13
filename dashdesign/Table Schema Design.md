@@ -149,4 +149,3 @@ JOIN party p ON h.parent_party_id = p.id;
 - **Time‑aware** – you can track reorganizations and commission changes historically.
 - **Clear separation** – party data never duplicates, and roles/contracts are modular.
 
-Would you like me to add **product eligibility** (which agencies can sell which plans) or **hierarchical commission override** logic (e.g., National gets 0.5% override on all downstream sales)?
