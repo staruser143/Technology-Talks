@@ -658,5 +658,3 @@ async function invalidateDashboardCache(partyIds) {
 | `/permissions` | GET | UI feature toggles |
 
 ---
-
-Want me to show you the **OpenAPI/Swagger specification** for these endpoints, or the **complete Node.js implementation** with Express routes and middleware?
