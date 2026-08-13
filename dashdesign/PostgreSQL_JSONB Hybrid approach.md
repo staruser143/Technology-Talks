@@ -265,5 +265,3 @@ WHERE party_type = 'INDIVIDUAL'
 ---
 
 **Bottom line:** This gives you **MongoDB's agility** (add fields anytime) with **PostgreSQL's reliability** (joins, constraints, transactions). It's the pragmatic choice for 90% of insurance broker systems.
-
-Want me to show you how to **migrate from a pure MongoDB setup** to this hybrid model, or build **REST APIs** that leverage these queries efficiently?
