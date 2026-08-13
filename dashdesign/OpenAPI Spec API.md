@@ -1138,4 +1138,3 @@ async function loadDashboard() {
 
 ---
 
-Want me to add **WebSocket endpoints** for real-time dashboard updates, or **GraphQL schema** for more flexible queries?
