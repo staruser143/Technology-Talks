@@ -10,7 +10,7 @@ Start by separating the **Party** (who they are) from the **Role** (what they do
 
 ### 🔗 Supporting Business Logic
 
-Beyond the entity tree, you need to define the business agreements and financial structures:
+Beyond the entity tree, we need to define the business agreements and financial structures:
 
 *   **`Contract` / `Agreement`**: Stores the legal agreements between agencies and the insurer. This table tracks effective dates, product lines an agency is authorized to sell, and commission rates .
 *   **`CommissionSplit`**: Crucial for managing payouts. This table links a sale (policy) to the `Broker` and `Agency` and defines the split percentages. A **check constraint** can help ensure percentages sum to 100% for each contract or policy .
@@ -18,9 +18,9 @@ Beyond the entity tree, you need to define the business agreements and financial
 
 ### ✅ 4 Best Practices to Implement
 
-*   **Leverage Industry Standards**: Where possible, align your naming and structure with standards like **ACORD** to ensure interoperability and reduce reinventing the wheel .
-*   **Use a "Party" Data Model**: This approach is widely recommended for insurance  and allows you to manage all entities (individuals, organizations) in a unified, extensible manner.
+*   **Leverage Industry Standards**: Where possible, align the naming and structure with standards like **ACORD** to ensure interoperability and reduce reinventing the wheel .
+*   **Use a "Party" Data Model**: This approach is widely recommended for insurance  and allows us to manage all entities (individuals, organizations) in a unified, extensible manner.
 *   **Enforce Data Integrity**: As highlighted by the commission split challenge , use database constraints (like check constraints and foreign keys) to ensure data consistency at the database level, not just in the application.
 *   **Plan for History & Audit**: Add `ValidFrom` and `ValidTo` date fields to key tables like `PartyRelationship` and `Contract`. This is essential for tracking broker movement, commission changes, and meeting regulatory reporting requirements.
 
-By modeling these core entities and relationships, you'll create a solid, scalable foundation for the broker sub-domain that handles hierarchy, commissions, and regulatory needs effectively.
+By modeling these core entities and relationships, we can create a solid, scalable foundation for the broker sub-domain that handles hierarchy, commissions, and regulatory needs effectively.
