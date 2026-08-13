@@ -82,4 +82,3 @@
 
 **Bottom line:** This is a **classic enterprise domain** – hierarchies + financial splits + regulations scream **relational**. MongoDB adds unnecessary complexity unless you're at massive scale (think > 1M brokers) and can invest heavily in operational discipline.
 
-Want me to show you the **JSONB approach in PostgreSQL** – which gives you MongoDB's flexibility *with* relational safety?
