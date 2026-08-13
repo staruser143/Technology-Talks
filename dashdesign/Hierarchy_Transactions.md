@@ -399,6 +399,3 @@ db.transactions.createIndex({ "product.category": 1 });
 
 3. **Limit aggregation scope** – always filter by date range first.
 
----
-
-Want me to show you how to **build the complete Node.js/Express API** with these strategies, or how to **set up Redis caching** for this specific use case?
