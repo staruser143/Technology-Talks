@@ -33,4 +33,7 @@ The key insight: **the pattern is chosen per-component, not per-system.** You wr
 - **B) Pure workflow with a fixed checklist for stage 2** is the trap this scenario shares with your incident-investigation scenario: forcing "always check status, then tracking, then tickets, then reviews, in that order" is wasteful and rigid when the right combination of checks varies by case — some refund reasons only need one check, others need all four, and the order that makes sense to check them in isn't fixed either.
 - **D) Multi-agent for all four stages** overengineers this. Multi-agent is for independent, parallelizable subtasks (like your four legal playbooks). Here the stages are sequentially dependent — stage 3's calculation depends on stage 2's findings — so there's no independence to exploit, and adding an orchestrator for four sequential steps adds coordination overhead for nothing.
 
-**Pattern to remember**: don't ask "which single pattern fits this whole system" — ask "which pattern fits *each part*." A workflow can contain an agentic step. An agentic loop can call a workflow as one of its tools. The exam rewards recognizing where the boundary between predictable and unpredictable actually sits inside a larger system, not picking one label for the whole thing.
+**Pattern to remember**: 
+- Don't ask "which single pattern fits this whole system" — ask "which pattern fits *each part*."
+- A workflow can contain an agentic step. An agentic loop can call a workflow as one of its tools.
+- The exam rewards recognizing where the boundary between predictable and unpredictable actually sits inside a larger system, not picking one label for the whole thing.
