@@ -1,0 +1,9 @@
+How about the Domain  4, sub topic, "Monitor system performance using logging and observability tools" have we covered that?
+
+
+
+Good catch — let's be honest about this rather than assume it's covered. Looking back: I described it conceptually (framing it as "production monitoring is evaluation's continuous, real-world extension"), and I referenced that your PII-redaction and identity-verification scenarios *conceptually* belong here too — but I never actually ran a scenario testing this sub-topic **as its own thing** within Domain 4. The one scenario in the "shorter, targeted round" was specifically about cost/token accumulation (sub-topic 5), and the mixed review that followed touched metrics, eval sets, A/B testing, diagnosis, and cost — but not logging/observability specifically as a tested element.
+
+So there's a real gap here, even though the underlying mechanics (dashboards vs. alerting, silent failures, distributed tracing) are things you've already mastered from Domain 3. What's worth testing that's *specific* to this being a Domain 4 objective rather than a repeat of Domain 3: the framing that **production monitoring is the continuous extension of pre-launch evaluation**, not a separate, disconnected activity — meaning a system's eval/A/B-test/metric-selection choices should directly inform what gets monitored in production, and a monitoring gap can specifically undermine the *evaluation loop* (not just "we didn't catch a bug," but "we lost the ability to know if our eval conclusions still hold in the real world").
+
+Want a scenario that specifically tests that connective tissue — where a monitoring gap breaks the link between what was validated in evaluation/testing and what's actually happening in production?
