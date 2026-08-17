@@ -31,6 +31,9 @@ The two words in the scenario that should jump out are "the steps and their orde
 
 - **D) Multi-agent** overcomplicates this. Multiple agents/subagents are for when subtasks are complex enough to need independent judgment and possibly parallel work. Here the subtasks are simple, sequential, and don't benefit from autonomous coordination — a workflow with four steps handles it with far less overhead.
 
-**The pattern to remember for the exam**: ask "does the *path* vary, or just the *content*?" Path fixed → workflow. Path must be decided dynamically by the model → agentic. One step only → augmented LLM. Multiple independent complex subtasks needing coordination → multi-agent.
+**The pattern to remember for the exam**: 
+- Ask "does the *path* vary, or just the *content*?" Path fixed → workflow.
+- Path must be decided dynamically by the model → agentic.
+- One step only → augmented LLM. Multiple independent complex subtasks needing coordination → multi-agent.
 
 
