@@ -36,5 +36,8 @@ Correct — and this scenario deliberately stacks four sub-topics together (deco
 - **C)** repeats the "better phrasing fixes a structural problem" trap from your first decomposition scenario — the inconsistency described isn't a wording issue, it's a sequencing issue that persists regardless of how the single prompt is worded.
 - **D)** correctly identifies decomposition as needed but pairs it with full agentic scope and then explicitly discards the stated SLA — that's the loan-scheduling mistake again, treating a stated business constraint as negotiable rather than a hard boundary on the design.
 
-**What this mixed scenario demonstrates about how the real exam likely tests Domain 1**: individual concepts (decomposition, feedback loops, pattern selection, business constraints) rarely show up in isolation in a well-designed scenario question. They compound, and the correct answer usually involves diagnosing *multiple independent problems* and applying the *right, separate* fix to each — not one silver-bullet architectural change that's assumed to fix everything at once. Be suspicious of any answer option that claims one change (like "go agentic" or "just reword the prompt") solves three unrelated symptoms simultaneously.
+**What this mixed scenario demonstrates about how the real exam likely tests Domain 1**:
+- individual concepts (decomposition, feedback loops, pattern selection, business constraints) rarely show up in isolation in a well-designed scenario question. 
+- They compound, and the correct answer usually involves diagnosing *multiple independent problems* and applying the *right, separate* fix to each — not one silver-bullet architectural change that's assumed to fix everything at once. 
+- Be suspicious of any answer option that claims one change (like "go agentic" or "just reword the prompt") solves three unrelated symptoms simultaneously.
 
