@@ -11,13 +11,17 @@ Providing example input/output pairs before the actual request, so the model can
 - **The task has known edge cases** that benefit from being demonstrated (e.g., "here's how to handle a borderline case" shown via example, rather than trying to write an exhaustive rule).
 - **Zero-shot output drifts** from what's wanted in a way that examples can correct more reliably than more instructions can.
 
-Watch for the trade-off the exam likes to test: few-shot examples consume real tokens on every single request (cost, and — if placed poorly relative to caching — repeated cost on every call), so the exam expects you to weigh "does this task actually need demonstrated examples" against "am I just adding tokens because more examples feels safer." Also worth knowing: few-shot examples are exactly the kind of content that should live in the *stable, cacheable* part of a prompt if they don't change per request — tying directly back to your caching material.
+## Watch for the trade-off the exam likes to test:
+- Few-shot examples consume real tokens on every single request (cost, and — if placed poorly relative to caching — repeated cost on every call), so the exam expects you to weigh "does this task actually need demonstrated examples" against "am I just adding tokens because more examples feels safer."
+-  Also worth knowing: few-shot examples are exactly the kind of content that should live in the *stable, cacheable* part of a prompt if they don't change per request — tying directly back to your caching material.
 
 ### 3. Chain-of-thought (CoT) prompting
 
 Explicitly instructing the model to reason step-by-step before producing a final answer — "think through this before answering," or providing a structure like "first do X, then Y, then conclude." This is exactly the technique from your loan-approval arithmetic scenario: multi-step reasoning tasks (calculations, multi-criteria decisions, anything requiring tracking intermediate state) benefit substantially from being asked to show that work explicitly, rather than being asked to jump straight to a final answer.
 
-**Exam-relevant trade-off**: CoT reliably improves accuracy on genuinely multi-step reasoning tasks, but it costs real output tokens (and therefore latency and money) for the reasoning trace itself — directly invoking the accuracy-latency-cost trade-off discipline from Domain 3. Applying CoT to a task that doesn't actually need multi-step reasoning (a simple lookup, a straightforward classification) adds cost and latency for no accuracy benefit — the same "don't apply a technique the task doesn't need" principle as few-shot's misuse case, just for a different technique.
+**Exam-relevant trade-off**:
+- CoT reliably improves accuracy on genuinely multi-step reasoning tasks, but it costs real output tokens (and therefore latency and money) for the reasoning trace itself — directly invoking the accuracy-latency-cost trade-off discipline from Domain 3.
+- Applying CoT to a task that doesn't actually need multi-step reasoning (a simple lookup, a straightforward classification) adds cost and latency for no accuracy benefit — the same "don't apply a technique the task doesn't need" principle as few-shot's misuse case, just for a different technique.
 
 ### 4. Matching technique to task — the core exam judgment
 
@@ -27,8 +31,8 @@ None of these three are inherently "better" — each is the right tool for a spe
 - Output is wrong specifically on multi-step logic, calculations, or tasks requiring tracking several pieces of intermediate information → **chain-of-thought**, giving the model room to reason explicitly.
 - These aren't mutually exclusive — a prompt can combine few-shot examples *and* chain-of-thought instruction when a task needs both consistent formatting *and* careful multi-step reasoning.
 
-A common exam trap: reaching for chain-of-thought on a task that's actually failing because of a *formatting/consistency* problem (which few-shot would fix more directly), or reaching for few-shot on a task that's actually failing because of a *reasoning* problem (which no number of static examples fully solves, because the failure is in the reasoning process itself, not the output shape).
+## A common exam trap: 
+- Reaching for chain-of-thought on a task that's actually failing because of a *formatting/consistency* problem (which few-shot would fix more directly), or reaching for few-shot on a task that's actually failing because of a *reasoning* problem (which no number of static examples fully solves, because the failure is in the reasoning process itself, not the output shape).
 
 ---
 
-Want to move into scenario practice for this sub-topic now?
