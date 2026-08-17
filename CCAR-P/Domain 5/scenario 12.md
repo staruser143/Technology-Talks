@@ -1,0 +1,35 @@
+**Scenario**
+
+A software company built a Claude-powered document-analysis tool for private-sector clients, with strong general security practices already in place — encryption at rest and in transit, role-based access controls, regular security audits, SOC 2 compliance. The company wins a new contract to deploy this same tool for a US federal government agency, processing government documents in the same cloud infrastructure they already use for private clients. Leadership's reasoning: "we already have strong security and SOC 2 compliance, which is more than most companies have — that should be more than sufficient for a government contract too."
+
+**Question**: Is the company's existing security posture sufficient for this government deployment? What compliance consideration applies here, and what should the team do?
+
+
+**Question**: Is the company's existing security posture sufficient for this government deployment?
+
+A) Yes — SOC 2 compliance and strong general security practices are broadly recognized industry standards, and any framework satisfying those is automatically sufficient for any context, including government deployments, since security requirements don't meaningfully differ by customer type.
+
+B) No — deploying a cloud service to process US federal government data typically requires **FedRAMP** authorization specifically, which is a distinct, formal government authorization process (not simply "strong security practices" or even SOC 2 compliance, which is a private-sector framework serving a different purpose and audience). FedRAMP involves specific security control baselines, a formal assessment process, and ongoing continuous monitoring requirements set by the federal government — general security maturity, however genuine, doesn't automatically satisfy this specific, named authorization requirement. The team needs to determine whether FedRAMP authorization (at the appropriate impact level for the data being processed) is required for this contract, and pursue that formal process rather than assuming existing private-sector security credentials transfer directly.
+
+C) The issue is irrelevant to compliance frameworks; government contracts are purely a matter of contract law and pricing negotiation, with no distinct technical security requirements beyond what any client would require.
+
+D) No — the issue is that the company needs HIPAA compliance for this deployment, since all government agency data is classified as protected health information requiring HIPAA-level safeguards.
+
+
+Correct — and this scenario tests the same skill as your GDPR-vs-HIPAA distinction (matching the right regulatory framework to the right context signal), just with a new signal: **government deployment** specifically triggers a different framework than either of the two you've already worked with, and general security maturity — however genuine — doesn't automatically substitute for it.
+
+**Why B is right**
+
+Leadership's reasoning — "we already have strong security and SOC 2, that should be more than sufficient" — makes an understandable but mistaken assumption: that security frameworks are roughly interchangeable, and a company demonstrably good at security in one context is automatically good enough for any context. But FedRAMP isn't just "a higher bar of the same kind of security" — it's a specific, formal **government authorization process** with its own control baselines (tied to data sensitivity/impact levels), its own assessment procedures, and its own ongoing continuous-monitoring obligations set by the federal government specifically for cloud services handling federal data. SOC 2 is a private-sector, third-party attestation framework serving a different audience and purpose (assuring private clients of internal controls) — being SOC 2 compliant says something real and valuable about the company's security posture, but it doesn't constitute FedRAMP authorization, and it doesn't satisfy the specific, named requirement that typically applies once you're processing federal government data through cloud infrastructure.
+
+This mirrors the exact structure of your GDPR and HIPAA scenarios: in each case, the *type of context* (EU individuals + significant automated decisions → GDPR; health data → HIPAA; here, federal government data → FedRAMP) determines which specific framework applies, and general competence or a different framework's certification doesn't substitute for the one actually triggered by the context. The fix, correctly stated in B, is for the team to determine whether FedRAMP authorization is actually required for this specific contract (likely yes, given they're processing government documents in cloud infrastructure) and pursue that formal authorization process at the appropriate impact level, rather than assuming their existing credentials transfer.
+
+**Why the others are wrong**
+
+- **A)** repeats leadership's exact flawed reasoning as if it were correct — treating security frameworks as broadly fungible ("satisfying any strong standard is sufficient for any context") ignores that different regulatory frameworks exist precisely because different contexts have different, specifically-defined requirements that aren't automatically satisfied by meeting a different framework's bar, however rigorous that bar is in its own domain.
+- **C)** dismisses the entire compliance dimension as purely contractual/commercial, which misunderstands why frameworks like FedRAMP exist — this isn't a negotiable line item in a contract, it's frequently a legal/procurement requirement for a cloud service to even be eligible to process certain categories of federal data in the first place, independent of what's negotiated commercially.
+- **D)** applies the wrong framework entirely — the same category error as the earlier "any sensitive data must be HIPAA" mistake, just triggered by "government" instead of "financial." Government agency data isn't inherently protected health information; HIPAA governs a specific data type (health information) regardless of whether the processor is a government or private entity, and applies here only if the government agency's data actually happens to be health-related, which nothing in the scenario indicates.
+
+**Pattern to remember, completing the compliance framework-matching arc**: this scenario, alongside your GDPR and HIPAA scenarios, establishes the core exam skill for this sub-topic — correctly identifying which regulatory framework a given context signal actually triggers (EU individuals + automated decisions → GDPR; health data → HIPAA; federal government cloud deployment → FedRAMP), and recognizing that meeting one framework's requirements, however genuinely rigorous, doesn't automatically satisfy a different framework's distinct, formally-defined requirements just because both are "about security" or "about compliance" in a general sense.
+
+That's solid, well-rounded coverage of sub-topic 4. Want to move to sub-topic 5 (ethical AI: bias, fairness, transparency) now?
