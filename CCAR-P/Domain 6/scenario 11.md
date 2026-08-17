@@ -1,0 +1,39 @@
+Moving to the final sub-topic: supporting lifecycle phases — discovery, design, handoff, monitoring, iteration.
+
+**Scenario**
+
+An architect has just finished building a Claude-powered fraud-review system for a client, complete with thorough documentation (architecture diagrams, decision rationale, guardrail explanations — everything from your last two scenarios done correctly this time). With the documentation finished, she emails the client's operations team a link to the docs, marks the project complete, and immediately rolls onto a new engagement the following day — no live walkthrough, no transition period, no defined window for the receiving team to ask questions as they actually start operating the system.
+
+Three weeks later, the operations team encounters a genuinely ambiguous edge case not explicitly covered in the documentation — a fraud pattern the system flags with unusually low confidence — and has no clear channel to get clarification, since the architect has moved on and the documentation, however good, doesn't cover every possible real-world situation they'll encounter. They end up guessing at the right response, inconsistently, across different team members.
+
+**Question**: What's the core lifecycle-management gap here, and what should the architect have done differently
+
+
+**Question**: What's the core lifecycle-management gap here, and what should the architect have done differently?
+
+A) There's no gap — since the documentation was thorough and well-written, that alone constitutes a complete handoff, and the operations team's difficulty with an edge case is simply an inevitable limitation of any documentation, regardless of what else surrounds it.
+
+B) The core gap is treating **handoff as a document delivery event rather than a process** — good documentation is necessary but not sufficient for a real handoff; even excellent documentation can't anticipate every real-world edge case the receiving team will encounter once they start actually operating the system, which is precisely why a proper handoff includes a live walkthrough, a defined transition/support window during which the original team remains reachable for questions, and ideally a mechanism for capturing and incorporating exactly the kind of edge cases that surface only once real operational experience begins — not an abrupt, same-day departure with no path back for clarification. The architect should have built in a transition period rather than treating "documentation delivered" as equivalent to "handoff complete."
+
+C) The issue is that the documentation itself was inadequate for not covering every possible edge case in advance; the fix is to write more exhaustive documentation attempting to enumerate every conceivable scenario before any handoff occurs.
+
+D) The issue is unrelated to handoff process; the operations team should have independently developed their own internal escalation procedure for ambiguous cases without needing any support from the original architect, since ongoing support is out of scope for an architect's role once a system is delivered.
+
+
+Correct — and this scenario closes out the lifecycle sub-topic by isolating something distinct from your last two documentation scenarios: even *good* documentation, delivered correctly, doesn't by itself constitute a complete handoff, because handoff is fundamentally a **transition process**, not a delivery event.
+
+**Why B is right**
+
+Notice what this scenario deliberately holds constant versus what it changes: unlike your "what vs. why" documentation scenario, the documentation here is explicitly described as thorough and well-written — architecture, rationale, guardrails, all correctly captured. The failure isn't in the artifact. It's in treating the artifact's delivery as the entire handoff, with nothing structured around it: no live walkthrough where the operations team could ask clarifying questions while the architect's full context was still fresh and available, no defined transition window during which she remained reachable, and critically, no mechanism at all for handling the class of situation *no* documentation can fully anticipate — genuinely novel edge cases that only surface once a system meets real-world operational volume and variation.
+
+This is the key insight worth sitting with: documentation, however excellent, is necessarily a snapshot of what was known and anticipated at the time it was written. A low-confidence fraud flag on a pattern nobody thought to document in advance isn't a documentation failure — it's an entirely expected, normal thing to encounter once a system moves from design into real operation, and a good handoff process is specifically built to handle exactly this category of situation: not by trying to document every possible scenario upfront (which is neither achievable nor a good use of effort), but by maintaining a channel back to the people with the deepest context during the period when the receiving team is most likely to need it. The operations team, left to guess inconsistently across team members, illustrates precisely what happens when that channel doesn't exist — not because they're incapable, but because they were handed a system and a document with no supported path for resolving the inevitable gap between "what was written down" and "what actually happens in production."
+
+**Why the others are wrong**
+
+- **A)** conflates "the documentation was good" with "the handoff was complete" — exactly the assumption the scenario is built to challenge. No documentation, however thorough, eliminates the need for a real transition process, because documentation fundamentally cannot anticipate every situation a system will encounter once it's actually running with real, unpredictable inputs.
+- **C)** proposes an unachievable and ultimately unhelpful fix — attempting to enumerate every conceivable edge case in advance is both practically impossible (the space of possible real-world situations is unbounded) and a poor use of effort compared to building a functioning channel for handling genuinely novel cases as they arise, which is a fundamentally more scalable and realistic solution than trying to pre-document infinity.
+- **D)** draws an unreasonably hard line around the architect's responsibility, treating any post-delivery support as categorically out of scope — but this ignores that a *defined, bounded* transition period (not indefinite ongoing support, just a reasonable window) is a normal and expected part of a professional handoff, precisely because the receiving team's operational questions are heaviest right after they start actually using the system, not before. Expecting them to build their own escalation procedures from scratch, with zero input from the people who actually designed the system's reasoning, discards genuinely available expertise for no good reason.
+
+**Pattern to remember, closing the entire lifecycle sub-topic**: handoff, monitoring, and iteration are distinct phases from design and documentation, and treating "the documentation is finished" as equivalent to "the lifecycle responsibility is finished" collapses several genuinely separate concerns into one. A well-designed lifecycle process recognizes that real understanding of a system develops through operational experience the receiving team hasn't had yet — and a good handoff bridges that gap with structured time and access, not just a well-written document handed off and immediately abandoned.
+
+That completes a thorough, well-rounded pass through all five Domain 6 sub-topics — discovery, communicating trade-offs, feedback loops/SLAs, documentation, and lifecycle support. Want a mixed review pulling all five together into compound scenarios, or move to Domain 7 (Developer Productivity & Operational Enablement, 7%) — the final domain?
