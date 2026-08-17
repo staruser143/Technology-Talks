@@ -1,0 +1,37 @@
+**Scenario**
+
+A financial services team's Claude-powered assistant generates detailed investment risk assessments — long, structured documents covering multiple risk categories, each requiring supporting analysis. A junior analyst reviews a batch of recent outputs and flags several as "hallucinations": each flagged document discusses the first three risk categories thoroughly and accurately, but the fourth category ("liquidity risk") consistently cuts off mid-sentence, sometimes mid-word, with no concluding analysis or recommendation for that section at all — as if the model simply stopped generating without warning.
+
+Before escalating this as a hallucination/quality issue to the prompt engineering team, a senior engineer checks the actual API response logs for these specific requests. She finds: every one of the flagged responses has `stop_reason: "max_tokens"`, and the `max_tokens` parameter configured for this endpoint (1,500) was set months ago when risk assessments were shorter and covered fewer categories — a recent feature addition expanded the assessment to include the fourth "liquidity risk" category, but nobody updated the token limit to account for the additional length this now requires.
+
+**Question**: Was the junior analyst's "hallucination" diagnosis correct? What's the actual issue, and what does this imply about diagnostic order?
+
+A) The junior analyst's diagnosis was correct — mid-sentence, incomplete content is a classic hallucination signature, and the team should proceed with hallucination-focused fixes (e.g., adding groundedness instructions) regardless of what the stop_reason shows.
+
+B) The junior analyst's diagnosis was incorrect. This is not a hallucination (no fabricated content is present — nothing false is being claimed) and not a prompt-failure or model-mismatch content issue at all — it's a `stop_reason: max_tokens` truncation, a response-completion-layer issue that occurred before any content-quality diagnosis is even meaningful to apply. The content diagnostic framework (prompt failure / hallucination / model mismatch) should only be applied to complete, intentionally-finished responses (`end_turn`) — checking `stop_reason` first would have immediately revealed the actual cause and prevented misdiagnosing a truncation issue as a content-quality problem. The fix is simply raising `max_tokens` to reflect the assessment's current actual length needs, not any content-layer intervention.
+
+C) Both diagnoses are simultaneously correct — this is both a hallucination and a max_tokens issue, and both a groundedness fix and a token limit increase should be applied together to be safe.
+
+D) The issue is a model mismatch, since the model appears unable to reliably complete longer, more complex risk assessments now that a fourth category has been added.
+
+Take your best guess and I'll walk through it.
+
+
+
+Correct — and this scenario is a direct, worked example of exactly why checking `stop_reason` before applying the content-diagnostic framework matters in practice, not just as an abstract sequencing rule.
+
+**Why B is right**
+
+Walk through what the junior analyst actually observed versus what was actually happening: mid-sentence, mid-word cutoffs with no concluding analysis at all for the fourth category. That surface pattern is genuinely ambiguous from the *content* alone — it could plausibly look like several different things to someone not checking the response metadata. But the moment the senior engineer checks `stop_reason` and finds `"max_tokens"` on every single flagged response, the ambiguity resolves completely: this isn't the model generating fabricated content (there's no false claim anywhere — hallucination requires *content that's actually there but wrong*, and here there's simply no content for that section at all, because generation was cut off before reaching it). It isn't a prompt-structure failure either (nothing about instructions or reasoning steps caused this). It's a response-completion-layer issue, sitting entirely outside the content-diagnostic framework's scope — the same `max_tokens` mechanism, and even the same underlying cause (a prompt/task scope expanding without a corresponding budget update), as your incident-memo scenario from earlier in this domain.
+
+This is precisely why checking `stop_reason` *before* reaching for a content diagnosis matters practically, not just procedurally: applying the hallucination/prompt-failure/model-mismatch framework to an incomplete response would have sent the team toward the wrong category of fix entirely (groundedness instructions, chain-of-thought scaffolding, or worse, a model upgrade) for a problem that has nothing to do with any of those — the fix is simply raising `max_tokens` to reflect what a four-category assessment actually requires now, which directly and completely resolves the issue with no content-layer changes needed at all.
+
+**Why the others are wrong**
+
+- **A)** commits exactly the error this scenario is built to expose — pattern-matching "incomplete, cut-off content" to "hallucination" based on surface appearance alone, without checking the one piece of metadata (`stop_reason`) that would have immediately clarified the actual cause. Proceeding with groundedness fixes here would do nothing, since there's no fabricated content to correct — the team would spend real effort on an intervention that couldn't possibly fix a truncation problem.
+- **C)** tries to hedge by treating both diagnoses as simultaneously valid and applying both fixes "to be safe" — but this isn't a case of two co-occurring problems (unlike your compound Domain 3/4 mixed-review scenarios, where multiple genuinely independent issues were correctly identified together). Here there is exactly one cause, fully explaining the entire symptom, confirmed directly by the `stop_reason` field — layering an unnecessary groundedness fix on top adds cost and complexity for a problem that was never present in the first place, the same "unnecessary bundled fix" pattern rejected in several of your fraud-detection and PII-redaction wrong-answer options.
+- **D)** reaches for model mismatch — the most expensive, least-likely-to-be-checked-first category — without any of the evidence that would actually support it (no confirmation that grounding and prompting were adequate but the task still failed on genuine reasoning difficulty). This repeats the single most common mistake pattern across this entire session: jumping to a capability explanation when a `stop_reason` check would have immediately revealed a much simpler, much cheaper, directly-evidenced cause.
+
+**Pattern to remember, closing this thread precisely**: the diagnostic order matters because content-layer categories (hallucination, prompt failure, model mismatch) are only meaningful diagnoses for responses that actually finished generating as intended. A truncated (`max_tokens`), refused (`refusal`), or paused (`pause_turn`) response isn't a fair or even coherent target for those categories — checking `stop_reason` first isn't just tidy process, it's what prevents a team from correctly observing a real symptom (missing content) and then applying entirely the wrong category of fix to it, wasting effort on a content-layer intervention when the actual cause was a simple, budget-mismatch problem one field-check away from being obvious.
+
+That's a solid, well-grounded close to Domain 4 in its entirety. Ready to move to Domain 5 (Governance, Safety & Risk Management, 14%)?
