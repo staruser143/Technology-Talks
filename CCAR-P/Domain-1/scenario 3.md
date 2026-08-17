@@ -31,4 +31,7 @@ Three signals in the scenario point straight at multi-agent:
 - **B) Workflow** fails the same test as your first scenario: the four reviews aren't a fixed *sequence* where step 2 depends on step 1's output — they're independent and parallelizable. Forcing them into "extract, then classify, then check IP, then check liability..." adds unnecessary sequencing where none is needed.
 - **D) Augmented LLM** has the same context-overload problem as A, just without even a loop to manage it — one shot, 200 pages, four playbooks, is asking a lot of a single pass and gives you no way to isolate or re-run just the "termination clauses" review if it comes back weak.
 
-**Pattern to remember**: multi-agent isn't just "the task has multiple parts" — workflows have multiple parts too. Multi-agent is specifically for parts that are **independent enough to isolate** (each needs its own scoped context/expertise) and **often parallelizable**, with a synthesis step tying them together. If the parts must happen in a strict order and depend on each other's output, that's workflow, not multi-agent — even with several distinct steps.
+**Pattern to remember**: 
+- Multi-agent isn't just "the task has multiple parts" — workflows have multiple parts too.
+- Multi-agent is specifically for parts that are **independent enough to isolate** (each needs its own scoped context/expertise) and **often parallelizable**, with a synthesis step tying them together.
+- If the parts must happen in a strict order and depend on each other's output, that's workflow, not multi-agent — even with several distinct steps.
