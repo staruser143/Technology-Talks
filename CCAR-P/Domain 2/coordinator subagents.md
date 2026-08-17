@@ -3,11 +3,15 @@ When using coordinator subagents is there a need to manage contexts
 
 Yes — genuinely, and this is a real and important design consideration, worth connecting explicitly back to both Domain 1 (multi-agent orchestration) and this domain's context-management material.
 
-**The key architectural fact**: each subagent runs with its own **isolated context window** — it does *not* inherit the orchestrator's full conversation history, prior tool calls, or unrelated data by default. It receives a specifically-composed delegation message (task description, plus whatever relevant context the orchestrator chooses to pass along), does its work in that isolated space, and returns only its final result back to the orchestrator — the orchestrator doesn't see the subagent's full intermediate reasoning or tool-call trail, just the conclusion.
+**The key architectural fact**: 
+- Each subagent runs with its own **isolated context window** — it does *not* inherit the orchestrator's full conversation history, prior tool calls, or unrelated data by default. I
+- It receives a specifically-composed delegation message (task description, plus whatever relevant context the orchestrator chooses to pass along), does its work in that isolated space, and returns only its final result back to the orchestrator — the orchestrator doesn't see the subagent's full intermediate reasoning or tool-call trail, just the conclusion.
 
 **Why this matters, connecting directly to what you've already learned:**
 
-1. **It's a deliberate context-management technique in its own right** — isolation prevents "context pollution": the orchestrator's own context stays clean regardless of how much work a subagent internally does, rather than the orchestrator's context growing with every subagent's full working history the way an unmanaged conversation transcript grows turn over turn. This is architecturally similar to what selective retention/summarization achieves in a single-agent conversation, except here it's structural (separate context windows) rather than a curation policy applied within one shared context.
+1. **It's a deliberate context-management technique in its own right** —
+- Isolation prevents "context pollution": the orchestrator's own context stays clean regardless of how much work a subagent internally does, rather than the orchestrator's context growing with every subagent's full working history the way an unmanaged conversation transcript grows turn over turn.
+- This is architecturally similar to what selective retention/summarization achieves in a single-agent conversation, except here it's structural (separate context windows) rather than a curation policy applied within one shared context.
 
 2. **The orchestrator still has to actively manage what it passes down and what it keeps from what comes back** — isolation solves the "subagent's internal mess doesn't bloat the orchestrator" problem, but it doesn't automatically solve "the orchestrator's own context grows as it coordinates many subagents and collects many results." If an orchestrator is running 8 subagents and returning full results from each into its own context, that's the same "too much accumulating in one place" pattern from your legal-playbook (Domain 1) and IT-support conversation-history (this domain) scenarios — just at the orchestrator level instead of a single conversation. The orchestrator needs to synthesize/summarize subagent results, not just concatenate every returned message verbatim, or it reintroduces the exact dilution problem isolation was meant to avoid.
 
@@ -15,6 +19,6 @@ Yes — genuinely, and this is a real and important design consideration, worth 
 
 4. **Isolation has a real cost worth flagging**: because each subagent starts fresh, it doesn't automatically know things the orchestrator or a sibling subagent already learned — the orchestrator has to deliberately decide what's actually relevant to hand each subagent (not the whole history, just what that subagent needs for its specific task), which is itself a context-curation decision, not something that happens for free just because isolation exists.
 
-**Tying this together for the exam**: "does context need to be managed with coordinator subagents" — yes, but the *nature* of the management shifts. Isolation handles the "don't let subagent noise pollute the parent" problem structurally. But the orchestrator still needs deliberate context engineering on both sides of each delegation: curating what goes *into* each subagent (only what's task-relevant, not everything available) and synthesizing what comes *back* (a summary/decision, not a raw dump of every subagent's full output) — otherwise the orchestrator's own context reintroduces the exact bloat and dilution problems isolation was supposed to solve.
-
-Want a scenario that tests this directly — orchestrator context management with multiple subagents?
+**Tying this together for the exam**: 
+- "does context need to be managed with coordinator subagents" — yes, but the *nature* of the management shifts.
+- Isolation handles the "don't let subagent noise pollute the parent" problem structurally. But the orchestrator still needs deliberate context engineering on both sides of each delegation: curating what goes *into* each subagent (only what's task-relevant, not everything available) and synthesizing what comes *back* (a summary/decision, not a raw dump of every subagent's full output) — otherwise the orchestrator's own context reintroduces the exact bloat and dilution problems isolation was supposed to solve.
