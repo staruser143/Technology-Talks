@@ -818,23 +818,25 @@ Best for:
 ---
 # 11. The Most Essential Patterns, Simplified
 If you only need the core list, these are the essential agentic AI patterns:
-Pattern	Purpose
-ReAct	Alternate reasoning and action
-Plan-and-Execute	Create a plan, then execute it
-Task Decomposition	Break large goals into smaller tasks
-Tool Use	Let the agent call APIs and functions
-Human-in-the-Loop	Pause for approval or clarification
-Memory	Store short-term and long-term context
-Retrieval-Augmented Generation	Ground answers in external knowledge
-Reflection	Critique and improve outputs
-Verifier	Check outputs before acting
-Router	Direct requests to the right agent or tool
-Supervisor	Coordinate multiple worker agents
-Orchestrator-Worker	Assign subtasks to specialized agents
-Guardrails	Enforce policies, limits, and safety rules
-Budgeting	Limit tokens, time, cost, and tool calls
-Audit Trail	Log decisions and actions
-Evaluation	Test agent behavior systematically
+
+| Pattern | Purpose |
+|---|---|
+| ReAct | Alternate reasoning and action |
+| Plan-and-Execute | Create a plan, then execute it |
+| Task Decomposition | Break large goals into smaller tasks |
+| Tool Use | Let the agent call APIs and functions |
+| Human-in-the-Loop | Pause for approval or clarification |
+| Memory | Store short-term and long-term context |
+| Retrieval-Augmented Generation | Ground answers in external knowledge |
+| Reflection | Critique and improve outputs |
+| Verifier | Check outputs before acting |
+| Router | Direct requests to the right agent or tool |
+| Supervisor | Coordinate multiple worker agents |
+| Orchestrator-Worker | Assign subtasks to specialized agents |
+| Guardrails | Enforce policies, limits, and safety rules |
+| Budgeting | Limit tokens, time, cost, and tool calls |
+| Audit Trail | Log decisions and actions |
+| Evaluation | Test agent behavior systematically |
 ---
 # 12. Minimum Viable Agent Pattern
 If you are building your first agent, start with this pattern:
