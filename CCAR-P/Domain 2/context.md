@@ -1,9 +1,10 @@
-Is there a need to use /context at a any time
+# Is there a need to use /context at a any time
 
 
 Good question — worth being precise about what `/context` actually gives you and when it's genuinely useful, versus when you're better served by the tools we've already covered.
 
-**What `/context` actually is**: a live diagnostic command in Claude Code that shows a full breakdown of exactly what's consuming your context window right now — system prompt, system tools, MCP tools (broken down per-server), custom agents, memory files, skills, conversation/messages, and remaining free space — along with actionable suggestions (e.g., "MCP server X uses 12% of context — consider disabling if not needed," or "memory file exceeds 50KB — review for outdated entries").
+**What `/context` actually is**: 
+- A live diagnostic command in Claude Code that shows a full breakdown of exactly what's consuming your context window right now — system prompt, system tools, MCP tools (broken down per-server), custom agents, memory files, skills, conversation/messages, and remaining free space — along with actionable suggestions (e.g., "MCP server X uses 12% of context — consider disabling if not needed," or "memory file exceeds 50KB — review for outdated entries").
 
 **When it's genuinely worth using — three real, distinct cases:**
 
@@ -13,6 +14,8 @@ Good question — worth being precise about what `/context` actually gives you a
 
 3. **Deciding whether compaction is actually warranted yet, and how urgently.** Rather than guessing or waiting for the automatic threshold to fire (which, as you now know, tends to compact later and less deliberately than a manual, well-timed pass), `/context` gives you the actual percentage — letting you make an informed choice about *when* to run `/compact` rather than reacting to it.
 
-**How this fits into the overall diagnostic sequence for context problems, tying together everything from this thread**: `/context` is the *measurement* step — it's the token-counting/observability instinct applied specifically to a live session, the same "measure before you fix" discipline as the token-counting API we discussed earlier, just scoped to what's actually in the window right now rather than a hypothetical prompt design. The sensible order is: **check `/context` first** (what's actually consuming space, and is it something disposable like an idle MCP server, or genuinely necessary conversation content) → **only then decide** whether the fix is disabling something unused, trimming a bloated persistent file, or actually compacting/summarizing conversation history. Jumping straight to compaction without checking `/context` first risks compressing conversation content you didn't need to touch, when the actual bloat was sitting in an unused tool registration the whole time.
+**How this fits into the overall diagnostic sequence for context problems, tying together everything from this thread**: 
+- `/context` is the *measurement* step — it's the token-counting/observability instinct applied specifically to a live session, the same "measure before you fix" discipline as the token-counting API we discussed earlier, just scoped to what's actually in the window right now rather than a hypothetical prompt design.
+- The sensible order is: **check `/context` first** (what's actually consuming space, and is it something disposable like an idle MCP server, or genuinely necessary conversation content) → **only then decide** whether the fix is disabling something unused, trimming a bloated persistent file, or actually compacting/summarizing conversation history.
+- Jumping straight to compaction without checking `/context` first risks compressing conversation content you didn't need to touch, when the actual bloat was sitting in an unused tool registration the whole time.
 
-Want a scenario that tests this — diagnosing where context is actually being consumed before reaching for compaction?
