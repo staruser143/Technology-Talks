@@ -31,4 +31,6 @@ Apply the same test: does the *path* vary, or just the *content*? Here, the path
 
 - **D) Human-in-the-loop after every step** sounds responsible but wasn't asked for, and it defeats the point. The scenario doesn't say this is an action-taking system (nothing here changes production state, it's investigation and diagnosis) — so gating every read-only lookup behind human approval would slow it to a crawl for no safety benefit. Human-in-the-loop belongs at points of *consequence* — e.g., before Claude restarts a service or pages someone — which this scenario doesn't include. (This is worth flagging because Domain 5, Governance, will test exactly when human-in-the-loop gates are warranted — the answer is "at points of irreversible or high-stakes action," not "everywhere.")
 
-**Pattern refinement**: a fixed *menu* of available actions is not the same as a fixed *sequence*. If the model must choose which action, in what order, based on intermediate results — that's agentic, even if every individual action it might take is itself well-defined.
+**Pattern refinement**:
+- A fixed *menu* of available actions is not the same as a fixed *sequence*.
+- If the model must choose which action, in what order, based on intermediate results — that's agentic, even if every individual action it might take is itself well-defined.
