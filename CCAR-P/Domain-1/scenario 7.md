@@ -34,5 +34,9 @@ Splitting it anyway would add a second LLM call (extra cost and latency, potenti
 - **C)** invents a rule that isn't supported by anything in the scenario — "priority is inherently more subjective" isn't a stated fact here, and even if priority were harder to judge, that alone doesn't mean it needs a separate call if the combined approach is already hitting 96% accuracy.
 - **D)** is simply false as a technical claim — nothing prevents splitting classification tasks into separate calls; the question is whether you *should*, not whether you *can*.
 
-**The exam-level takeaway**: this pairs directly with your transcript scenario to test the *boundary* of the same principle from both sides. Decomposition is diagnosed from evidence of a specific problem (dilution, sequencing, contradiction) — not applied reflexively because "it's generally good practice" or because a task happens to produce more than one output. A well-performing, narrow, measured task is itself the evidence that decomposition isn't needed. If the exam gives you accuracy numbers and latency figures that already look good, that's usually a signal the "correct" answer is *leave it alone*, not *add architecture*.
+**The exam-level takeaway**: 
+- This pairs directly with your transcript scenario to test the *boundary* of the same principle from both sides.
+- Decomposition is diagnosed from evidence of a specific problem (dilution, sequencing, contradiction) — not applied reflexively because "it's generally good practice" or because a task happens to produce more than one output.
+- A well-performing, narrow, measured task is itself the evidence that decomposition isn't needed.
+- If the exam gives you accuracy numbers and latency figures that already look good, that's usually a signal the "correct" answer is *leave it alone*, not *add architecture*.
 
