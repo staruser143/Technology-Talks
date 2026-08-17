@@ -1,0 +1,41 @@
+**Scenario**
+
+A software company's engineering team adopts Claude Code across a 15-person team. The team lead sets up configuration with the following choices:
+
+- At the **user level** (each developer's personal settings, not checked into any repo), individual developers can freely enable or disable any tool access they want, including full filesystem access beyond the project directory and unrestricted command execution.
+- At the **project level** (checked into the shared repo, applying to everyone working in it), there's no `allowedTools`/`disallowedTools` configuration at all — it's left entirely to each developer's personal user-level settings.
+- `permissionMode` is left at each developer's individual discretion — some have configured highly autonomous modes requiring no confirmation for file writes or command execution, "to move faster."
+
+Three months in, an incident occurs: a developer, working in a shared production-adjacent repository with an autonomous `permissionMode` and broad tool access enabled at their personal user level, has a Claude Code session that — following a legitimate-seeming but ultimately incorrect instruction the developer gave in a moment of imprecision — executes a destructive command affecting shared infrastructure other team members depend on, with no confirmation step that would have caught it.
+
+**Question**: What's the core team-configuration gap here, and what should the team lead have done differently?
+
+
+**Question**: What's the core team-configuration gap here, and what should the team lead have done differently?
+
+A) There's no gap — individual developers should always have full discretion over their own tool access and permission settings, since restricting an experienced engineer's configuration choices would slow down the entire team unnecessarily.
+
+B) The core gap is leaving consequential configuration decisions — tool access scope and permission mode for actions affecting **shared, production-adjacent infrastructure** — entirely to individual user-level discretion, with nothing enforced at the project level. This is the same "instructional guardrail where structural enforcement was needed" pattern from Domain 5, now applied to team tooling configuration: a team lead hoping each developer configures themselves safely is not the same as the team actually being protected. For a shared repo touching production-adjacent infrastructure, the team lead should set restrictive `allowedTools`/`disallowedTools` and a confirmation-requiring `permissionMode` at the **project level** (checked into the repo, applying to everyone regardless of personal preference), reserving broader autonomy and tool access for genuinely low-stakes, individual, non-shared work where user-level discretion is appropriate.
+
+C) The issue is that the specific developer involved made a mistake and should receive individual retraining; the team's configuration approach itself doesn't need to change, since this was a one-off human error.
+
+D) The issue is that Claude Code itself is fundamentally unsafe for any production-adjacent work and the team should stop using it entirely for any repository connected to shared infrastructure.Apologies — that was an errant tool call on my end, not meant to interrupt. Picking back up: take your pick of B, C, or D for that team-configuration scenario whenever you're ready.
+
+
+Correct — and this scenario is the direct practical extension of your fail-open/instructional-guardrail material from Domain 5, now applied to how a team actually configures its own tooling rather than to an application's own guardrails.
+
+**Why B is right**
+
+The team lead's approach effectively delegates every consequential safety decision — what tools are accessible, whether destructive actions require confirmation — to each individual developer's personal judgment, with nothing enforced at the level that actually matters: the shared repository touching production-adjacent infrastructure. This is precisely the "instructional guardrail where structural enforcement was needed" pattern, just relocated from an AI system's own behavior to how a team configures the AI tooling it uses. Hoping fifteen individual developers will each personally configure themselves conservatively enough, especially under pressure to "move faster," is functionally equivalent to having no safety boundary at all for the one developer who doesn't — and the incident confirms exactly that: one developer's personal choice (autonomous permission mode, broad tool access) combined with one moment of imprecise instruction produced a destructive outcome nothing structurally caught.
+
+The fix follows the same logic as every consequential-action scenario across this session: **for shared, production-adjacent work, the safety boundary needs to be enforced at the project level**, not left to individual discretion. Setting restrictive `allowedTools`/`disallowedTools` and a confirmation-requiring `permissionMode` in the repo's checked-in project settings means every developer working in that repository — regardless of their personal user-level preferences — operates within the same safety boundary. This doesn't mean eliminating developer autonomy everywhere; the same team lead can reasonably leave user-level settings wide open for developers' own personal, non-shared projects, where the stakes of a mistake are contained to that individual's own work. The distinction that matters is exactly the one from your HITL and guardrail material: match the enforcement level to what the action actually touches — shared, hard-to-reverse infrastructure needs structural, project-level enforcement; low-stakes individual work can reasonably stay at personal discretion.
+
+**Why the others are wrong**
+
+- **A)** treats "restricting configuration slows the team down" as if it outweighs the demonstrated cost of not restricting it — but the incident itself is direct evidence that unrestricted individual discretion, for shared production-adjacent work, has a real, realized cost (destructive infrastructure impact), not just a hypothetical one. This is the same "convenience over consequence" trade-off rejected in your fail-open refund-verification scenario — the team lead's original reasoning ("move faster") mirrors that scenario's "don't block legitimate customers" justification almost exactly, applied to a different context with the same structural flaw.
+- **C)** isolates the failure to one individual's mistake and proposes individual retraining as if the configuration itself weren't the actual point of failure — but the scenario is specifically constructed to show a *systemic* gap: any of the fifteen developers, similarly configured with broad autonomy on this shared repo, was one imprecise instruction away from the same outcome. Retraining one person doesn't change that the other fourteen remain equally exposed under the same ungoverned configuration approach.
+- **D)** overcorrects into abandoning the tool entirely for an entire category of work, rather than fixing the actual gap (unenforced, individually-discretionary configuration for shared infrastructure) — this is the same "discard the whole tool because of an unmitigated risk that has a much more targeted fix" overcorrection rejected throughout this session (abandoning MCP, abandoning caching, abandoning guardrails). Properly scoped project-level settings directly address the demonstrated risk without requiring the team give up the tool's genuine productivity benefits.
+
+**Pattern to remember, opening this final domain's scenario arc**: this is Domain 5's "instructions aren't enforcement, structural safeguards are needed for consequential actions" lesson, now made concrete in exactly the practical mechanism this domain names — `allowedTools`/`disallowedTools` and `permissionMode` set at the project level are the literal, applied instantiation of least-privilege and human-in-the-loop principles for team AI tooling, and the deciding question for where to enforce them is identical to every other consequential-action scenario this session: does this touch something shared, hard-to-reverse, or high-stakes, or is it contained, low-stakes, individual work where personal discretion is genuinely fine.
+
+Want another Domain 7 scenario, or is this a good place to wrap given it's the smallest domain?
