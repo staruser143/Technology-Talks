@@ -27,7 +27,9 @@ Treating token budget as something you discover only when a request fails or cos
 
 ### 5. How this sub-topic connects to everything else in Domain 2
 
-This is genuinely the capstone of the domain: model selection interacts with context budget (a model's usable context varies, and processing cost scales with tokens regardless of tier); caching only helps the *stable* portion of context, so managing what's dynamic vs. reusable is itself a context-optimization decision; few-shot examples and chain-of-thought both directly cost context budget, so technique selection and context optimization are the same lever viewed from different angles — every added example or reasoning instruction is tokens spent, and worth it only if it earns its cost.
+- This is genuinely the capstone of the domain: model selection interacts with context budget (a model's usable context varies, and processing cost scales with tokens regardless of tier);
+- caching only helps the *stable* portion of context, so managing what's dynamic vs. reusable is itself a context-optimization decision;
+- few-shot examples and chain-of-thought both directly cost context budget, so technique selection and context optimization are the same lever viewed from different angles — every added example or reasoning instruction is tokens spent, and worth it only if it earns its cost.
 
 ---
 
