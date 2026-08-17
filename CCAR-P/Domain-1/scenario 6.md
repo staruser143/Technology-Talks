@@ -33,5 +33,7 @@ The general principle: when a task has clearly separable phases, and errors in o
 - **C) Bigger context window fixes it** confuses "can the model technically fit the input" with "can the model produce quality output while doing four different jobs at once." A bigger context window doesn't fix competing objectives within a single pass — you'd still get header/summary mismatches even with unlimited context, because the problem isn't length, it's concurrent tasks diluting attention.
 - **D) Better phrasing alone** is the most common wrong answer people pick because it feels like the "cheap fix." It can help marginally, but it doesn't address the structural cause: a summary written before or during metadata generation has no way to *guarantee* consistency with metadata written in that same pass. No amount of instruction wording turns one pass into a self-consistency check across two things the model hasn't finished writing yet.
 
-**Pattern to remember**: if a single-prompt task shows these three specific failure signatures — dropped details in long inputs, structure that doesn't match content, or internal contradictions between outputs — that's diagnostic of a decomposition problem, not a prompting problem. Fix the architecture (split + chain), not just the words.
+**Pattern to remember**: 
+- if a single-prompt task shows these three specific failure signatures — dropped details in long inputs, structure that doesn't match content, or internal contradictions between outputs — that's diagnostic of a decomposition problem, not a prompting problem.
+- Fix the architecture (split + chain), not just the words.
 
