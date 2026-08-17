@@ -17,7 +17,9 @@ Recall the exam trap named in the system-prompts material: "a system with many n
 
 ### The exam-relevant trade-off
 
-Modularity adds a layer of composition complexity (you need some system for assembling the right blocks for the right context) in exchange for consistency and maintainability at scale. The judgment the exam wants: this is worth it when the same instructional content is genuinely reused across multiple features/prompts (the same "does this get reused across multiple consumers" question from your MCP-vs-direct-API framework in Domain 3, just applied to prompt content instead of tool integrations). For a single, one-off prompt used in exactly one place, full modularity is unnecessary overhead — the same "don't over-engineer for reuse that doesn't exist" principle.
+- Modularity adds a layer of composition complexity (you need some system for assembling the right blocks for the right context) in exchange for consistency and maintainability at scale.
+- The judgment the exam wants: this is worth it when the same instructional content is genuinely reused across multiple features/prompts (the same "does this get reused across multiple consumers" question from your MCP-vs-direct-API framework in Domain 3, just applied to prompt content instead of tool integrations).
+-  For a single, one-off prompt used in exactly one place, full modularity is unnecessary overhead — the same "don't over-engineer for reuse that doesn't exist" principle.
 
 ---
 
