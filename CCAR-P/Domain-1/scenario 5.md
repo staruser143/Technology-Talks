@@ -33,7 +33,9 @@ Compare this to your refund scenario: there, the *outer* shape was fixed (workfl
 - **C) Multi-agent** overengineers this the same way it did in your refund scenario. Review and publishing aren't independent, parallelizable subtasks needing their own scoped expertise — they're fixed, sequential, deterministic procedures. Giving them each a subagent plus an orchestrator adds coordination cost for something that's just "run these three steps in this exact order," which a workflow already does more simply and more reliably.
 - **D) Pure agentic for everything** is the most important wrong answer to understand, because it's the one that looks "safest" (maximum flexibility) but is actually the riskiest. Company policy says the three review checks must run "never skipped, never reordered" — that's a compliance requirement, not a preference. Leaving that to model discretion each time means there's a nonzero chance the agent decides to skip a step, reorder it, or interpret "review" loosely under time pressure. Locking compliance-critical sequences into a workflow — instead of trusting an agent's judgment every single run — is exactly why Domain 5 (Governance) cares so much about this distinction.
 
-**Pattern to remember**: nesting direction isn't fixed — trace where the actual unpredictability lives in the system, and that's your outer shell; everything fixed and rule-bound around it becomes a subroutine, regardless of whether that subroutine sits inside an agent's loop or an agent's loop sits inside a subroutine.
+**Pattern to remember**:
+- Nesting direction isn't fixed — trace where the actual unpredictability lives in the system, and that's your outer shell;
+- everything fixed and rule-bound around it becomes a subroutine, regardless of whether that subroutine sits inside an agent's loop or an agent's loop sits inside a subroutine.
 
 
 
