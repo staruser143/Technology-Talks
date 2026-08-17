@@ -875,17 +875,19 @@ If you cannot trace the agent’s reasoning and actions, you cannot safely opera
 ---
 # 14. Anti-Patterns to Avoid
 These are common mistakes in agentic AI systems:
-Anti-Pattern	Problem
-Unlimited autonomy	Agent can take unsafe actions
-Too many tools	Model gets confused about which tool to use
-No stop condition	Agent loops forever
-No memory strategy	Context gets lost or overloaded
-No validation	Agent acts on hallucinated inputs
-No audit trail	Impossible to debug or comply
-No human approval	High-risk actions happen unintentionally
-Monolithic agent	Hard to test, scale, and debug
-No evaluation	Quality silently regresses
-Treating LLM output as executable truth	Structured outputs must still be validated
+
+| Anti-Pattern | Problem |
+|---|---|
+| Unlimited autonomy | Agent can take unsafe actions |
+| Too many tools | Model gets confused about which tool to use |
+| No stop condition | Agent loops forever |
+| No memory strategy | Context gets lost or overloaded |
+| No validation | Agent acts on hallucinated inputs |
+| No audit trail | Impossible to debug or comply |
+| No human approval | High-risk actions happen unintentionally |
+| Monolithic agent | Hard to test, scale, and debug |
+| No evaluation | Quality silently regresses |
+| Treating LLM output as executable truth | Structured outputs must still be validated |
 ---
 # Summary
 The essential agentic AI patterns are:
