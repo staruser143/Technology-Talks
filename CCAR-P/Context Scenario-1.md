@@ -1,21 +1,23 @@
+# Context Scenario — CCAR-P
+
 Excellent question. This is exactly the kind of nuance CCAR-P likes to test.
 
 The practice question intentionally says:
 
-"fits comfortably within the context window"
+> "fits comfortably within the context window"
 
 That phrase is doing a lot of work.
 
-If it truly fits comfortably
+## When it truly fits comfortably
 
-Then the total context budget includes:
+If it truly fits comfortably, then the total context budget includes:
 
-System prompt
-User message
-Tool definitions
-Tool results
-Knowledge base
-Model output tokens
+- System prompt
+- User message
+- Tool definitions
+- Tool results
+- Knowledge base
+- Model output tokens
 
 All together must fit. Anthropic explicitly notes that everything counts toward the context window, including system prompts, messages, documents, tools, and generated output.
 
@@ -23,23 +25,21 @@ So if the question says it already fits comfortably, the exam expects you to ass
 
 Therefore:
 
-✅ Load the KB directly
+- ✅ Load the KB directly
+- ✅ Use prompt caching
+- ✅ Don't build RAG yet
 
-✅ Use prompt caching
-
-✅ Don't build RAG yet
-
-What if we're getting close to the limit?
+## What if we're getting close to the limit?
 
 This is where architects need to think differently from exam candidates.
 
 Suppose:
 
-KB = 180K tokens
-System prompt = 15K
-Tool schemas = 30K
-Conversation history = 20K
-Desired output = 5K
+- KB = 180K tokens
+- System prompt = 15K
+- Tool schemas = 30K
+- Conversation history = 20K
+- Desired output = 5K
 
 Total = 250K+
 
@@ -49,107 +49,77 @@ In that case, I would start questioning whether full-context loading remains the
 
 The architecture decision becomes:
 
-Option 1: Reduce Context
+### Option 1: Reduce context
 
-Can we shrink:
+Can we shrink tool definitions, system prompt, or message history using context engineering techniques? Anthropic emphasizes curating context, not merely maximizing it.
 
-Tool definitions
-System prompt
-Message history
-
-using context engineering techniques? Anthropic emphasizes curating context, not merely maximizing it.
-
-Option 2: Partial Retrieval
+### Option 2: Partial retrieval
 
 Instead of sending all 180K tokens each request:
 
-Store KB externally
-Retrieve only relevant sections
-Add retrieved content to context
+- Store KB externally
+- Retrieve only relevant sections
+- Add retrieved content to context
 
 This is classic RAG. Anthropic recommends retrieval approaches when corpora become too large to fit conveniently in context.
 
-Option 3: Hybrid Approach
+### Option 3: Hybrid approach
 
 A pattern I often recommend:
 
-Cache stable material
+- Cache stable material
+  - System instructions
+  - Policies
+  - Frequently referenced docs
 
-System instructions
-Policies
-Frequently referenced docs
-
-Retrieve dynamic material
-
-Large KB sections
-User-specific records
-Frequently changing content
+- Retrieve dynamic material
+  - Large KB sections
+  - User-specific records
+  - Frequently changing content
 
 This gives a balance between simplicity and scalability. Prompt caching is specifically designed to make large reusable context economical.
 
-How CCAR-P Usually Tests This
+## How CCAR-P usually tests this
 
 There are two distinct scenarios:
 
-Scenario A
+### Scenario A
 
 Knowledge base fits in context.
 
 Correct thinking:
 
-Context + Prompt Caching
+- Context + Prompt Caching
+- No RAG.
 
-No RAG.
-
-Scenario B
+### Scenario B
 
 Knowledge base is large, growing, or approaching context limits.
 
 Correct thinking:
 
-RAG / Contextual Retrieval
-
-Possibly:
-
-Contextual Embeddings
-Contextual BM25
-Reranking
+- RAG / Contextual Retrieval
+- Possibly: Contextual Embeddings, Contextual BM25, Reranking
 
 depending on retrieval quality requirements.
 
-Exam Mental Trigger
+## Exam mental trigger
 
 When reading a question, ask:
 
-Question 1
+1. "Does everything fit comfortably in context?"
+   - If yes → Prefer direct context + caching.
+2. "Am I close to the limit or likely to exceed it?"
+   - If yes → Start considering retrieval.
+3. "Is retrieval quality becoming problematic?"
+   - If yes → Consider Contextual Retrieval and reranking.
 
-"Does everything fit comfortably in context?"
-
-If yes:
-
-➡️ Prefer direct context + caching.
-
-Question 2
-
-"Am I close to the limit or likely to exceed it?"
-
-If yes:
-
-➡️ Start considering retrieval.
-
-Question 3
-
-"Is retrieval quality becoming problematic?"
-
-If yes:
-
-➡️ Consider Contextual Retrieval and reranking.
-
-The Architecture Hierarchy
+## The architecture hierarchy
 
 A useful CCAR-P decision ladder:
 
 Can the whole corpus fit comfortably?
+
             |
            Yes
             |
@@ -163,10 +133,8 @@ Can the whole corpus fit comfortably?
             |
            Yes
             |
- Contextual Retrieval
- + Reranking
-
+ Contextual Retrieval + Reranking
 
 This decision framework aligns closely with Anthropic's guidance: start with the simplest approach that works, and only add retrieval complexity when context size or retrieval requirements justify it.
 
-So for the original exam question, the phrase**"fits comfortably within the context window"** is actually the clue telling you not to worry about system prompts, tools, and conversation history. If the question instead said**"nearly fills the context window","approaching token limits", or"expected to grow significantly"**, then the answer would likely shift away from direct context loading and toward retrieval.
+So for the original exam question, the phrase **"fits comfortably within the context window"** is the clue telling you not to worry about system prompts, tools, and conversation history.
