@@ -1,12 +1,6 @@
-Yes. In fact, I think you're running into a common CCAR-P challenge:
+# The Big Picture: Why Evaluations Exist
 
-You're trying to memorize answers to eval questions when you really need a mental framework for experimental design and measurement.
-
-Once you understand the underlying concepts, 80% of these questions become easy because they're all variations of the same themes.
-
-The Big Picture: Why Evaluations Exist
-
-Every evaluation tries to answer one business question:
+## Every evaluation tries to answer one business question:
 
 Business Question	Evaluation QuestionIs model B better?	Superiority
 Is model B good enough?	Non-Inferiority
@@ -21,7 +15,6 @@ Anthropic increasingly treats evals as experiments rather than leaderboards. The
 
 Level 1: Learn the Core Vocabulary
 
-These are the concepts I would absolutely master.
 
 Metric
 
@@ -93,8 +86,6 @@ Correct / Incorrect
 Anthropic describes evals as experiments with tasks, trials, and grading logic.
 
 Level 2: Understand Uncertainty
-
-This is where most people struggle.
 
 Why Raw Scores Are Not Enough
 
@@ -233,8 +224,6 @@ Good enough
 Acceptable degradation
 Within tolerance
 No more than X worse
-
-This is the question you posted.
 
 3. Equivalence
 
@@ -482,4 +471,4 @@ Tier 3 (Advanced)
  ✅ Variance Reduction
  ✅ Paired vs Unpaired Comparisons
 
-My recommendation: spend the next few days mastering Confidence Intervals, Statistical Significance, Superiority, Non-Inferiority, and Equivalence as a single bundle. These concepts are deeply connected and appear repeatedly in CCAR-P-style evaluation questions. Once they click, many of the "which experiment design should we use?" questions become almost automatic.
+
