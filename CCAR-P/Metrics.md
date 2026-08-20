@@ -373,6 +373,4 @@ For every eval question, ask these **5 questions:**
 
 ---
 
-### My Recommendation
 
-Spend the next few days mastering **Confidence Intervals**, **Statistical Significance**, **Superiority**, **Non-Inferiority**, and **Equivalence** as a single bundle. These concepts are deeply interconnected.
