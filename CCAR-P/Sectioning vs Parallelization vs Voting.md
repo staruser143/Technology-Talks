@@ -1,6 +1,3 @@
-This is one of the most important workflow distinctions for CCAR-P. Many candidates memorize definitions but struggle to recognize them in scenarios.
-
-A simple way to think about it:
 
 Sectioning = We know how to split the work before we start
 Orchestrator-Workers = We don't know how to split the work until we see the request
@@ -364,7 +361,7 @@ Then I'll choose the best one.
 
 Multiple answers to the same question.
 
-If you can answer these two questions, you'll identify the pattern correctly almost every time:
+If we can answer these two questions, we'll identify the pattern correctly almost every time:
 
 Are the subtasks known before execution?
 
