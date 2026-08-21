@@ -55,6 +55,8 @@ The developer describes:
 
 Architectural character: Neuro SAN sits toward the declarative/adaptive end of the spectrum — attractive when exact execution paths cannot be fully designed in advance. The tradeoff is decreased predictability unless guarded by outer validation and budget/guardrail controls.
 
+Deterministic control                         Adaptive delegation
+LangGraph -------- CrewAI Flows -------- CrewAI Crews -------- Neuro SAN
 
 ### CrewAI — Organizational metaphor (Crews, Tasks, Flows)
 
