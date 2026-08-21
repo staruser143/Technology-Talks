@@ -1,376 +1,191 @@
+# Sectioning vs Parallelization (Voting) vs Orchestrator-Workers
 
-Sectioning = We know how to split the work before we start
-Orchestrator-Workers = We don't know how to split the work until we see the request
-Voting = We ask multiple workers the same question and compare answers
-Scenario 1: Analyzing a 500-page Annual Report
-Sectioning ✅
-Workflow
-500-page report
+This is one of the most important workflow distinctions for CCAR-P. Many candidates memorize definitions but struggle to recognize them in scenarios. This document gives a quick mental model, examples, and a cheat-sheet to identify the right pattern.
 
-Page 1-125   -> Worker 1
-Page 126-250 -> Worker 2
-Page 251-375 -> Worker 3
-Page 376-500 -> Worker 4
+## Core definitions
 
-Combine summaries
+- **Sectioning** — We know how to split the work before we start.
+- **Orchestrator-Workers** — We don't know how to split the work until we see the request (an LLM/orchestrator decides what analyses are needed).
+- **Voting (Parallelization through voting)** — We ask multiple workers the same question and compare answers to reduce reasoning errors.
 
-Why?
+---
 
-Before execution, you already know how to split the work.
+## Scenarios
 
-The decomposition is fixed and predictable.
+### Scenario 1 — Analyzing a 500-page Annual Report
+- Pattern: Sectioning ✅
 
-Mental Model
-
-"Divide and conquer."
-
-Orchestrator-Workers ❌
-
-Usually overkill.
-
-You don't need an AI to decide:
-
-"Should I analyze page 1-125?"
-
-You already know the subtasks.
-
-Voting ❌
-
-Not the goal.
-
-You're splitting the document, not asking multiple opinions on the same content.
-
-Scenario 2: Complex Customer Complaint Investigation
-
-Complaint:
-
-"Your company overcharged me, exposed my data, and cancelled my account."
-
-Orchestrator-Workers ✅
-Workflow
-Complaint
-    ↓
-Orchestrator
-    ↓
-Determines needed experts
-
-Billing Worker
-Security Worker
-Compliance Worker
-Customer Service Worker
-
-Combine findings
+Workflow:
+- 500-page report
+- Page 1–125   → Worker 1
+- Page 126–250 → Worker 2
+- Page 251–375 → Worker 3
+- Page 376–500 → Worker 4
+- Combine summaries
 
 Why?
+- You already know how to split the work before execution.
+- The decomposition is fixed and predictable.
 
-The required investigations depend on the complaint.
+Mental model: "Divide and conquer."
 
-Some complaints need only billing.
+Orchestrator-Workers: ❌ Usually overkill — you don’t need an AI to decide predefined subtasks.
 
-Others need:
+Voting: ❌ Not appropriate — you’re not seeking multiple independent opinions on the same content; you’re partitioning it.
 
-Security
-Legal
-Fraud
-Compliance
+---
 
-You don't know upfront.
+### Scenario 2 — Complex Customer Complaint Investigation
+Complaint example: “Your company overcharged me, exposed my data, and cancelled my account.”
 
-This is exactly the type of use case Anthropic recommends for orchestrator-workers.
+- Pattern: Orchestrator-Workers ✅
 
-Sectioning ❌
-
-There may not be natural sections.
-
-The problem isn't:
-
-Part 1
-Part 2
-Part 3
-
-
-The problem is discovering what analyses are needed.
-
-Voting ❌
-
-You aren't looking for three opinions on one answer.
-
-You're looking for specialized investigations.
-
-Scenario 3: Legal Contract Review
-
-Contract contains:
-
-Payment Terms
-Liability
-Termination
-Data Privacy
-IP Rights
-
-Sectioning ✅
-Workflow
-Payment Terms -> Worker 1
-Liability -> Worker 2
-Privacy -> Worker 3
-IP Rights -> Worker 4
+Workflow:
+- Complaint → Orchestrator → determines needed experts
+  - Billing Worker
+  - Security Worker
+  - Compliance Worker
+  - Customer Service Worker
+- Combine findings
 
 Why?
+- The investigations required depend on the complaint; some complaints need only billing, others need security, legal, fraud, compliance, etc.
+- You don't know the necessary subtasks upfront — an orchestrator decides them.
 
-The sections already exist.
+Sectioning: ❌ There may not be natural sections.
 
-You know them before execution.
+Voting: ❌ You want specialized analysis, not multiple opinions on the same question.
 
-Orchestrator-Workers 🤔
+---
 
-Possible, but unnecessary.
+### Scenario 3 — Legal Contract Review
+Contract contains: Payment Terms, Liability, Termination, Data Privacy, IP Rights
 
-Remember Anthropic's principle:
+- Pattern: Sectioning ✅
 
-Use the simplest workflow that works.
-
-Since the decomposition is obvious, sectioning is simpler.
-
-Scenario 4: Root Cause Analysis of a Production Outage
-
-Incident:
-
-Application down
-Revenue impacted
-Cause unknown
-
-Orchestrator-Workers ✅
-Workflow
-Incident
-   ↓
-Orchestrator
-
-Creates:
-- Infrastructure analysis
-- Application analysis
-- Network analysis
-- Database analysis
-
-Workers execute
+Workflow:
+- Payment Terms → Worker 1
+- Liability → Worker 2
+- Privacy → Worker 3
+- IP Rights → Worker 4
 
 Why?
+- Sections already exist and are known before execution, so sectioning is simplest.
 
-Every outage is different.
+Orchestrator-Workers: 🤔 Possible but unnecessary — prefer the simplest workflow that works.
 
-Possible causes:
+---
 
-DNS
-Kafka
-Database
-IAM
-Network
-Code deployment
+### Scenario 4 — Root Cause Analysis of a Production Outage
+Incident: Application down, revenue impacted, cause unknown
 
-You don't know beforehand.
+- Pattern: Orchestrator-Workers ✅
 
-Perfect orchestrator-workers scenario.
-
-Sectioning ❌
-
-No predefined work breakdown exists.
-
-Scenario 5: Evaluating a Difficult Math Problem
-
-Question:
-
-Solve a difficult optimization problem.
-
-Voting ✅
-Workflow
-Problem
-   ↓
-
-Worker A solves
-Worker B solves
-Worker C solves
-
-Compare answers
-Choose consensus
+Workflow:
+- Incident → Orchestrator → creates tasks such as:
+  - Infrastructure analysis
+  - Application analysis
+  - Network analysis
+  - Database analysis
+- Workers execute and report
 
 Why?
+- Every outage is different; causes (DNS, Kafka, DB, IAM, network, deployment) vary and aren’t known beforehand.
 
-The objective is to reduce reasoning errors.
+Sectioning: ❌ No predefined breakdown exists.
 
-Multiple independent attempts often outperform a single answer.
+---
 
-Anthropic refers to this as parallelization through voting.
+### Scenario 5 — Evaluating a Difficult Math Problem
+Question: Solve a difficult optimization problem
 
-Sectioning ❌
+- Pattern: Voting ✅
 
-There aren't natural sections.
+Workflow:
+- Problem → multiple independent workers (A, B, C) solve it → compare answers → choose consensus
 
-Orchestrator-Workers ❌
+Why?
+- Goal is to reduce reasoning errors; multiple independent attempts often outperform a single answer.
 
-You don't need task planning.
+Sectioning: ❌ No natural sections.
+Orchestrator-Workers: ❌ Task planning isn’t needed — you need multiple independent attempts.
 
-You need multiple attempts at the same task.
+---
 
-Scenario 6: Resume Screening
+### Scenario 6 — Resume Screening
+100 resumes
 
-100 resumes.
+- Pattern: Sectioning ✅
 
-Sectioning ✅
-Resume 1-25  -> Worker 1
-Resume 26-50 -> Worker 2
-Resume 51-75 -> Worker 3
-Resume 76-100-> Worker 4
+Workflow:
+- Resume 1–25  → Worker 1
+- Resume 26–50 → Worker 2
+- Resume 51–75 → Worker 3
+- Resume 76–100 → Worker 4
 
+Why?
+- Known workload division and predictable decomposition.
 
-Known workload division.
+---
 
-Scenario 7: Merger & Acquisition Due Diligence
+### Scenario 7 — Mergers & Acquisitions Due Diligence
+Company data contains: financial statements, cybersecurity reports, regulatory risks, HR risks, pending lawsuits
 
-Company data contains:
+- Pattern: Orchestrator-Workers ✅
 
-Financial statements
-Cybersecurity reports
-Regulatory risks
-HR risks
-Pending lawsuits
-Orchestrator-Workers ✅
-Workflow
-Target company
-      ↓
-Orchestrator
+Workflow:
+- Target company → Orchestrator decides required analyses:
+  - Finance analysis
+  - Security review
+  - Legal review
+  - HR review
+  - Tax review (if needed)
 
-Decides:
-- Finance analysis
-- Security review
-- Legal review
-- HR review
+Why?
+- Subtasks emerge from the input; some acquisitions need only Finance + Legal, others need Finance + Security + Legal + HR + Tax.
 
-Workers execute
+---
 
+### Scenario 8 — Factual Question Answering for High Accuracy
+Question: “What are the risks of adopting technology X?”
 
-Some acquisitions may need:
+- Pattern: Voting ✅
 
-Only Finance + Legal
+Workflow:
+- Question → Analyst A, B, C produce independent answers → consensus synthesis
 
+Why?
+- Reduce hallucinations, improve confidence, get multiple perspectives.
 
-Others may need:
+---
 
-Finance + Security + Legal + HR + Tax
+## Quick Recognition Cheat Sheet
 
+- Sectioning: Ask — “Could I draw the task breakdown before seeing the input?”
+  - Indicators: chapters, pages, contract sections, resume batches, log partitions
 
-Subtasks emerge from the input.
+- Orchestrator-Workers: Ask — “Do I need an LLM to figure out what analyses should exist?”
+  - Indicators: incident investigation, due diligence, research projects, customer complaints, business strategy reviews
 
-Scenario 8: Factual Question Answering for High Accuracy
+- Voting: Ask — “Do multiple workers work on the SAME task?”
+  - Indicators: mathematical reasoning, fact checking, risk assessment, judge/evaluator patterns, confidence improvement
 
-Question:
+---
 
-"What are the risks of adopting technology X?"
+## Ultimate CCAR-P Memory Trick (CEO analogy)
+- Sectioning: CEO says: “You do Finance. You do Marketing. You do HR.” — work is predefined.
+- Orchestrator-Workers: CEO says: “Let me first understand the problem, then I’ll decide which teams should be involved.” — dynamic decomposition.
+- Voting: CEO says: “Three consultants, give me your independent recommendation. Then I’ll choose the best one.” — multiple answers to the same question.
 
-Voting ✅
-Question
-   ↓
+If you can answer these two questions, you'll identify the pattern correctly almost every time:
+1. Are the subtasks known before execution?
+   - Yes → Sectioning
+2. Are multiple workers solving the same problem?
+   - Yes → Voting
 
-Analyst A answer
-Analyst B answer
-Analyst C answer
+Otherwise, ask: Is an LLM deciding which subtasks should exist?
+- Yes → Orchestrator-Workers
 
-Consensus synthesis
+---
 
-
-Goal:
-
-Reduce hallucinations
-Improve confidence
-Get multiple perspectives
-Quick Recognition Cheat Sheet
-Sectioning
-
-Ask:
-
-"Could I draw the task breakdown before seeing the input?"
-
-Examples:
-
-✅ Chapters
- ✅ Pages
- ✅ Contract sections
- ✅ Resume batches
- ✅ Log partitions
-
-Orchestrator-Workers
-
-Ask:
-
-"Do I need an LLM to figure out what analyses should exist?"
-
-Examples:
-
-✅ Incident investigation
- ✅ Due diligence
- ✅ Research projects
- ✅ Customer complaints
- ✅ Business strategy reviews
-
-Voting
-
-Ask:
-
-"Do multiple workers work on the SAME task?"
-
-Examples:
-
-✅ Mathematical reasoning
- ✅ Fact checking
- ✅ Risk assessment
- ✅ Judge/evaluator patterns
- ✅ Confidence improvement
-
-Ultimate CCAR-P Memory Trick
-
-Imagine a CEO.
-
-Sectioning
-
-CEO says:
-
-You do Finance.
-You do Marketing.
-You do HR.
-
-
-Work is predefined.
-
-Orchestrator-Workers
-
-CEO says:
-
-Let me first understand the problem.
-
-Then I'll decide which teams should be involved.
-
-
-Dynamic decomposition.
-
-Voting
-
-CEO says:
-
-Three consultants,
-give me your independent recommendation.
-
-Then I'll choose the best one.
-
-
-Multiple answers to the same question.
-
-If we can answer these two questions, we'll identify the pattern correctly almost every time:
-
-Are the subtasks known before execution?
-
-Yes → Sectioning
-
-Are multiple workers solving the same problem?
-
-Yes → Voting
-
-Otherwise, is an LLM deciding which subtasks should exist?
-
-Yes → Orchestrator-Workers.
+*Formatted for clarity and quick scanning.*
