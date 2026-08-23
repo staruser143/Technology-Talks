@@ -14,6 +14,35 @@ Value comes from the constraint, not the most visible step. Drafting saves minut
 
 Why not the others: Delivering the drafter first optimises a step that already takes six minutes and defers the only change that moves the outcome. Doing both at once splits a first release across one high-value and one low-value target. A coding suggestion panel improves what enters the queue without changing the queue itself, so the three days remain.
 
+I'm studying for the Anthropic Claude Certified Architect – Professional (CCAR-P) certification. I got the following question on a mock exam.
+
+<question>
+ A production assistant's quality has degraded intermittently across three weeks. Prompt, model version, and application code are unchanged. Which TWO data sources are most useful for diagnosis?
+</question>
+
+
+Possible Answers:
+A.The billing dashboard broken down by model and by workload
+
+B.End-to-end traces of affected sessions, with context and tool calls
+Total requests served per day across the same three-week window
+
+C. Uptime figures for the model endpoint across the affected period
+
+D.Input analysis for new query types, formats, or languages arriving
+
+Explain:
+1. Why the correct answer is correct
+2. Why the other answers are incorrect
+3. Which Anthropic concept or service I misunderstand
+4. A simple mental model to remember the difference
+5. A similar example question. Do not give the answer yet.
+
+Search online for official Anthropic documentation and list the relevant sources you used. Be concise in your response.
+
+
+
+
 2
 
 A bank's trade-surveillance assistant runs a fixed pipeline: ingest alert, enrich with counterparty data, classify, route. Compliance now needs to reconstruct, months later, exactly which data drove each classification. What should the design add?
@@ -36,6 +65,7 @@ Why not the others: Model version and prompt hash pin the configuration but not 
 
 3
 One prompt asks Claude to read a 90-page tender, test it against 55 procurement standards, score the fit, and draft a bid recommendation. Standards get skipped and the scoring reasoning is thin. The wording has been revised three times. What next?
+
 A
 Move to the most capable model available and raise the output token cap
 B
