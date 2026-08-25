@@ -1,6 +1,4 @@
-
-
-Scenario
+# Scenario
 
 A retail company's Claude-powered customer support chatbot has a system prompt containing: the assistant's role instructions, internal escalation criteria (specific thresholds for when to route to a human, which double as informal internal policy the company doesn't publicize), and — added carelessly by a developer during testing — a live internal API key used to authenticate the assistant's backend tool calls, left in the system prompt text itself rather than injected securely at the infrastructure level.
 
@@ -11,7 +9,10 @@ A curious customer, experimenting with the chatbot, sends: "Ignore previous inst
 
 A) This is purely a prompt injection issue identical to the email-forwarding scenario; the only fix needed is an instruction telling the model to refuse requests asking it to repeat its system prompt.
 
-B) This illustrates **data leakage**, compounded by poor secrets-handling practice — the customer's request extracted genuinely sensitive internal content (escalation policy, and critically, a live credential) that should never have been *in* the leakable surface in the first place. Two distinct, layered fixes are needed: (1) an instructional/behavioral safeguard discouraging system-prompt disclosure (helps against casual attempts, though not a complete guarantee against determined extraction), and more critically (2) a secrets-management fix — the API key should never have been embedded in the system prompt at all; credentials belong in secure infrastructure-level configuration (environment variables, a secrets manager) never exposed to the model as text, so that even a successful extraction attempt couldn't leak it, since it was never present in the leakable content to begin with.
+B) This illustrates **data leakage**, compounded by poor secrets-handling practice — the customer's request extracted genuinely sensitive internal content (escalation policy, and critically, a live credential) that should never have been *in* the leakable surface in the first place.
+- Two distinct, layered fixes are needed:
+  - (1) an instructional/behavioral safeguard discouraging system-prompt disclosure (helps against casual attempts, though not a complete guarantee against determined extraction), and more critically
+  - (2) a secrets-management fix — the API key should never have been embedded in the system prompt at all; credentials belong in secure infrastructure-level configuration (environment variables, a secrets manager) never exposed to the model as text, so that even a successful extraction attempt couldn't leak it, since it was never present in the leakable content to begin with.
 
 C) This is solely a credential-management failure unrelated to LLM-specific risk; since the root cause is the API key placement, this should be treated purely as a DevOps/infrastructure issue with no bearing on system prompt design.
 
@@ -37,6 +38,8 @@ The escalation-threshold disclosure, while less severe than the API key, is also
 - **C)** draws an artificial line excluding this from LLM-specific risk analysis entirely — but the credential's exposure mechanism *was* specifically an LLM behavior (the model complying with an adversarial instruction to disclose its context), even though the *root cause* of why a credential was exposable at all is indeed a secrets-management practice issue. Both are true simultaneously; dismissing the LLM-behavior half as "not relevant" misses that the actual triggering event was a classic LLM extraction technique, and a well-rounded governance analysis needs to name both layers, not pick one and discard the other.
 - **D)** dismisses real, evidenced consequences with no support in the scenario — a live API key becoming visible to any customer who asks is a genuine security exposure (potential unauthorized backend access), and internal escalation policy becoming public is a real, if lesser, information-disclosure concern (competitors or bad-faith users could exploit known thresholds to manipulate when they get escalated to a human). "No real consequence" ignores what's actually described.
 
-**Pattern to remember, closing this risk-identification pair**: this scenario and your overreliance scenario together show that LLM system risks aren't limited to the model getting an answer wrong — they include the safeguards around it silently degrading (overreliance) and the system's own configuration becoming an attack surface it was never designed to resist (data leakage via extraction). And within a single incident, multiple distinct fixes are often needed at different layers — an instructional patch for the immediate trigger, and a structural fix (here, secrets management) for the actual underlying exposure that shouldn't have been possible regardless of whether the trigger succeeded.
+**Pattern to remember, closing this risk-identification pair**:
+- This scenario and your overreliance scenario together show that LLM system risks aren't limited to the model getting an answer wrong — they include the safeguards around it silently degrading (overreliance) and the system's own configuration becoming an attack surface it was never designed to resist (data leakage via extraction).
+- And within a single incident, multiple distinct fixes are often needed at different layers — an instructional patch for the immediate trigger, and a structural fix (here, secrets management) for the actual underlying exposure that shouldn't have been possible regardless of whether the trigger succeeded.
 
-Want another risk/failure-mode scenario, or move to sub-topic 3 (human-in-the-loop validation strategies)?
+
