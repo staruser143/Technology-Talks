@@ -1,3 +1,7 @@
+Scenario
+
+An events-planning company builds a Claude-powered assistant that helps users plan corporate events in a single conversational flow: it suggests creative venue themes and activity ideas (where they want real variety across suggestions), and in the same response, calculates a detailed multi-item budget breakdown (catering, venue, AV equipment, staffing) that needs to add up correctly. An engineer configures a single API call with temperature: 0.9 (for creative variety in the suggestions) and also enables extended thinking with a token budget (for careful budget math) — and the request fails.
+
 **Question**: Why does this fails, and what's the correct way to design this feature?
 
 A) The request fails due to an unrelated technical bug; the fix is simply to retry the request, since temperature and extended thinking should generally be compatible when both are genuinely needed for different parts of the same response.
