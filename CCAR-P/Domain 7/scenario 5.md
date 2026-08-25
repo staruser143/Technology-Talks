@@ -1,3 +1,12 @@
+
+Scenario
+
+An engineering team manages two different Claude-powered agents:
+
+Agent A: A customer-support agent with 6 tools total — look up order, check shipping status, process refund, update account, check inventory, send email — all used fairly regularly across support conversations. An engineer proposes implementing Tool Search with deferred loading for this agent, reasoning "it's best practice for reducing context cost, so we should apply it everywhere."
+
+Agent B: A company-wide "ask anything" internal assistant connected to 12 different MCP servers (Jira, Slack, Confluence, GitHub, a CRM, an analytics platform, and six others), collectively exposing over 90 tools. Currently, all 90+ tool schemas load upfront on every request, regardless of which 2-3 tools a given question actually needs.
+
 **Question**: For which agent(s) is implementing Tool Search with deferred loading actually the right call?
 
 A) Both agents should implement Tool Search, since it's a best practice that should be applied universally regardless of tool count, per the engineer's reasoning for Agent A.
