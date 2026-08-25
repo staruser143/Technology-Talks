@@ -1,3 +1,15 @@
+
+Scenario
+
+A marketing content company runs two separate Claude-powered features:
+
+Feature 1: A "campaign tagline generator" — given a product description, it produces five different creative tagline options for the marketing team to choose from. The team specifically wants meaningful variety across the five options each time it's run, even for the same product description — they don't want five near-identical taglines.
+
+Feature 2: A multi-step budget-allocation tool — given a marketing budget and a set of channel performance metrics, it needs to work through several dependent calculations (cost-per-acquisition by channel, projected ROI, optimal allocation split) to arrive at a final recommended budget split. The team has noticed occasional arithmetic errors when the calculation involves many channels.
+
+An engineer proposes: for Feature 1, increase the temperature to encourage variety; for Feature 2, also increase the temperature, reasoning that "more randomness might help the model explore different calculation paths and catch errors it would otherwise lock into."
+
+
 **Question**: Is this engineer's reasoning correct for both features?
 
 A) Yes — temperature is a general-purpose quality lever, and increasing it should improve outcomes for both variety-seeking and accuracy-seeking tasks, since more randomness generally gives the model more opportunities to find a good answer.
