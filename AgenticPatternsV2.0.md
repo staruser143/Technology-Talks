@@ -2262,4 +2262,5 @@ Production Agent = Controlled Reasoning Loop
                  + Cost Controls
 ```
 
-For enterprise systems, the best architecture is usually not a fully autonomous agent. It is a **hybrid system** where deterministic workflows provide control, and agentic reasoning is applied selectively where uncertainty, language understanding, planning, or tool selection is required.
+- For enterprise systems, the best architecture is usually not a fully autonomous agent.
+- A **hybrid system** where deterministic workflows provide control, and agentic reasoning is applied selectively where uncertainty, language understanding, planning, or tool selection is required would be the right fit.
