@@ -10,7 +10,7 @@ This guide organizes agentic AI patterns from a practical enterprise architectur
 
 ## 1. Executive Summary
 
-A practical agentic AI system is not simply an LLM with tools. It is a controlled decision-and-action loop with explicit goals, available tools, state, memory, safety controls, observability, and evaluation.
+A practical agentic AI system is not simply an LLM with tools. It is a **controlled decision-and-action loop with explicit goals, available tools, state, memory, safety controls, observability, and evaluation**.
 
 A useful way to think about it:
 
