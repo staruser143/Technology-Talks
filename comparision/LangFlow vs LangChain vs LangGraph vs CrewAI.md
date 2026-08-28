@@ -268,7 +268,7 @@ Add LangFlow when business users need to visualize flows, rapid prototyping is i
 ---
 
 ## Rule of Thumb
-- 80% of enterprise workloads: LangChain + LangGraph
-- Autonomous agent teams: CrewAI + LangGraph
-- PoCs and workshops: LangFlow
-- Complex agent networks: LangGraph as the orchestration backbone, optionally embedding CrewAI crews as worker nodes — a hybrid model provides governance, observability, and agent autonomy.
+- 80% of enterprise workloads: **LangChain + LangGraph**
+- Autonomous agent teams:** CrewAI + LangGraph**
+- PoCs and workshops: **LangFlow**
+- Complex agent networks: **LangGraph as the orchestration backbone, optionally embedding CrewAI crews as worker nodes — a hybrid model provides governance, observability, and agent autonomy**.
