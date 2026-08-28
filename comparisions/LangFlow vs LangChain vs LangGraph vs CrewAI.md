@@ -2,10 +2,10 @@
 
 For an architect, the simplest way to think about these tools is:
 
-- LangChain = AI application framework (building blocks)
-- LangGraph = agent orchestration engine (stateful workflows)
-- LangFlow = visual designer for LangChain/LangGraph flows
-- CrewAI = opinionated multi-agent collaboration framework
+- **LangChain** =  AI application framework (building blocks)
+- **LangGraph** =  Agent orchestration engine (stateful workflows)
+- **LangFlow**  =  Visual designer for LangChain/LangGraph flows
+- **CrewAI**    =  Opinionated multi-agent collaboration framework
 
 They're not really direct competitors — in many architectures they are complementary.
 
@@ -62,8 +62,9 @@ It is essentially the "Spring Boot" of LLM applications.
 
 ### Simple example (conceptual)
 
+```
 User → Retriever → LLM → Answer
-
+```
 ---
 
 ## 2. LangGraph
@@ -78,7 +79,7 @@ LangGraph is a low-level orchestration framework designed for:
 
 LangChain agents themselves are built on top of LangGraph.
 
-Think of LangGraph as: "Workflow orchestration engine for AI agents".
+Think of LangGraph as: **"Workflow orchestration engine for AI agents".**
 
 ### Strengths
 - ✅ Precise control over execution
@@ -102,7 +103,7 @@ Think of LangGraph as: "Workflow orchestration engine for AI agents".
 - Long-running business processes
 
 ### Example (conceptual)
-
+```
 START
   ↓
 Analyze Request
@@ -113,9 +114,10 @@ Decision Node
   └── Human Approval
          ↓
       Finish
+```
 
 ### Architect view
-If your agent needs persistence, retries, approvals, memory, or orchestration — use LangGraph.
+If the agent needs persistence, retries, approvals, memory, or orchestration — use LangGraph.
 
 ---
 
@@ -146,10 +148,10 @@ Think: LangFlow = "Node-RED for GenAI".
 - Rapid experimentation
 
 ### Example (visual)
-
+```
 Prompt → Retriever → LLM → Output
-
-Use LangFlow for rapid design without writing much code.
+```
+**Use LangFlow for rapid design without writing much code.**
 
 ---
 
@@ -158,10 +160,12 @@ Use LangFlow for rapid design without writing much code.
 ### What it is
 CrewAI is focused on autonomous collaboration between specialized agents with roles, goals, memory, delegation, and teamwork.
 
-Think: "Digital employees working together".
+Think: **"Digital employees working together".**
 
 ### Example (conceptual)
+```
 Research Agent → Architect Agent → Reviewer Agent → Writer Agent
+```
 
 ### Strengths
 - ✅ Native multi-agent design
@@ -206,8 +210,9 @@ Research Agent → Architect Agent → Reviewer Agent → Writer Agent
 Absolutely — this is the most common enterprise pattern.
 
 ### Pattern 1: LangFlow + LangChain
+```
 LangFlow → generates → LangChain pipeline
-
+```
 Use LangFlow to design quickly, and deploy LangChain underneath.
 
 ### Pattern 2: LangChain + LangGraph
@@ -215,7 +220,7 @@ LangChain provides prompts, tools, models, retrievers; LangGraph orchestrates ev
 
 ### Pattern 3: CrewAI + LangChain
 CrewAI handles collaboration while LangChain provides RAG and tools for individual agents.
-
+```
 Research Agent
       │
       ├── LangChain RAG
@@ -223,10 +228,11 @@ Writer Agent
       │
       ├── LangChain Tools
 Reviewer Agent
-
+```
 ### Pattern 4: CrewAI + LangGraph
 Combine LangGraph governance and CrewAI collaboration for powerful, governed agent teams.
 
+```
 Claim Submitted
       ↓
 LangGraph
@@ -238,7 +244,7 @@ Financial Crew
 Human Approval
       ↓
 Settlement
-
+```
 This pattern gives governance, observability, and agent autonomy.
 
 ---
