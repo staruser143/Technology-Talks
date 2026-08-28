@@ -2114,7 +2114,7 @@ Prompt Caching + Model Routing + Parallel Tool Execution + Budget Pattern
 
 ## 75. Minimum Viable Agent
 
-If you are building your first agent, start with this pattern:
+If we are building our first agent, we should start with this pattern:
 
 ```text
 1. Define goal and constraints.
@@ -2178,7 +2178,7 @@ Good agentic systems usually follow these principles:
    - Agents need regression tests just like software.
 
 8. **Optimize for observability**
-   - If you cannot trace the agent's reasoning and actions, you cannot safely operate it.
+   - If we cannot trace the agent's reasoning and actions, we cannot safely operate it.
 
 9. **Separate reasoning from execution**
    - Let the agent propose actions, but let controlled systems validate and execute them.
