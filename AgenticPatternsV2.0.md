@@ -115,7 +115,8 @@ Continue, Complete, Escalate, or Fail
 
 ## 4. Workflow vs Agent Decision Framework
 
-Not every automation needs an agent. One of the most important architecture decisions is whether the problem needs deterministic workflow automation, an LLM assistant, or an agentic system.
+- Not every automation needs an agent.
+- One of the most important architecture decisions is whether the problem needs deterministic workflow automation, an LLM assistant, or an agentic system.
 
 | Situation | Prefer Workflow | Prefer Agent | Hybrid Approach |
 |---|---:|---:|---:|
@@ -132,11 +133,11 @@ Not every automation needs an agent. One of the most important architecture deci
 
 ### Decision Rule
 
-Use a **workflow** when the path is known.
+- Use a **workflow** when the path is known.
 
-Use an **agent** when the system must reason about what to do next.
+- Use an **agent** when the system must reason about what to do next.
 
-Use a **hybrid** when the overall business process is controlled, but certain steps require reasoning, tool selection, summarization, or exception handling.
+- Use a **hybrid** when the overall business process is controlled, but certain steps require reasoning, tool selection, summarization, or exception handling.
 
 ---
 
