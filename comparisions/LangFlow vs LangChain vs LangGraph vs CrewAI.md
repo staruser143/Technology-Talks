@@ -39,7 +39,7 @@ LangChain provides reusable components such as:
 - Memory
 - Agents
 
-It is essentially the "Spring Boot" of LLM applications.
+**It is essentially the "Spring Boot" of LLM applications.**
 
 ### Strengths
 - ✅ Huge ecosystem
@@ -126,7 +126,7 @@ If the agent needs persistence, retries, approvals, memory, or orchestration —
 ### What it is
 LangFlow provides a visual drag-and-drop interface for building AI flows and is built around LangChain concepts.
 
-Think: LangFlow = "Node-RED for GenAI".
+Think: **LangFlow = "Node-RED for GenAI".**
 
 ### Strengths
 - ✅ Very fast prototyping
