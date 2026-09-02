@@ -1,5 +1,3 @@
-Instead of memorizing AWS services, let's master the underlying GenAI architecture concepts first, then map them to AWS services. This will help both in the exam and in real-world architecture decisions.
-
 Domain 1
 Foundation Model Integration, Data Management, and Compliance (31%)
 
