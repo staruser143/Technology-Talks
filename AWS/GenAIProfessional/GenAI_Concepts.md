@@ -17,46 +17,132 @@ This is the largest domain in the exam (31%) and arguably the most important. AW
 ### How I suggest we learn it
 
 Don't study Domain 1 as AWS services. Study it as a single flow that maps a business problem to a production GenAI solution:
-
-Business Problem → Model Selection → Data Preparation → Embedding → Vector Store → Retrieval → Prompt Construction → Model Invocation → Governance & Compliance
-
+```
+Business Problem
+      ↓
+Model Selection
+      ↓
+Data Preparation
+      ↓
+Embedding
+     ↓
+Vector Store
+     ↓
+Retrieval
+     ↓
+Prompt Construction
+    ↓
+Model Invocation
+    ↓
+Governance & Compliance
+```
 This flow covers about 70–80% of Domain 1 exam patterns.
 
 ---
 
 ## Module 1 — Analyze Requirements and Design GenAI Solutions
 
-Many candidates lose marks here. Exam questions typically present a business need and ask for an architecture.
+This is where many candidates lose marks.
 
-First question to ask: What type of AI problem is this? (Not: which AWS service?)
+The exam often gives:
+```
+  A company wants to do X.
+
+  Which architecture should be chosen?
+
+```
+
+
+
+The first question is NEVER:
+
+```
+Which AWS service?
+```
+
+The first question is:
+```
+What type of AI problem is this?
+```
 
 Problem Type Classification:
 
 - Type 1 — Content Generation
   - Examples: marketing content, email creation, product descriptions, summaries
-  - Architecture: Prompt → FM → Generated content
-  - RAG not required
+  - Architecture:
+    ```
+     Prompt
+       ↓
+    FM
+       ↓
+    Generated content
+    ```
+  - NO RAG not required
 
 - Type 2 — Enterprise Knowledge Search
   - Examples: HR chatbot, policy assistant, compliance assistant, research assistant
-  - Architecture: User query → Embedding → Vector search → Relevant documents → Prompt → LLM
+  - Architecture:
+    ```
+    User query
+       ↓
+    Embedding
+       ↓
+    Vector search
+       ↓
+    Relevant documents
+      ↓
+    Prompt
+      ↓
+    LLM
+    ```
   - RAG required
 
 - Type 3 — Structured Decision Support
   - Examples: insurance underwriting, loan processing, claims processing
-  - Architecture: LLM + Business rules + Databases
-  - Note: Pure LLM is insufficient
+  - Architecture:
+  ```
+    LLM
+     +
+    Business rules
+     +
+    Databases
+  ```
+  Note: Pure LLM is insufficient
 
 - Type 4 — Agentic Systems
   - Examples: travel booking, IT support automation, multi-step workflows
-  - Architecture: Reasoning → Tool selection → Execute tool → Observe → Plan next action
-  - This is where agents are useful
+  - Architecture:
+
+  ```
+    Reasoning
+        ↓
+    Tool selection
+        ↓
+    Execute tool
+        ↓
+    Observe
+        ↓
+    Plan next action
+  
+```
+This is where agents are useful
 
 **Exam Trap #1**
 
-Question: Company wants answers grounded in internal documents. Options: Prompt engineering, larger model, fine-tuning, RAG.
-
-Correct answer: ✅ RAG — the issue is knowledge access, not model intelligence.
+Question:
+```
+Company wants answers grounded in internal documents.
+Options:
+- Prompt engineering
+- larger model
+- fine-tuning
+- RAG
+```
+Correct answer:
+ ✅ RAG
+Reason:
+ - The issue is knowledge access, not model intelligence.
+ - This is one of the most common exam patterns
 
 ---
 
@@ -68,25 +154,60 @@ When to use larger models:
 - Agent workflows
 - Long context understanding
 
+Examples:
+- Claude Sonnet
+- Claude Opus
+
 When to use smaller models:
 - Lower cost
 - Lower latency
 - High request volume
 
-Always ask tradeoff questions:
-- Accuracy?
-- Cost?
-- Latency?
-- Throughput?
+Examples:
+- Simple Classification
+- Extraction
+- Routing
 
-Typical exam scenario: "A chatbot serves 5 million requests/day." The correct instinct is: use the smallest model that meets requirements (cost optimization matters).
+
+*Architect Rule*
+
+Always ask tradeoff questions:
+
+| Requirement | Priority |
+| ----------- | -------- |
+| Accuracy    | ?        |
+| Cost        | ?        |
+| Latency     | ?        |
+| Throughput  | ?        |
+
+Exam questions usually force a tradeoff.
+
+*Typical exam scenario*:
+ "A chatbot serves 5 million requests/day."
+
+Wrong instinct:
+```
+Use biggest model.
+```
+Correct instinct is:
+✅ use the smallest model that meets requirements (cost optimization matters).
+AWS consistently emphasizes cost optimization.
 
 ---
 
 ## Module 3 — Embeddings Mastery
 
 What is an embedding?
-- An embedding converts content into numeric vectors (e.g. "Car Insurance" → [0.12, 0.91, 0.77, ...]) that capture semantic meaning.
+- An embedding converts content into numeric vectors
+
+Example
+```
+ "Car Insurance"
+      ↓
+ [0.12, 0.91, 0.77, ...])
+```
+
+The vector captures semantic meaning.
 
 Why embeddings?
 - Enable semantic search (retrieve items by meaning, not keywords)
