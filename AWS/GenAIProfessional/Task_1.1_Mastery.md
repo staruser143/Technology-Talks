@@ -1,7 +1,3 @@
-Excellent approach.
-
-Given your CCAR-P background, we should not practice these as "AWS service questions." We should practice them as an Enterprise Architect reviewing solution options.
-
 The actual exam often presents:
 
 Business Problem → Constraints → Desired Outcome → Pick best GenAI architecture
@@ -605,4 +601,3 @@ For each scenario in the exam, train yourself to answer these four questions fir
 
 If you can classify the problem correctly, nearly every Task 1.1 question becomes much easier.
 
-Next, I would move to Task 1.1 Advanced Round, where we work through 15 architect-grade scenarios involving tradeoffs between RAG, Fine-Tuning, Agents, Prompt Engineering, and Traditional ML, because those are much closer to the difficulty level of the actual AWS Professional exam.
