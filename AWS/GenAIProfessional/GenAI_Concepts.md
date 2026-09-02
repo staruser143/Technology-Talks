@@ -1,529 +1,214 @@
-Domain 1
-Foundation Model Integration, Data Management, and Compliance (31%)
+# GenAI Concepts
+
+Instead of memorizing AWS services, let's master the underlying GenAI architecture concepts first, then map them to AWS services. This will help both in the exam and in real-world architecture decisions.
+
+---
+
+## Domain 1 — Foundation Model Integration, Data Management, and Compliance (31%)
 
 This is the largest domain in the exam (31%) and arguably the most important. AWS defines the following tasks in Domain 1:
 
-Analyze requirements and design GenAI solutions
-Select and configure Foundation Models (FMs)
-Implement data validation and processing pipelines
-Design and implement vector store solutions
-Design retrieval mechanisms for FM augmentation (RAG)
-How I Suggest We Learn It
+- Analyze requirements and design GenAI solutions
+- Select and configure Foundation Models (FMs)
+- Implement data validation and processing pipelines
+- Design and implement vector store solutions
+- Design retrieval mechanisms for FM augmentation (RAG)
 
-Don't study Domain 1 as AWS services.
+### How I suggest we learn it
 
-Study it as:
+Don't study Domain 1 as AWS services. Study it as a single flow that maps a business problem to a production GenAI solution:
 
-Business Problem
-      ↓
-Model Selection
-      ↓
-Data Preparation
-      ↓
-Embedding
-      ↓
-Vector Store
-      ↓
-Retrieval
-      ↓
-Prompt Construction
-      ↓
-Model Invocation
-      ↓
-Governance & Compliance
+Business Problem → Model Selection → Data Preparation → Embedding → Vector Store → Retrieval → Prompt Construction → Model Invocation → Governance & Compliance
 
+This flow covers about 70–80% of Domain 1 exam patterns.
 
-This single flow covers about 70-80% of Domain 1.
+---
 
-Module 1
-Analyze Requirements and Design GenAI Solutions
+## Module 1 — Analyze Requirements and Design GenAI Solutions
 
-This is where many candidates lose marks.
+Many candidates lose marks here. Exam questions typically present a business need and ask for an architecture.
 
-The exam often gives:
+First question to ask: What type of AI problem is this? (Not: which AWS service?)
 
-A company wants to do X.
+Problem Type Classification:
 
-Which architecture should be chosen?
+- Type 1 — Content Generation
+  - Examples: marketing content, email creation, product descriptions, summaries
+  - Architecture: Prompt → FM → Generated content
+  - RAG not required
 
-The first question is NEVER:
+- Type 2 — Enterprise Knowledge Search
+  - Examples: HR chatbot, policy assistant, compliance assistant, research assistant
+  - Architecture: User query → Embedding → Vector search → Relevant documents → Prompt → LLM
+  - RAG required
 
-Which AWS service?
+- Type 3 — Structured Decision Support
+  - Examples: insurance underwriting, loan processing, claims processing
+  - Architecture: LLM + Business rules + Databases
+  - Note: Pure LLM is insufficient
 
-The first question is:
+- Type 4 — Agentic Systems
+  - Examples: travel booking, IT support automation, multi-step workflows
+  - Architecture: Reasoning → Tool selection → Execute tool → Observe → Plan next action
+  - This is where agents are useful
 
-What type of AI problem is this?
+**Exam Trap #1**
 
-Problem Type Classification
-Type 1: Content Generation
+Question: Company wants answers grounded in internal documents. Options: Prompt engineering, larger model, fine-tuning, RAG.
 
-Examples:
+Correct answer: ✅ RAG — the issue is knowledge access, not model intelligence.
 
-Marketing content
-Email creation
-Product descriptions
-Summaries
+---
 
-Architecture:
+## Module 2 — Foundation Model Selection
 
-Prompt
-   ↓
-FM
-   ↓
-Generated Content
+When to use larger models:
+- Complex reasoning
+- Planning
+- Agent workflows
+- Long context understanding
 
+When to use smaller models:
+- Lower cost
+- Lower latency
+- High request volume
 
-No RAG needed.
+Always ask tradeoff questions:
+- Accuracy?
+- Cost?
+- Latency?
+- Throughput?
 
-Type 2: Enterprise Knowledge Search
+Typical exam scenario: "A chatbot serves 5 million requests/day." The correct instinct is: use the smallest model that meets requirements (cost optimization matters).
 
-Examples:
+---
 
-HR chatbot
-Policy assistant
-Compliance assistant
-Research assistant
+## Module 3 — Embeddings Mastery
 
-Architecture:
+What is an embedding?
+- An embedding converts content into numeric vectors (e.g. "Car Insurance" → [0.12, 0.91, 0.77, ...]) that capture semantic meaning.
 
-User Query
-      ↓
-Embedding
-      ↓
-Vector Search
-      ↓
-Relevant Documents
-      ↓
-Prompt
-      ↓
-LLM
+Why embeddings?
+- Enable semantic search (retrieve items by meaning, not keywords)
 
-
-RAG required.
-
-Type 3: Structured Decision Support
-
-Examples:
-
-Insurance underwriting
-Loan processing
-Claims processing
-
-Architecture:
-
-LLM
-+
-Business Rules
-+
-Databases
-
-
-Pure LLM is insufficient.
-
-Type 4: Agentic Systems
-
-Examples:
-
-Travel booking
-IT support automation
-Multi-step workflows
-
-Architecture:
-
-Reasoning
-    ↓
-Tool Selection
-    ↓
-Execute Tool
-    ↓
-Observe
-    ↓
-Plan Next Action
-
-
-This is where Agents come in.
-
-Exam Trap #1
-
-Question:
-
-Company wants answers grounded in internal documents.
-
-Options:
-
-Prompt Engineering
-Larger Model
-Fine-Tuning
-RAG
-
-Correct Answer:
-
-✅ RAG
-
-Reason:
-
-The issue is knowledge access, not model intelligence.
-
-This is one of the most common exam patterns.
-
-Module 2
-Foundation Model Selection
-
-AWS loves testing this.
-
-When To Use Larger Models
-
-Use when you need:
-
-Complex reasoning
-Planning
-Agent workflows
-Long context understanding
-
-Examples:
-
-Claude Sonnet
-Claude Opus
-When To Use Smaller Models
-
-Use when you need:
-
-Lower cost
-Lower latency
-High request volume
-
-Examples:
-
-Simple classification
-Extraction
-Routing
-Architect Rule
-
-Always ask:
-
-Requirement	PriorityAccuracy	?
-Cost	?
-Latency	?
-Throughput	?
-
-Exam questions usually force a tradeoff.
-
-Typical Scenario
-
-"A chatbot serves 5 million requests/day."
-
-Wrong instinct:
-
-Use biggest model.
-
-Correct instinct:
-
-✅ Smallest model meeting requirements.
-
-AWS consistently emphasizes cost optimization.
-
-Module 3
-Embeddings Mastery
-
-This topic appears everywhere.
-
-What Is An Embedding?
-
-An embedding converts content into vectors.
-
-Example:
-
-"Car Insurance"
-
-↓
-
-[0.12, 0.91, 0.77, ...]
-
-
-The vector captures semantic meaning.
-
-Why Do We Need Embeddings?
-
-Without embeddings:
-
-Keyword Search
-
-
-With embeddings:
-
-Semantic Search
-
-
-Example:
-
-Query:
-
-Vehicle Coverage
-
-Can still retrieve:
-
-Automobile Insurance
-
-because meanings are similar.
-
-Embedding Exam Rule
-
-Embeddings are used for:
-
-✅ Retrieval
-
-✅ Similarity Search
-
-✅ Recommendation
+Embedding exam rule — embeddings are used for:
+- ✅ Retrieval
+- ✅ Similarity search
+- ✅ Recommendation
 
 Not used for:
+- ❌ Text generation
+- ❌ Reasoning
+- ❌ Planning
 
-❌ Text Generation
+---
 
-❌ Reasoning
+## Module 4 — Vector Stores
 
-❌ Planning
+Why not use a relational DB for semantic search?
+- SQL databases are not optimized for nearest-neighbor/vector searches. Use vector databases instead.
 
-Module 4
-Vector Stores
+Core concepts:
+- Chunk: split documents into sections (e.g., 100-page policy → 500 chunks)
+- Embedding: convert each chunk to a vector
+- Index: accelerate nearest-neighbor searches (examples: HNSW, IVF)
 
-Another very important area.
+**Exam Trap #2**
 
-Why Not Use Relational DB?
+If retrieval quality is poor, common causes:
+- ✅ Chunking issue
+- ✅ Embedding issue
+- ✅ Retrieval configuration
 
-Suppose:
+Not necessarily: ❌ Need a larger LLM
 
-Query:
-"Coverage for electric vehicles"
+---
 
+## Module 5 — Retrieval-Augmented Generation (RAG)
 
-Need:
+Why RAG exists:
+- LLM knowledge is bounded by training cutoff
+- Without RAG: hallucinations, stale information, enterprise data unavailable
 
-Meaning-based search
+RAG flow: User query → Retrieve documents → Inject context → Generate answer
 
+When to use RAG:
+- Internal documents ✅
+- Frequently changing data ✅
+- Regulatory documents ✅
+- Company policies ✅
+- General knowledge only ❌
 
-SQL databases are not optimized for nearest-neighbor vector searches.
+RAG vs Fine-tuning:
+- RAG: adds knowledge from documents, dynamic, cheap, real-time updates
+- Fine-tuning: changes model behavior, static, expensive, retraining needed
 
-Vector databases are.
+Easy exam rule:
+- Need a model to know new facts? ✅ RAG
+- Need a model to respond differently? ✅ Fine-tuning
 
-Core Concepts
-Chunk
+---
 
-Document split into sections.
+## Module 6 — Data Management
 
-Example:
+Understand the pipeline:
+- Ingestion (files, databases, APIs, streams)
+- Processing
+- Vectorization
+- Storage
 
-100-page policy
-↓
-500 chunks
+Data quality aspects often tested:
+- Deduplication
+- Data validation
+- Metadata enrichment
+- PII detection
+- Content filtering
 
-Embedding
+Poor quality data → poor retrieval results.
 
-Each chunk converted to vector.
+---
 
-Index
+## Module 7 — Compliance and Governance
 
-Used to quickly find nearest vectors.
+Key questions to ask when designing solutions:
+- Is there PII or PHI?
+- Is data encrypted at rest and in transit?
+- Is access controlled and audited?
+- Is retrieval scoped correctly?
+- Are data residency requirements respected?
 
-Examples:
+Typical exam pattern: For sensitive HR records, the best answers include access control, encryption, data classification, and auditability — not just a stronger model.
 
-HNSW
-IVF
+---
 
-Learn conceptually.
+## Domain 1 Mental Model (Summary)
 
-No need to learn algorithm internals.
+1. Understand business problem
+2. Choose GenAI pattern (Prompting, RAG, Agent, Fine-tuning)
+3. Select model (cost, quality, latency)
+4. Prepare data (validate, clean, chunk)
+5. Generate embeddings
+6. Store in vector DB
+7. Retrieve context
+8. Build prompt
+9. Generate response
+10. Ensure compliance
 
-Exam Trap #2
+---
 
-Question:
+## Architect-level exam insight (Topic ranking)
 
-Retrieval quality is poor.
+- RAG vs Fine-tuning — ⭐⭐⭐⭐⭐
+- FM Selection — ⭐⭐⭐⭐⭐
+- Embeddings — ⭐⭐⭐⭐⭐
+- Vector Stores — ⭐⭐⭐⭐⭐
+- Chunking Strategy — ⭐⭐⭐
+- Data Pipelines — ⭐⭐⭐⭐
+- Compliance — ⭐⭐⭐⭐
+- Agentic Patterns — ⭐⭐⭐
 
-Possible causes:
+---
 
-✅ Chunking issue
+Notes
 
-✅ Embedding issue
-
-✅ Retrieval configuration
-
-Not necessarily:
-
-❌ Need larger LLM
-
-Module 5
-Retrieval Augmented Generation (RAG)
-
-This is the heart of Domain 1.
-
-AWS explicitly lists retrieval mechanisms and RAG-related architectures as key exam content.
-
-Why RAG Exists
-
-Without RAG:
-
-LLM Knowledge
-= Training Cutoff
-
-
-Problems:
-
-Hallucinations
-Stale information
-Enterprise data unavailable
-
-With RAG:
-
-User Query
-      ↓
-Retrieve Documents
-      ↓
-Inject Context
-      ↓
-Generate Answer
-
-When To Use RAG
-Situation	RAGInternal documents	✅
-Frequently changing data	✅
-Regulatory documents	✅
-Company policies	✅
-General knowledge only	❌
-RAG vs Fine-Tuning
-
-One of the most tested concepts.
-
-RAG	Fine-TuningAdds knowledge	Changes behavior
-Dynamic	Static
-Cheap	Expensive
-Real-time updates	Retraining needed
-Documents	Patterns
-Easy Exam Rule
-
-Need model to know new facts?
-
-✅ RAG
-
-Need model to respond differently?
-
-✅ Fine-Tuning
-
-Module 6
-Data Management
-
-Domain 1 also focuses on data pipelines.
-
-Understand:
-
-Data Ingestion
-Files
-Databases
-APIs
-Streams
-
-
-↓
-
-Processing
-
-↓
-
-Vectorization
-
-↓
-
-Storage
-
-Data Quality
-
-Common exam themes:
-
-Deduplication
-Data validation
-Metadata enrichment
-PII detection
-Content filtering
-
-Poor quality data produces poor retrieval.
-
-Module 7
-Compliance and Governance
-
-Architects tend to perform well here.
-
-Think:
-
-Questions AWS Wants You To Ask
-Is there PII?
-Is there PHI?
-Is data encrypted?
-Is access controlled?
-Is retrieval scoped?
-Is data residency respected?
-Typical Exam Pattern
-
-Question:
-
-Organization wants to build RAG on sensitive HR records.
-
-Best answer likely includes:
-
-✅ Access control
-
-✅ Encryption
-
-✅ Data classification
-
-✅ Auditability
-
-Not simply:
-
-✅ Stronger model
-
-Domain 1 Mental Model
-
-Memorize this:
-
-1. Understand Business Problem
-
-2. Choose GenAI Pattern
-   - Prompting
-   - RAG
-   - Agent
-   - Fine-Tuning
-
-3. Select Model
-   - Cost
-   - Quality
-   - Latency
-
-4. Prepare Data
-   - Validate
-   - Clean
-   - Chunk
-
-5. Generate Embeddings
-
-6. Store in Vector DB
-
-7. Retrieve Context
-
-8. Build Prompt
-
-9. Generate Response
-
-10. Ensure Compliance
-
-Architect-Level Exam Insight
-
-If I had to rank Domain 1 topics by exam importance:
-
-Topic	ImportanceRAG vs Fine-Tuning	⭐⭐⭐⭐⭐
-FM Selection	⭐⭐⭐⭐⭐
-Embeddings	⭐⭐⭐⭐⭐
-Vector Stores	⭐⭐⭐⭐⭐
-Chunking Strategy	⭐⭐⭐⭐
-Data Pipelines	⭐⭐⭐⭐
-Compliance	⭐⭐⭐⭐
-Agentic Patterns	⭐⭐⭐
-
+- This document focuses on concepts and architecture patterns rather than AWS-specific services. After you master the concepts, map each pattern to the appropriate AWS offerings as a separate exercise.
