@@ -1,113 +1,39 @@
-import boto3
-import jwt
-import time
-import requests
-import json
-import tempfile
-import os
-from awsglue.context import GlueContext
-from awsglue.job import Job
-from pyspark.context import SparkContext
-from pyspark.sql import SparkSession
+"""
+Salesforce Bulk API v2 ETL: Full export with pagination of Opportunity records to S3.
+
+Refactored to use shared utilities from shared/python/ to eliminate
+duplicated auth, bulk API, and Glue initialization code.
+The pagination (Sforce-Locator) handling is now built into
+salesforce_bulk_api.fetch_results().
+"""
+
+import sys
+sys.path.insert(0, "..")
+
+from shared.python.aws_utils import get_secret_json
+from shared.python.salesforce_auth import authenticate
+from shared.python.salesforce_bulk_api import run_query
+from shared.python.glue_utils import init_glue_job, records_to_parquet
 
 # Initialize Spark and Glue contexts
-sc = SparkContext()
-glueContext = GlueContext(sc)
-spark = glueContext.spark_session
-job = Job(glueContext)
-job.init("salesforce_bulk_opportunity_etl", {})
+spark, glue_context, glue_job = init_glue_job("salesforce_bulk_opportunity_etl")
 
 # Load secret from Secrets Manager
-secrets_client = boto3.client('secretsmanager')
-secret_value = secrets_client.get_secret_value(SecretId='your-secret-id')
-secret = json.loads(secret_value['SecretString'])
+secret = get_secret_json("your-secret-id")
 
-private_key = secret['private_key']
-client_id = secret['client_id']
-username = secret['username']
-audience = secret['audience']
-
-# Generate JWT
-payload = {
-    "iss": client_id,
-    "sub": username,
-    "aud": audience,
-    "exp": int(time.time()) + 300
-}
-jwt_token = jwt.encode(payload, private_key, algorithm='RS256')
-
-# Exchange JWT for access token
-response = requests.post(
-    f"{audience}/services/oauth2/token",
-    data={
-        "grant_type": "urn:ietf:params:oauth:grant-type:jwt-bearer",
-        "assertion": jwt_token
-    }
+# Authenticate with Salesforce
+access_token, instance_url = authenticate(
+    client_id=secret["client_id"],
+    username=secret["username"],
+    login_url=secret["audience"],
+    private_key=secret["private_key"],
 )
 
-access_token = response.json().get("access_token")
-instance_url = response.json().get("instance_url")
-
-# Create Bulk API v2 job
-headers = {
-    "Authorization": f"Bearer {access_token}",
-    "Content-Type": "application/json"
-}
-
-job_payload = {
-    "operation": "query",
-    "query": "SELECT Id, Name, StageName, Amount, CloseDate FROM Opportunity",
-    "object": "Opportunity",
-    "contentType": "JSON"
-}
-
-job_response = requests.post(
-    f"{instance_url}/services/data/v58.0/jobs/query",
-    headers=headers,
-    json=job_payload
-)
-
-job_id = job_response.json()["id"]
-
-# Poll for job completion
-status = "InProgress"
-while status in ["InProgress", "UploadComplete"]:
-    time.sleep(10)
-    job_status_response = requests.get(
-        f"{instance_url}/services/data/v58.0/jobs/query/{job_id}",
-        headers=headers
-    )
-    status = job_status_response.json()["state"]
-    print(f"Job status: {status}")
-
-# Fetch paginated results using locator
-results_url = f"{instance_url}/services/data/v58.0/jobs/query/{job_id}/results"
-params = {}
-all_records = []
-
-while True:
-    response = requests.get(results_url, headers=headers, params=params)
-    if response.status_code != 200:
-        raise Exception(f"Failed to fetch results: {response.text}")
-    chunk = response.json()
-    all_records.extend(chunk)
-
-    locator = response.headers.get("Sforce-Locator")
-    if not locator or locator == "null":
-        break
-    params["locator"] = locator
-
-# Save results to temp file
-with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as tmp_file:
-    tmp_file.write(json.dumps(all_records).encode("utf-8"))
-    tmp_file_path = tmp_file.name
-
-# Load into Spark DataFrame
-df = spark.read.json(tmp_file_path)
+# Run Bulk API query (pagination handled internally by run_query)
+soql = "SELECT Id, Name, StageName, Amount, CloseDate FROM Opportunity"
+records = run_query(instance_url, access_token, soql)
 
 # Write to S3 in Parquet format
-df.write.mode("overwrite").parquet("s3://your-output-bucket/salesforce/opportunity/")
+records_to_parquet(spark, records, "s3://your-output-bucket/salesforce/opportunity/")
 
-# Clean up
-os.remove(tmp_file_path)
-job.commit()
+glue_job.commit()

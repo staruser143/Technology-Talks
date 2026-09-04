@@ -1,11 +1,11 @@
 package com.example.pdfinspect;
 
-import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationWidget;
 import org.apache.pdfbox.pdmodel.interactive.form.*;
+import shared.pdf.PdfDocumentUtils;
+import shared.pdf.PdfFieldUtils;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -23,9 +23,8 @@ public class InspectController {
         produces = MediaType.APPLICATION_JSON_VALUE
     )
     public Map<String, Object> inspect(@RequestPart("file") MultipartFile file) throws Exception {
-        try (InputStream in = file.getInputStream(); PDDocument doc = Loader.loadPDF(in)) {
-            PDDocumentCatalog catalog = doc.getDocumentCatalog();
-            PDAcroForm acroForm = catalog.getAcroForm();
+        try (InputStream in = file.getInputStream(); PDDocument doc = PdfDocumentUtils.loadPdf(in)) {
+            PDAcroForm acroForm = PdfDocumentUtils.getAcroForm(doc);
 
             Map<String, Object> result = new LinkedHashMap<>();
             result.put("file", file.getOriginalFilename());
@@ -45,10 +44,7 @@ public class InspectController {
                 return result;
             }
 
-            // Build page index map for widget page numbers
-            Map<PDPage, Integer> pageIndex = new IdentityHashMap<>();
-            int idx = 0;
-            for (PDPage p : doc.getPages()) pageIndex.put(p, idx++);
+            Map<PDPage, Integer> pageIndex = PdfDocumentUtils.buildPageIndex(doc);
 
             List<Map<String, Object>> fieldList = new ArrayList<>();
             for (PDField f : acroForm.getFieldTree()) {
@@ -63,8 +59,8 @@ public class InspectController {
     private Map<String, Object> toJson(PDField f, Map<PDPage, Integer> pageIndex) throws Exception {
         Map<String, Object> m = new LinkedHashMap<>();
         m.put("name", f.getFullyQualifiedName());
-        m.put("pdfType", f.getFieldType());   // Tx, Btn, Ch, Sig
-        m.put("type", readableType(f));       // Text, Checkbox, Radio, ComboBox, ListBox, Signature
+        m.put("pdfType", f.getFieldType());
+        m.put("type", PdfFieldUtils.readableType(f));
         m.put("readOnly", f.isReadOnly());
         m.put("required", f.isRequired());
         m.put("noExport", f.isNoExport());
@@ -80,8 +76,8 @@ public class InspectController {
         } else if (f instanceof PDChoice ch) {
             m.put("default", ch.getDefaultValue());
 
-            List<String> display = orEmpty(ch.getOptionsDisplayValues());
-            List<String> export  = ch.getOptionsExportValues(); // may be null
+            List<String> display = PdfFieldUtils.nullSafeList(ch.getOptionsDisplayValues());
+            List<String> export  = ch.getOptionsExportValues();
             List<Map<String, String>> options = new ArrayList<>();
             for (int i = 0; i < display.size(); i++) {
                 String disp = display.get(i);
@@ -102,13 +98,12 @@ public class InspectController {
             m.put("onValue", onVal);
             m.put("checked", onVal != null && onVal.equals(cur));
         } else if (f instanceof PDRadioButton rb) {
-            m.put("choices", orEmpty(rb.getExportValues()));
+            m.put("choices", PdfFieldUtils.nullSafeList(rb.getExportValues()));
             m.put("selected", rb.getValue());
         } else if (f instanceof PDSignatureField sig) {
             m.put("signed", sig.getSignature() != null);
         }
 
-        // Widgets / locations
         List<PDAnnotationWidget> widgets = f.getWidgets();
         List<Map<String, Object>> widgetList = new ArrayList<>();
         if (widgets != null) {
@@ -133,16 +128,4 @@ public class InspectController {
 
         return m;
     }
-
-    private static String readableType(PDField f) {
-        if (f instanceof PDTextField) return "Text";
-        if (f instanceof PDCheckBox) return "Checkbox";
-        if (f instanceof PDRadioButton) return "Radio";
-        if (f instanceof PDComboBox) return "ComboBox";
-        if (f instanceof PDListBox) return "ListBox";
-        if (f instanceof PDSignatureField) return "Signature";
-        return f.getClass().getSimpleName();
-    }
-
-    private static <T> List<T> orEmpty(List<T> l) { return l == null ? Collections.emptyList() : l; }
 }
