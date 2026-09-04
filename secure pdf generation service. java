@@ -27,7 +27,7 @@ public class PdfGenerationService {
                     factory.setFeature(feature, false); // disable external entities
                 }
             } catch (Exception e) {
-                // Log: "Feature not supported: " + feature
+                System.err.println("Security feature not supported by XML parser: " + feature + ", cause: " + e.getMessage());
             }
         }
         return factory;
