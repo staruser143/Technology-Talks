@@ -1,0 +1,15 @@
+{
+  "name": "technology-talks",
+  "version": "1.0.0",
+  "description": "Technology Talks code examples and tests",
+  "scripts": {
+    "test": "jest --verbose",
+    "test:coverage": "jest --coverage --verbose"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "jexl": "^2.3.0"
+  }
+}
