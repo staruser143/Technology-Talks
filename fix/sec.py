@@ -1,11 +1,13 @@
 import os
+import sys
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_community.document_loaders import WebBaseLoader
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
-# 1. Setup API Key
-os.environ["GOOGLE_API_KEY"] = "your-api-key-here"
+# 1. Setup API Key — load from environment variable, never hardcode
+if not os.environ.get("GOOGLE_API_KEY"):
+    sys.exit("Error: GOOGLE_API_KEY environment variable is not set.")
 
 # 2. Load the Web Content
 # WebBaseLoader scrapes the URL and converts it into a "Document" object

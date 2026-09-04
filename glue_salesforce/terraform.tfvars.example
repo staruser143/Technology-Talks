@@ -1,0 +1,11 @@
+# SECURITY: Do not commit real credentials to version control.
+# Use environment variables (TF_VAR_*) or a secrets manager instead.
+# See: https://developer.hashicorp.com/terraform/tutorials/configuration-language/sensitive-variables
+
+aws_region               = "us-east-1"
+salesforce_client_id     = ""  # Set via TF_VAR_salesforce_client_id
+salesforce_client_secret = ""  # Set via TF_VAR_salesforce_client_secret
+salesforce_refresh_token = ""  # Set via TF_VAR_salesforce_refresh_token
+salesforce_instance_url  = ""  # Set via TF_VAR_salesforce_instance_url
+subnet_id                = ""  # Set via TF_VAR_subnet_id
+security_group_id        = ""  # Set via TF_VAR_security_group_id
