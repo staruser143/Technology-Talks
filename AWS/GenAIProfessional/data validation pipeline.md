@@ -1,6 +1,7 @@
-Absolutely. Below is an architect-grade mapping of AWS services to each validation step, covering structured data, documents, RAG sources, fine-tuning datasets, evaluation datasets, and runtime FM inputs.
+Absolutely. Below is an architect-grade mapping of AWS services to each validation step, covering structured data, documents, RAG sources, fine-tuning datasets, evaluation datasets, and runtime FM inp[...] 
 
-End-to-End AWS Service Mapping
+## End-to-End AWS Service Mapping
+
 Sources
   ↓
 1. Ingest and preserve raw data
@@ -27,7 +28,8 @@ Sources
   ↓
 12. Continuously monitor
 
-Consolidated Mapping
+## Consolidated Mapping
+
 Step	Primary AWS services	Purpose1. Source ingestion	Amazon S3, AWS DataSync, AWS DMS, Amazon AppFlow, Amazon Kinesis	Collect structured, unstructured, batch, SaaS, and streaming data
 2. Raw-data preservation	Amazon S3, S3 Versioning, S3 Object Lock, AWS KMS	Maintain immutable, encrypted source copies
 3. Workflow orchestration	AWS Step Functions, Amazon EventBridge, AWS Lambda, Amazon SQS	Coordinate validation activities and isolate failures
@@ -45,16 +47,22 @@ Step	Primary AWS services	Purpose1. Source ingestion	Amazon S3, AWS DataSync, AW
 15. Dataset versioning	Amazon S3 Versioning, SageMaker Pipelines, SageMaker MLflow	Maintain reproducible dataset and experiment versions
 16. FM-consumption gate	Step Functions, Lambda, EventBridge, CodePipeline	Release only approved versions
 17. Monitoring and audit	CloudWatch, CloudTrail, EventBridge, Security Hub	Monitor failures, drift, service activity, and security posture
-Step-by-Step Service Mapping
-Step 1: Ingest Data into a Raw Landing Zone
-AWS services
+
+## Step-by-Step Service Mapping
+
+### Step 1: Ingest Data into a Raw Landing Zone
+
+**AWS services**
+
 Amazon S3 for documents, datasets, transcripts, images, JSONL files, and training data
 AWS Database Migration Service for relational database extracts and CDC
 AWS DataSync for file-system and object-storage transfers
 Amazon AppFlow for supported SaaS applications
 Amazon Kinesis Data Streams or Firehose for streaming data
 AWS Transfer Family for SFTP-based data exchange
-Recommended pattern
+
+**Recommended pattern**
+
 Source
    ↓
 S3 raw bucket
@@ -63,18 +71,20 @@ S3 event or EventBridge
    ↓
 Validation workflow
 
-
 The raw zone should be immutable from the validation pipeline’s perspective. Corrections should create a new curated version rather than alter the source object.
 
-Supporting controls
+**Supporting controls**
+
 S3 Versioning
 S3 Object Lock, when regulatory immutability is required
 SSE-KMS encryption with AWS KMS
 S3 bucket policies
 VPC endpoints
 CloudTrail data events
-Step 2: Trigger and Orchestrate the Workflow
-Primary service: AWS Step Functions
+
+### Step 2: Trigger and Orchestrate the Workflow
+
+**Primary service: AWS Step Functions**
 
 Use Step Functions to coordinate:
 
@@ -87,7 +97,9 @@ Semantic validation
 Quality scoring
 Approval or quarantine
 FM ingestion
-Supporting services
+
+**Supporting services**
+
 Amazon EventBridge to trigger workflows and route validation events
 AWS Lambda for lightweight checks
 Amazon SQS for buffering and failure isolation
@@ -113,16 +125,19 @@ Quality Decision
     ├── Review
     └── Quarantine
 
-
 Step Functions is preferable to a long Lambda chain because it makes retries, timeouts, parallel execution, failure handling, and auditability explicit.
 
-Step 3: Discover Schemas and Technical Metadata
-AWS services
+### Step 3: Discover Schemas and Technical Metadata
+
+**AWS services**
+
 AWS Glue Crawlers
 AWS Glue Data Catalog
 Amazon Athena
 Amazon DataZone or SageMaker Unified Studio
-Responsibilities
+
+**Responsibilities**
+
 Infer schema
 Register datasets
 Record storage location
@@ -133,10 +148,11 @@ Assign ownership and business terms
 
 The Glue Data Catalog becomes the technical metadata layer. DataZone or SageMaker Unified Studio can provide the business-facing catalog, governance, ownership, and publication experience.
 
-Amazon DataZone can display quality measures such as completeness, timeliness, and accuracy by integrating with AWS Glue Data Quality, and it can also receive metrics from third-party quality tools through APIs.
+Amazon DataZone can display quality measures such as completeness, timeliness, and accuracy by integrating with AWS Glue Data Quality, and it can also receive metrics from third-party quality tools th[...]
 
-Step 4: Perform Technical and Structural Validation
-Lightweight validation: AWS Lambda
+### Step 4: Perform Technical and Structural Validation
+
+**Lightweight validation: AWS Lambda**
 
 Use Lambda for:
 
@@ -148,7 +164,8 @@ Required metadata validation
 Manifest validation
 Empty-file detection
 Supported encoding checks
-Large-scale validation: AWS Glue or Amazon EMR
+
+**Large-scale validation: AWS Glue or Amazon EMR**
 
 Use AWS Glue when:
 
@@ -176,8 +193,9 @@ Distributed dataset validation
 Highly customized open-source processing
     → Amazon EMR
 
-Step 5: Apply Conventional Data-Quality Rules
-Primary service: AWS Glue Data Quality
+### Step 5: Apply Conventional Data-Quality Rules
+
+**Primary service: AWS Glue Data Quality**
 
 Use Glue Data Quality for:
 
@@ -193,9 +211,9 @@ Range checks
 Anomaly detection
 Record-level failure identification
 
-Glue Data Quality is serverless, is based on the open-source Deequ framework, and uses Data Quality Definition Language, or DQDL. It can enforce checks against Data Catalog objects and inside Glue ETL pipelines, calculate quality scores, detect anomalies, and identify failed records for quarantine or remediation.
+Glue Data Quality is serverless, is based on the open-source Deequ framework, and uses Data Quality Definition Language, or DQDL. It can enforce checks against Data Catalog objects and inside Glue ETL[...]
 
-Example quality gates
+**Example quality gates**
 document_id must be complete
 document_id must be unique
 source_system must be approved
@@ -203,10 +221,9 @@ effective_date must not be in the future
 status must equal PUBLISHED or APPROVED
 record count must exceed the minimum threshold
 
-
 Glue Data Quality also supports cross-dataset rules such as referential integrity, schema matching, row-count matching, aggregate matching, and dataset matching.
 
-Portability recommendation
+**Portability recommendation**
 
 Given your preference to avoid lock-in, maintain:
 
@@ -217,14 +234,18 @@ A mapping layer from canonical rules to AWS execution services
 
 Glue Data Quality is based on Deequ and uses an open rule language, making it more portable than embedding all rules in proprietary application logic.
 
-Step 6: Extract and Normalize Document Content
-AWS services
+### Step 6: Extract and Normalize Document Content
+
+**AWS services**
+
 Amazon Textract for scanned documents, PDFs, tables, and forms
 AWS Lambda for lightweight text normalization
 AWS Glue for large-scale transformation
 Amazon Bedrock Data Automation, where supported and appropriate, for richer multimodal extraction workflows
 Amazon Comprehend for language and entity analysis
-Validation tasks
+
+**Validation tasks**
+
 Confirm extraction produced usable text
 Check page coverage
 Validate OCR confidence
@@ -234,20 +255,20 @@ Detect blank or corrupted pages
 Normalize Unicode and whitespace
 Preserve document and page references
 
-Amazon Textract supports synchronous and asynchronous document processing. AWS documents an end-to-end pattern where Textract extracts document text, Amazon Comprehend analyzes it, and the results are stored in Amazon S3. Asynchronous processing is suited to larger multipage documents and can use SNS and SQS to track completion.
+Amazon Textract supports synchronous and asynchronous document processing. AWS documents an end-to-end pattern where Textract extracts document text, Amazon Comprehend analyzes it, and the results are[...]
 
-Recommended output structure
+**Recommended output structure**
 raw-document/
 extracted-text/
 normalized-content/
 extraction-metadata/
 validation-results/
 
-
 Store OCR confidence, source page, bounding-box references, and extraction timestamps alongside the normalized text.
 
-Step 7: Detect Sensitive and Restricted Content
-Primary service: Amazon Macie
+### Step 7: Detect Sensitive and Restricted Content
+
+**Primary service: Amazon Macie**
 
 Use Macie for:
 
@@ -259,14 +280,17 @@ Generating security findings
 
 Amazon Macie is a managed data security and privacy service that uses machine learning and pattern matching to discover, monitor, and protect sensitive data in Amazon S3.
 
-Supporting services
+**Supporting services**
+
 Amazon Comprehend for entity recognition and custom classification
 Amazon Comprehend Medical where healthcare text processing is appropriate
 AWS Secrets Manager as the approved store for secrets, with custom validators checking whether known secret patterns appear in datasets
 Amazon Bedrock Guardrails for detecting or filtering sensitive information during runtime interaction
 AWS KMS for encryption
 AWS Lake Formation for fine-grained data access
-Important distinction
+
+**Important distinction**
+
 Macie
     → Discovers sensitive data stored in S3
 
@@ -276,21 +300,23 @@ Bedrock Guardrails
 Lake Formation and IAM
     → Control who can access the data
 
-
 These services complement each other. They are not substitutes.
 
-Step 8: Perform FM-Specific Semantic Validation
+### Step 8: Perform FM-Specific Semantic Validation
 
 Conventional quality engines will not detect every FM-specific problem. For semantic checks, combine managed FMs with deterministic controls.
 
-AWS services
+**AWS services**
+
 Amazon Bedrock for LLM-assisted evaluation
 SageMaker Processing for custom validation code
 Amazon EMR or AWS Glue for large-scale similarity analysis
 Amazon OpenSearch Service for semantic similarity and duplicate analysis
 Amazon Comprehend for classification and entity extraction
 AWS Lambda for deterministic policy checks
-Semantic validations
+
+**Semantic validations**
+
 Question-answer alignment
 Instruction-response alignment
 Summary-to-source faithfulness
@@ -301,7 +327,8 @@ Incorrect classification labels
 Domain-language consistency
 Toxic or biased examples
 Near-duplicate training examples
-Recommended pattern
+
+**Recommended pattern**
 
 Use a combination of:
 
@@ -315,16 +342,19 @@ LLM-assisted judgment
     +
 Human review for exceptions
 
-
 Do not rely exclusively on an LLM validator. LLM validation should return a score, rationale, evidence, and confidence, followed by a deterministic policy decision.
 
-Step 9: Validate Deduplication and Dataset Leakage
-AWS services
+### Step 9: Validate Deduplication and Dataset Leakage
+
+**AWS services**
+
 AWS Glue or EMR for exact hash-based deduplication
 Amazon OpenSearch Service vector engine for semantic near-duplicate search
 SageMaker Processing for custom similarity and leakage analysis
 Amazon S3 Inventory for object-level inventory and duplication analysis
-Checks
+
+**Checks**
+
 Exact duplicates
 Semantically equivalent documents
 Reused boilerplate
@@ -332,7 +362,8 @@ Near-duplicate fine-tuning examples
 Train-to-test leakage
 Same conversation across different dataset splits
 Same source document across training and evaluation sets
-Architect rule
+
+**Architect rule**
 
 Perform dataset splitting at the correct grouping level:
 
@@ -342,18 +373,21 @@ Random split by row
 Better:
 Split by customer, conversation, document, case, or source domain
 
-
 This prevents closely related records from appearing on both sides of the evaluation boundary.
 
-Step 10: Validate RAG Chunking and Metadata
-AWS services
+### Step 10: Validate RAG Chunking and Metadata
+
+**AWS services**
+
 AWS Lambda for custom parsers and chunking
 AWS Glue for large-scale chunk creation
 SageMaker Processing for sophisticated chunk analysis
 Amazon Bedrock Knowledge Bases for managed ingestion, chunking, embeddings, and retrieval
 Amazon S3 for source documents and metadata
 Amazon OpenSearch Service, S3 Vectors, Aurora PostgreSQL, or another supported vector store, depending on the architecture
-Chunk-level checks
+
+**Chunk-level checks**
+
 Chunk is not empty
 Chunk is below model limits
 Chunk has sufficient semantic meaning
@@ -364,7 +398,9 @@ Source identifier is present
 Page and section references are preserved
 Authorization metadata is inherited
 Effective date and version are present
-Important Bedrock Knowledge Bases pattern
+
+**Important Bedrock Knowledge Bases pattern**
+
 Validated source documents
     ↓
 Knowledge Base ingestion
@@ -375,18 +411,21 @@ Retrieval test suite
     ↓
 Promote index or reject ingestion
 
-
 Do not treat successful ingestion as proof of quality. Ingestion proves that the content was processed, not that it retrieves the correct evidence.
 
-Step 11: Evaluate Retrieval and Grounding
-AWS services
+### Step 11: Evaluate Retrieval and Grounding
+
+**AWS services**
+
 Amazon Bedrock Knowledge Bases
 Amazon Bedrock model evaluation
 Amazon Bedrock FMs as judges
 Amazon OpenSearch Service
 SageMaker Processing
 Amazon Athena for analysis of evaluation results
-Metrics
+
+**Metrics**
+
 Retrieval metrics
 Precision@K
 Recall@K
@@ -412,7 +451,6 @@ Safety result
 Latency
 Token consumption
 
-
 This dataset helps determine whether a fault originates from:
 
 source data
@@ -427,15 +465,19 @@ prompt construction
     ↓
 FM generation
 
-Step 12: Calculate Quality Scores and Apply Release Gates
-AWS services
+### Step 12: Calculate Quality Scores and Apply Release Gates
+
+**AWS services**
+
 AWS Glue Data Quality for base quality scores
 AWS Lambda for composite scoring
 AWS Step Functions for decision orchestration
 Amazon DynamoDB for validation state and decision records
 Amazon S3 for detailed validation reports
 Amazon CloudWatch for quality metrics and alarms
-Decision pattern
+
+**Decision pattern**
+
 Critical control failed?
     ├── Yes → Reject or quarantine
     └── No
@@ -454,11 +496,12 @@ Accuracy:           97%
 Freshness:          98%
 Unauthorized PII:   Detected
 
-
 The dataset must fail even if the composite score is high.
 
-Step 13: Quarantine and Remediate Failed Data
-AWS services
+### Step 13: Quarantine and Remediate Failed Data
+
+**AWS services**
+
 Amazon S3 quarantine bucket or prefix
 Amazon SQS dead-letter queues
 AWS Step Functions
@@ -466,7 +509,9 @@ Amazon EventBridge
 Amazon SNS
 AWS Lambda
 AWS Systems Manager OpsCenter, if remediation is operated as an incident workflow
-Recommended quarantine record
+
+**Recommended quarantine record**
+
 Dataset ID
 Object version
 Validation-rule version
@@ -481,10 +526,9 @@ Quarantine location
 Retry count
 Approval status
 
-
 Glue Data Quality can identify exact records responsible for reduced quality scores, allowing bad records to be isolated and fixed rather than rejecting the full dataset unnecessarily.
 
-Retry pattern
+**Retry pattern**
 Fail
   ↓
 Quarantine
@@ -497,18 +541,21 @@ Revalidate all required controls
   ↓
 Approve or fail again
 
-
 Avoid moving corrected content directly into the curated zone without revalidation.
 
-Step 14: Human Review and Approval
-AWS services
+### Step 14: Human Review and Approval
+
+**AWS services**
+
 Amazon Augmented AI, where its supported human-review workflow fits the use case
 AWS Step Functions callback pattern for external approval
 Amazon SNS for approval notifications
 Amazon DataZone or SageMaker Unified Studio for ownership and publication workflows
 Amazon API Gateway plus Lambda for a custom review application
 Amazon Cognito for reviewer authentication
-When human review is needed
+
+**When human review is needed**
+
 Contradictory policies
 Ambiguous reference answers
 Low-confidence semantic checks
@@ -527,15 +574,19 @@ Confidence threshold
     ├── High-confidence fail
     └── Uncertain → Human review
 
-Step 15: Catalog, Govern, and Publish the Curated Asset
-AWS services
+### Step 15: Catalog, Govern, and Publish the Curated Asset
+
+**AWS services**
+
 Amazon DataZone or SageMaker Unified Studio
 AWS Glue Data Catalog
 AWS Lake Formation
 AWS IAM
 AWS KMS
 AWS CloudTrail
-Governance responsibilities
+
+**Governance responsibilities**
+
 Dataset ownership
 Business description
 Intended FM consumption path
@@ -553,8 +604,10 @@ Amazon DataZone can gather metadata from AWS Glue, curate and publish data asset
 
 DataZone can also display Glue Data Quality scores and quality trends for cataloged assets, helping consumers assess trust before subscription or use.
 
-Step 16: Version the Dataset and Validation Rules
-AWS services
+### Step 16: Version the Dataset and Validation Rules
+
+**AWS services**
+
 Amazon S3 Versioning
 AWS CodeCommit or a connected Git repository
 AWS CodePipeline
@@ -573,13 +626,14 @@ Embedding-model version
 Evaluation-dataset version
 Approval record
 
-
 The release record should allow an auditor to answer:
 
 Which precise dataset, rule set, transformation code, chunking policy, and embedding model produced this FM asset?
 
-Step 17: Release to the Appropriate FM Consumer
-RAG
+### Step 17: Release to the Appropriate FM Consumer
+
+**RAG**
+
 Amazon Bedrock Knowledge Bases
 Supported vector store
 Amazon S3
@@ -596,7 +650,8 @@ Batch consumption
 Amazon Bedrock batch inference
 SageMaker Batch Transform
 AWS Batch where custom inference is required
-Release gate pattern
+
+**Release gate pattern**
 Quality status = APPROVED
 AND
 Security status = APPROVED
@@ -607,8 +662,10 @@ Dataset version = IMMUTABLE
     ↓
 Trigger FM ingestion or training
 
-Step 18: Continuously Monitor Quality
-AWS services
+### Step 18: Continuously Monitor Quality
+
+**AWS services**
+
 Amazon CloudWatch
 Amazon EventBridge
 Amazon SNS
@@ -617,7 +674,9 @@ AWS Glue Data Quality
 Amazon DataZone or SageMaker Unified Studio
 SageMaker Processing for custom drift analysis
 Athena and QuickSight for trend reporting
-Monitor
+
+**Monitor**
+
 Quality score trends
 Failed-record count
 Data freshness
@@ -633,7 +692,8 @@ Data-owner remediation SLA
 
 Glue Data Quality supports anomaly detection and scheduled quality evaluation, while DataZone can expose quality metrics and trends to consumers.
 
-Recommended Service Selection by Data Type
+## Recommended Service Selection by Data Type
+
 Data type	Recommended validation stackStructured database extracts	S3 + Glue Crawler + Glue Data Quality + Glue ETL
 Streaming records	Kinesis + Lambda or Managed Service for Apache Flink + Glue Catalog
 Scanned PDFs	S3 + Textract + Comprehend + Macie + Bedrock semantic validation
@@ -642,8 +702,10 @@ Fine-tuning JSONL	S3 + Glue/Lambda + SageMaker Processing + Bedrock-assisted eva
 RAG documents	S3 + Textract/parser + Macie + semantic validation + Bedrock Knowledge Bases
 Evaluation datasets	S3 + SageMaker Processing + Bedrock model evaluation + human review
 Cross-cloud datasets	DataSync/AppFlow/custom transfer + S3 + Glue Data Quality + DataZone
-Minimum Viable vs Enterprise-Grade Stack
-Minimum viable validation pipeline
+
+## Minimum Viable vs Enterprise-Grade Stack
+
+**Minimum viable validation pipeline**
 Amazon S3
 AWS Lambda
 AWS Step Functions
@@ -652,10 +714,9 @@ Amazon Macie
 Amazon CloudWatch
 Amazon Bedrock Knowledge Bases
 
-
 This is appropriate for early production workloads with a limited number of sources.
 
-Enterprise-grade pipeline
+**Enterprise-grade pipeline**
 Amazon S3 raw, quarantine, and curated zones
 AWS Step Functions
 Amazon EventBridge and SQS
@@ -670,10 +731,10 @@ AWS Lake Formation
 Amazon CloudWatch and CloudTrail
 CodePipeline and Git-based rule management
 
-
 This adds governance, semantic validation, human approval, rule versioning, lineage, and continuous quality measurement.
 
-Exam Memory Map
+## Exam Memory Map
+
 Schema and tabular quality
     → AWS Glue Data Quality
 
@@ -710,7 +771,7 @@ Audit trail
 RAG ingestion and retrieval
     → Amazon Bedrock Knowledge Bases
 
-Recommended Overall Architecture
+## Recommended Overall Architecture
 
 For a balanced, portable implementation, I would use:
 
