@@ -73,14 +73,3 @@ Choose AWS Bedrock if you are building something custom or customer-facing: [6, 
 * You want to build a consumer-facing AI assistant embedded directly inside your proprietary product or mobile app.
 * You need total control over the exact Large Language Model (LLM) you use and how it processes data.
 * You are building specialized multi-agent AI systems that execute unique backend workflows. [2, 6, 7] 
-* 
-
-What type of project or business need are you currently evaluating these tools for? Let me know, and I can suggest which specific service fits your exact architecture.
-
-[1] [https://knackforge.com](https://knackforge.com/insights/blogs/amazon-q-vs-bedrock)
-[2] [https://www.examcert.app](https://www.examcert.app/blog/aws-bedrock-agentcore-vs-amazon-q-developer-2026/)
-[3] [https://www.cloudthat.com](https://www.cloudthat.com/resources/blog/amazon-q-vs-amazon-bedrock-choosing-the-right-ai-solution-for-your-enterprise)
-[4] [https://www.youtube.com](https://www.youtube.com/watch?v=fP_ovgBuSH8)
-[5] [https://builder.aws.com](https://builder.aws.com/content/3DJBtAE2tsIUSUWDdPmWMFMgurR/amazon-q-business-vs-bedrock-knowledge-bases)
-[6] [https://www.linkedin.com](https://www.linkedin.com/posts/cloudwithraj_when-to-use-amazon-bedrock-q-dev-q-cli-activity-7358142550647422977--6TD)
-[7] [https://knackforge.com](https://knackforge.com/insights/blogs/amazon-q-vs-bedrock)
