@@ -2,7 +2,7 @@
 
 - AgentCore Gateway is conceptually closer to an MCP Server (tool provider), not an MCP Client.
 
-However, the more accurate answer is:
+# The more accurate answer is:
 
 - AgentCore Gateway acts as a managed tool exposure and policy enforcement layer that can expose APIs, Lambda functions, and MCP servers to agents.
 - Depending on the integration pattern, it may interact with MCP servers on behalf of agents, but from the agent's perspective Gateway is the endpoint through which tools are discovered and invoked.
