@@ -30,9 +30,6 @@ Enterprise Systems
 
 # 1. AgentCore Policy ≠ Bedrock Guardrails
 
-- One of the most common mistakes is assuming AgentCore Policy replaces Guardrails.
-- It does not.
-
 ## AgentCore Policy
 
 **Controls:**
