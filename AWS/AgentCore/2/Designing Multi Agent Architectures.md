@@ -1,5 +1,5 @@
 # Reference design for a healthcare payer multi-agent platform 
-- A platform spanning Producer, Quote, Enrollment, Billing, and Servicing, using Amazon Web Services Amazon Bedrock AgentCore.
+- A platform spanning ** Producer, Quote, Enrollment, Billing, and Servicing,** using **Amazon Web Services Amazon Bedrock AgentCore**.
 - The key recommendation is to organize agents around bounded business capabilities, while keeping transactions, authorization, workflow state, and regulatory decisions deterministic outside the LLM.
 
 ## Compliance note:
