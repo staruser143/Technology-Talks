@@ -15,7 +15,7 @@ In LangGraph, the workflow state serves as the central shared memory object that
 ## Code Example: Basic Workflow State
 This setup builds a basic state that keeps track of user commands and conversation logs using [LangChain’s prebuilt message reducer tool (add_messages)](https://docs.langchain.com/oss/python/langgraph/graph-api): [4] 
 
-```
+```python
 from typing import Annotated, TypedDictfrom langchain_core.messages import BaseMessagefrom langgraph.graph import StateGraph, START, ENDfrom langgraph.graph.message import add_messages
 # 1. Define the State Schemaclass AgentState(TypedDict):
     # 'add_messages' ensures new outputs append to the list rather than overwriting it
