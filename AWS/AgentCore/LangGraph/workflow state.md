@@ -17,7 +17,9 @@ This setup builds a basic state that keeps track of user commands and conversati
 
 ```python
 from typing import Annotated, TypedDictfrom langchain_core.messages import BaseMessagefrom langgraph.graph import StateGraph, START, ENDfrom langgraph.graph.message import add_messages
-# 1. Define the State Schemaclass AgentState(TypedDict):
+# 1. Define the State Schema
+
+class AgentState(TypedDict):
     # 'add_messages' ensures new outputs append to the list rather than overwriting it
     messages: Annotated[list[BaseMessage], add_messages]
     current_task: str
