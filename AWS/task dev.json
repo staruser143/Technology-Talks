@@ -1,0 +1,5 @@
+aws ecs describe-task-definition \
+  --task-definition storeops-taskdefinition \
+  --region us-east-1 \
+  --query taskDefinition \
+  --output json > task-definition-export.json
