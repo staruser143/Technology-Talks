@@ -1,0 +1,11 @@
+jq '{
+  family,
+  taskRoleArn,
+  executionRoleArn,
+  networkMode,
+  requiresCompatibilities,
+  cpu,
+  memory,
+  runtimePlatform,
+  containerDefinitions
+}' task-definition-export.json > .aws/task-definition.json
