@@ -1,0 +1,82 @@
+By default, a state reducer only merges values; it does not automatically track node metadata. If multiple nodes append values to a list (for example, via operator.add), the final state contains only the raw values without any record of their origin.
+To determine which node produced a given value, use one of three main patterns:
+Pattern 1: Tag the Data at the Schema Level (Best Practice)
+Include metadata (such as the node name, timestamp, or step ID) directly in the object emitted by the node.
+import operator
+from typing import Annotated, TypedDict
+from langgraph.graph import StateGraph, START, END
+
+# Define an entry schema with origin metadata
+class StepOutput(TypedDict):
+    node: str
+    content: str
+
+class WorkflowState(TypedDict):
+    # Appends new StepOutput entries to the history
+    log: Annotated[list[StepOutput], operator.add]
+
+# Nodes explicitly tag their identity in the emitted dict
+def fetch_user_profile(state: WorkflowState) -> dict:
+    return {
+        "log": [{"node": "fetch_user_profile", "content": "Profile data retrieved"}]
+    }
+
+def enrich_data(state: WorkflowState) -> dict:
+    return {
+        "log": [{"node": "enrich_data", "content": "Added location details"}]
+    }
+
+builder = StateGraph(WorkflowState)
+builder.add_node("fetch_user_profile", fetch_user_profile)
+builder.add_node("enrich_data", enrich_data)
+
+builder.add_edge(START, "fetch_user_profile")
+builder.add_edge("fetch_user_profile", "enrich_data")
+builder.add_edge("enrich_data", END)
+
+graph = builder.compile()
+result = graph.invoke({"log": []})
+
+# Inspection:
+for item in result["log"]:
+    print(f"[{item['node']}] -> {item['content']}")
+# Output:
+# [fetch_user_profile] -> Profile data retrieved
+# [enrich_data] -> Added location details
+
+Pattern 2: Inspect Graph Execution via Streaming (stream(..., stream_mode="updates"))
+If you want to keep your internal state schema clean and unpolluted with origin metadata, stream the execution using stream_mode="updates".
+In this mode, LangGraph yields a dictionary mapping each executed node name to its specific state update before the reducer merges it:
+inputs = {"log": []}
+
+for event in graph.stream(inputs, stream_mode="updates"):
+    for node_name, state_update in event.items():
+        print(f"Node '{node_name}' produced: {state_update}")
+
+Output:
+Node 'fetch_user_profile' produced: {'log': [{'content': 'Profile data retrieved'}]}
+Node 'enrich_data' produced: {'log': [{'content': 'Added location details'}]}
+
+Pattern 3: Use Message Metadata or Custom Reducers
+For Conversational Agents (add_messages):
+When using LangChain message classes (HumanMessage, AIMessage, ToolMessage), the message object provides a name or additional_kwargs / response_metadata field:
+from langchain_core.messages import AIMessage
+
+def research_agent(state: AgentState) -> dict:
+    return {
+        "messages": [
+            AIMessage(content="Found results.", name="research_agent")
+        ]
+    }
+
+You can then inspect msg.name to see which agent produced the response.
+Custom Reducer That Captures Sender Metadata:
+You can write a custom reducer that checks incoming data structures and records the caller or structure automatically:
+def tagged_reducer(existing: list, updates: list) -> list:
+    existing = existing or []
+    return existing + updates
+
+Summary
+ * Use Pattern 1 (Schema-level tagging) when subsequent nodes need to filter or read data created by a specific node inside the graph.
+ * Use Pattern 2 (stream_mode="updates") when you want observability, logging, or UI streaming from the outside without altering the state model.
+ * Use Pattern 3 (name on Messages) when building multi-agent conversational networks with add_messages.
