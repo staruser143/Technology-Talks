@@ -1,18 +1,23 @@
-Here is an example of a multi-step Content Review and Approval Workflow.
-In this scenario, a writer creates content, an AI reviewer checks it for quality, and a supervisor gives final approval. The workflow state acts as the central notebook, passing the draft, quality scores, and feedback from step to step.
-## 1. Define the Workflow State
-We use a standard Python TypedDict. Each node will receive this state, read from it, and return a dictionary that updates it.
+# Multi-step Content Review and Approval Workflow.
+- In this scenario, a writer creates content, an AI reviewer checks it for quality, and a supervisor gives final approval. 
+- The workflow state acts as the central notebook, passing the draft, quality scores, and feedback from step to step.
 
+## 1. Define the Workflow State
+- We use a standard Python TypedDict. 
+- Each node will receive this state, read from it, and return a dictionary that updates it.
+```python
 from typing import TypedDict, List
-# Define what our shared memory looks likeclass ReviewState(TypedDict):
+# Define what our shared memory looks like
+class ReviewState(TypedDict):
     draft_content: str       # The core text being worked on
     quality_score: int       # Out of 100, set by the reviewer
     feedback_notes: List[str] # List of revision suggestions
     approval_status: str     # "pending", "approved", or "rejected"
 
+```
 ## 2. Define the Nodes (The Steps)
 Each function represents a "node" or a step in the process. They automatically receive the current ReviewState.
-
+```python
 def writer_node(state: ReviewState):
     """Step 1: Write the initial draft."""
     print("✍️ Writer: Draft created.")
@@ -50,20 +55,22 @@ def supervisor_node(state: ReviewState):
     return {
         "approval_status": status
     }
-
+```
 ## 3. Route the Flow (Conditional State Check)
 We need a routing function (a "conditional edge") that inspects the state after the supervisor node to decide whether the workflow ends or goes back to the writer for fixes.
 
+```python
 def route_after_supervisor(state: ReviewState):
     """Inspects the state to determine the next path."""
     if state["approval_status"] == "approved":
         return "end_workflow"
     else:
         return "rewrite"
-
+```
 ## 4. Build and Run the Graph
 Now, we stitch the steps together using LangGraph's StateGraph.
 
+```python
 from langgraph.graph import StateGraph, START, END
 # Initialize the graph with our state structureworkflow = StateGraph(ReviewState)
 # Add our steps
@@ -88,14 +95,12 @@ workflow.add_conditional_edges(
 
 print("\n🎯 Final Workflow State:")
 print(final_state)
-
+```
 ## How the State Mutated During This Run:
 
-   1. START initializes the state as empty.
-   2. writer_node runs, populating draft_content with a short sentence.
-   3. reviewer_node reads the short text, flags it as too brief, sets quality_score to 65, and appends a tip to feedback_notes.
-   4. supervisor_node reads the 65 score and updates approval_status to "rejected".
-   5. route_after_supervisor reads the "rejected" status and sends the workflow back to the "writer" node to fix it using the accumulated feedback.
-
-Would you like to see how to use LangGraph's prebuilt Message state to handle a multi-turn chat history instead of custom text fields, or see how to inject human feedback during the supervisor step?
+   1. **START** initializes the state as empty.
+   2. **writer_node** runs, populating draft_content with a short sentence.
+   3. **reviewer_node** reads the short text, flags it as too brief, sets quality_score to 65, and appends a tip to feedback_notes.
+   4. **supervisor_node** reads the 65 score and updates approval_status to "**rejected**".
+   5. **route_after_supervisor** reads the "**rejected**" status and sends the workflow back to the "**writer**" node to fix it using the accumulated feedback.
 

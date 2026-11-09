@@ -1,8 +1,11 @@
-To prevent infinite loops in LangGraph, you can track the loop count directly inside your workflow state and add a safety check to your conditional edge.
-Here is how to modify the previous workflow by adding a loop_count variable to the state to force an exit if it loops too many times.
+# Preventing Infinite Loops in LangGraph
+
+- To prevent infinite loops in LangGraph, we can track the loop count directly inside the workflow state and add a safety check to your conditional edge.
+- Here is how to modify the previous workflow by adding a loop_count variable to the state to force an exit if it loops too many times.
+
 ## 1. Update the State and Nodes
 We add loop_count to our ReviewState and increment it inside our writer_node.
-
+```python
 from typing import Annotated, TypedDict, Listfrom langgraph.graph import StateGraph, START, END
 def append_notes(old_notes: List[str], new_notes: List[str]) -> List[str]:
     return old_notes + new_notes
@@ -31,10 +34,11 @@ def writer_node(state: ReviewState):
     }
 def supervisor_node(state: ReviewState):
     return {"approval_status": "rejected"}
+```
 
 ## 2. Update the Conditional Edge (The Safety Valve)
 The routing function now inspects loop_count. If it exceeds our MAX_RETRIES threshold, it overrides the supervisor's rejection and forces the graph to end.
-
+```python
 MAX_RETRIES = 3
 def route_after_supervisor(state: ReviewState):
     """Inspects approval state AND loop count to prevent infinite cycles."""
@@ -47,10 +51,12 @@ def route_after_supervisor(state: ReviewState):
         return "end_workflow"
     else:
         return "rewrite"
+```
 
 ## 3. Wire and Execute the Graph
-Map the new "force_exit" routing option straight to the END node.
 
+Map the new "force_exit" routing option straight to the END node.
+```python
 workflow = StateGraph(ReviewState)
 
 workflow.add_node("writer", writer_node)
@@ -80,10 +86,11 @@ app = workflow.compile()
 })
 
 print(f"\n🎯 Graph Finished. Final Loop Count: {final_state['loop_count']}")
+```
 
 ## Streamed Console Output
-If you run this code, the system stops cleanly on the third iteration instead of looping forever:
-
+If we run this code, the system stops cleanly on the third iteration instead of looping forever:
+```
 ✍️ [Loop 1] Writer: Processing draft...
 👔 Supervisor: Checking score... Quality too low. Rejected.
 
@@ -94,6 +101,6 @@ If you run this code, the system stops cleanly on the third iteration instead of
 ⚠️ Safety Guard: Max retries (3) reached. Forcing exit.
 
 🎯 Graph Finished. Final Loop Count: 3
+```
 
-Would you like to see how to pass runtime configuration arguments to your graph to dynamically change the MAX_RETRIES limit without hardcoding it?
 

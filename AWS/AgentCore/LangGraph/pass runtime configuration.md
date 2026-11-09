@@ -1,9 +1,15 @@
-To pass dynamic parameters into your graph at runtime without hardcoding them, LangGraph provides a built-in feature called RunnableConfig.
-By adding a special section called configurable to your configuration dictionary, you can pass parameters like max_retries into the invoke() step. Any node or conditional edge can then read these values on the fly.
-Here is the complete example showing how to configure and read runtime arguments:
-## 1. Update the Routing Edge to Read Configuration
-Any node or conditional edge in LangGraph can optionally accept a second parameter usually named config: RunnableConfig. LangGraph will automatically inject the runtime parameters into it.
+# Passing Dynamic Parameters to the Graph
 
+- To pass dynamic parameters into the graph at runtime without hardcoding them, LangGraph provides a built-in feature called RunnableConfig.
+- By adding a special section called configurable to your configuration dictionary, you can pass parameters like max_retries into the invoke() step.
+- Any node or conditional edge can then read these values on the fly.
+
+Here is the complete example showing how to configure and read runtime arguments:
+
+## 1. Update the Routing Edge to Read Configuration
+- Any node or conditional edge in LangGraph can optionally accept a second parameter usually named config: RunnableConfig. 
+- LangGraph will automatically inject the runtime parameters into it.
+```python
 from typing import Annotated, TypedDict, Listfrom langchain_core.runnables import RunnableConfig  # <-- Import the configuration typefrom langgraph.graph import StateGraph, START, END
 # Define standard state structuredef append_notes(old_notes: List[str], new_notes: List[str]) -> List[str]:
     return old_notes + new_notes
@@ -30,10 +36,10 @@ class ReviewState(TypedDict):
         return "end_workflow"
     else:
         return "rewrite"
-
+```
 ## 2. Define standard Nodes
 We will simulate the same loop structure where the writer fails to change the draft content, causing consecutive rejections.
-
+```python
 def writer_node(state: ReviewState):
     current_loop = state.get("loop_count", 0) + 1
     print(f"✍️ [Loop {current_loop}] Writer: Generating draft...")
@@ -69,10 +75,10 @@ workflow.add_conditional_edges(
     }
 )
 app = workflow.compile()
-
+```
 ## 4. Execute with Runtime Arguments
 When executing your application, you pass a dictionary containing your state inputs as the first argument, and the RunnableConfig dictionary as the second argument.
-
+```python
 # Initial State Inputinitial_state = {
     "draft_content": "", 
     "quality_score": 0, 
@@ -100,11 +106,10 @@ app.invoke(initial_state, config_run_2)
 ✍️ [Loop 3] Writer: Generating draft...
 ✍️ [Loop 4] Writer: Generating draft...
 ⚠️ Safety Guard: Dynamic max retries limit (4) hit! Forcing exit.
-
+```
 ## Key Takeaways
 
-* No Re-compilation Needed: You compile the workflow graph (workflow.compile()) just once. You alter its behavior purely by shifting inputs inside invoke().
-* Deep Propagation: LangGraph manages passing this config dictionary down automatically. If your node calls another LLM or chain inside it, the configuration passes through to those sub-steps as well.
+* **No Re-compilation Needed**: We compile the workflow graph (workflow.compile()) just once. We alter its behavior purely by shifting inputs inside invoke().
+* **Deep Propagation**: LangGraph manages passing this config dictionary down automatically. If the node calls another LLM or chain inside it, the configuration passes through to those sub-steps as well.
 
-Would you like to see how to use config parameters to connect a persistent database checkpointer, allowing you to save and resume individual user state histories using unique thread_id keys?
 

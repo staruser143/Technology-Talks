@@ -1,5 +1,9 @@
-Automating AWS AppConfig routing updates after an Amazon Bedrock Model Evaluation job passes its quality gate creates a closed-loop CI/CD deployment track. This replaces manual reviews with an event-driven or Step Functions-orchestrated gate that dynamically promotes candidate models (or begins canary traffic shifting).
-Architecture Overview
+# Automating AppConfig with Bedrock Model Evaluation Job
+- Automating AWS AppConfig routing updates after an Amazon Bedrock Model Evaluation job passes its quality gate creates a closed-loop CI/CD deployment track.
+- This replaces manual reviews with an event-driven or Step Functions-orchestrated gate that dynamically promotes candidate models (or begins canary traffic shifting).
+
+## Architecture Overview
+```
  ┌──────────────────────────────────────────────┐
  │ Bedrock Automated Model Evaluation Job       │
  │ - Evaluates candidate model on golden dataset│
@@ -24,11 +28,13 @@ Architecture Overview
  │ Bedrock Converse Client / Lambda Router      │
  │ - Ingests new model/weights at runtime       │
  └──────────────────────────────────────────────┘
+```
 
-Step-by-Step Implementation
-1. Define the Quality Gate Evaluation Logic (S3 Metrics Parser)
+## Step-by-Step Implementation
+### 1. Define the Quality Gate Evaluation Logic (S3 Metrics Parser)
 When an automated Bedrock Model Evaluation job finishes, its scoring matrices (Factual Accuracy/Groundedness, Relevance, Fluency) are output as JSON lines or summary files to Amazon S3.
 The Lambda function below downloads the evaluation output from S3, verifies whether the candidate foundation model meets the minimum threshold (e.g., Accuracy \ge 0.85), and proceeds to publish a new configuration profile to AppConfig.
+```python
 import json
 import boto3
 from urllib.parse import urlparse
@@ -140,9 +146,11 @@ def lambda_handler(event, context):
         "score": score,
         "deployment_number": dep_number
     }
+```
 
-3. Orchestrating with AWS Step Functions
+### 3. Orchestrating with AWS Step Functions
 Instead of running long-lived polling in a single Lambda, use an AWS Step Functions state machine with native retry/catch policies to orchestrate the pipeline:
+```json
 {
   "Comment": "Bedrock Evaluation to AppConfig Automated Gate",
   "StartAt": "WaitForEvaluationCompletion",
@@ -219,9 +227,10 @@ Instead of running long-lived polling in a single Lambda, use an AWS Step Functi
     }
   }
 }
+```
 
-Automated Rollback Strategy
+### Automated Rollback Strategy
 Attach an Amazon CloudWatch Alarm to the AppConfig Environment to protect against regressions once the canary traffic shift begins:
- * Alarm Trigger: Monitor Bedrock.ServerErrors or custom CloudWatch metrics tracking runtime hallucination/accuracy regression alerts during the deployment window.
- * Automated Action: If the alarm transitions to ALARM state, AppConfig immediately halts deployment progression and reverts runtime configuration to the previous version.
- * Programmatic Circuit Breaker: If custom post-inference monitoring detects latency spikes, invoke appconfig.stop_deployment(...) to immediately reset the traffic split to 100% on the baseline model.
+ * **Alarm Trigger**: Monitor Bedrock.ServerErrors or custom CloudWatch metrics tracking runtime hallucination/accuracy regression alerts during the deployment window.
+ * **Automated Action**: If the alarm transitions to ALARM state, AppConfig immediately halts deployment progression and reverts runtime configuration to the previous version.
+ * **Programmatic Circuit Breaker**: If custom post-inference monitoring detects latency spikes, invoke appconfig.stop_deployment(...) to immediately reset the traffic split to 100% on the baseline model.

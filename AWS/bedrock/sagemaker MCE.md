@@ -1,14 +1,20 @@
-Amazon SageMaker Multi-Container Endpoints (MCE) allow you to deploy up to 15 different serving containers—each potentially running a completely different machine learning framework, runtime environment, or custom image—on a single, shared endpoint behind common compute instances.
-How Multi-Container Endpoints Work
-When you create an MCE, you define multiple container specifications inside a single SageMaker Model. Each container can run its own independent image (e.g., PyTorch, TensorFlow, Scikit-learn, Triton) and point to distinct model artifacts.
+# Amazon SageMaker Multi-Container Endpoints (MCE) 
+- Allow us to deploy up to 15 different serving containers—each potentially running a completely different machine learning framework, runtime environment, or custom image—on a single, shared endpoint behind common compute instances.
+
+
+## How Multi-Container Endpoints Work
+- When you create an MCE, you define multiple container specifications inside a single SageMaker Model. 
+- Each container can run its own independent image (e.g., PyTorch, TensorFlow, Scikit-learn, Triton) and point to distinct model artifacts.
+
 MCE operates in two distinct execution modes configured via InferenceExecutionConfig.Mode:
- * Direct Mode (Direct):
+ * **Direct Mode (Direct)**:
    * The caller invokes a specific container on the shared endpoint using the TargetContainerHostname request parameter or header.
    * Enables consolidating multiple unrelated models with low or varying traffic onto a single set of instances without tying them together into a pipeline.
- * Serial Mode (Serial / Inference Pipelines):
+ * **Serial Mode (Serial / Inference Pipelines)**:
    * Requests flow sequentially through the containers in a chain (e.g., Container 1: Scikit-learn data pre-processing \rightarrow Container 2: PyTorch/XGBoost inference \rightarrow Container 3: Custom post-processing).
    * SageMaker manages passing intermediate outputs between containers with low-latency inter-process communication on the host.
-Key Scenarios: When to Use Multi-Container Endpoints
+
+## Key Scenarios: When to Use Multi-Container Endpoints
 | Scenario | Why MCE Fits |
 |---|---|
 | Heterogeneous Frameworks / Environments | You have models that cannot share a single container runtime because they depend on different frameworks (e.g., PyTorch vs. TensorFlow) or conflicting Python/CUDA dependencies. |

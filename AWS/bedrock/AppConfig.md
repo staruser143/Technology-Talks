@@ -1,12 +1,17 @@
-Using AWS AppConfig with Amazon Bedrock decouples your application code from generative AI runtime parameters. Rather than redeploying microservices or Lambda functions whenever you switch models, update system prompts, tune hyperparameters, or alter routing rules, you manage these settings dynamically at runtime.
-Core Use Cases
+# AppConfig
+- Using AWS AppConfig with Amazon Bedrock decouples the application code from generative AI runtime parameters.
+- Rather than redeploying microservices or Lambda functions whenever we switch models, update system prompts, tune hyperparameters, or alter routing rules, you manage these settings dynamically at runtime.
+
+## Core Use Cases
 | Pattern | How AppConfig Integrates with Bedrock |
 |---|---|
 | Dynamic Model Routing & Fallback | Store the target modelId (or cross-region inference profile ARN) in AppConfig. Switch from Anthropic Claude to Amazon Nova without code deployment if an endpoint throttles or enters legacy deprecation. |
 | Canary Traffic Shifting & Rollbacks | Define split percentages (e.g., 90% baseline model, 10% candidate custom model/prompt). Use AppConfig deployment strategies to shift traffic linearly while CloudWatch alarms monitor for latency spikes or error rates to trigger automated rollbacks. |
 | Decoupled Prompt & Hyperparameter Tuning | Control inference configurations (such as temperature, topP, maxTokens) or managed Prompt Management alias IDs outside the codebase. |
 | Feature Flags for Generative AI Features | Safely gate capabilities (e.g., streaming responses, multi-modal ingestion, or experimental Bedrock Agents) for select user cohorts. |
-Architecture Overview
+
+## Architecture Overview
+```   
                                       AWS Cloud
                      ┌────────────────────────────────────────┐
                      │              AWS AppConfig             │
@@ -25,10 +30,14 @@ Architecture Overview
                                               │ (Converse API / FMs)  │
                                               └───────────────────────┘
 
+```
+
 Using the AWS AppConfig Lambda Extension or SDK caching, the compute layer polls AppConfig locally in memory. This prevents per-request API overhead and eliminates extra latency.
-Step-by-Step Implementation Guide
-Step 1: Define the AppConfig Configuration Profile
+
+## Step-by-Step Implementation Guide
+### Step 1: Define the AppConfig Configuration Profile
 Create a JSON schema in AppConfig with your routing and runtime parameters.
+```json
 {
   "routing_strategy": "CANARY",
   "baseline_model": {
@@ -49,10 +58,14 @@ Create a JSON schema in AppConfig with your routing and runtime parameters.
     "force_baseline_only": false
   }
 }
+```
 
 Tip: Attach a JSON Schema validator in AppConfig to ensure required keys (model_id, temperature) are never accidentally deployed with invalid formats or out-of-bound values.
-Step 2: Implement Dynamic Model Invocations in Code
+
+### Step 2: Implement Dynamic Model Invocations in Code
 The following Lambda handler retrieves the dynamic configuration from the AppConfig local agent extension (running on http://localhost:2772) and invokes the selected model using the unified Amazon Bedrock Converse API.
+
+```python
 import json
 import random
 import urllib.request
@@ -118,11 +131,13 @@ def lambda_handler(event, context):
         "selected_model": selected_target["model_id"],
         "response": output_text
     }
+```
+### Step 3: Configure Deployment Strategies and Automated Rollbacks
+ 
+ * **Deployment Strategy**: Use built-in templates such as AppConfig.Linear50PercentEvery30Seconds or AppConfig.Canary10Percent20Minutes to gradually roll out routing updates across your fleet.
+ * **CloudWatch Alarm Rollback Monitor**: Link an Amazon CloudWatch alarm monitoring Bedrock.ServerErrors (5xx errors) or invocation latency to the AppConfig Environment. If an alarm breaches thresholds during the deployment window, AppConfig automatically halts traffic shifting and rolls back the configuration pointer to the last known good state.
 
-Step 3: Configure Deployment Strategies and Automated Rollbacks
- * Deployment Strategy: Use built-in templates such as AppConfig.Linear50PercentEvery30Seconds or AppConfig.Canary10Percent20Minutes to gradually roll out routing updates across your fleet.
- * CloudWatch Alarm Rollback Monitor: Link an Amazon CloudWatch alarm monitoring Bedrock.ServerErrors (5xx errors) or invocation latency to the AppConfig Environment. If an alarm breaches thresholds during the deployment window, AppConfig automatically halts traffic shifting and rolls back the configuration pointer to the last known good state.
-Best Practices
- * Standardize on the Converse API: Always use bedrock_runtime.converse() instead of provider-specific APIs (e.g., invoke_model). This guarantees that payload structures remain identical whether AppConfig points to Claude, Titan, Llama, or Nova.
- * Pair with Cross-Region Profiles: Store Cross-Region Inference profile identifiers (e.g., us.anthropic...) in AppConfig rather than single-region IDs to protect against regional quotas and throttling exceptions.
- * Decouple Custom Provisioned Models: Store the Provisioned Throughput ARN for customized fine-tuned models in AppConfig rather than hardcoding endpoint ARNs.
+### Best Practices
+ * **Standardize on the Converse API**: Always use bedrock_runtime.converse() instead of provider-specific APIs (e.g., invoke_model). This guarantees that payload structures remain identical whether AppConfig points to Claude, Titan, Llama, or Nova.
+ * **Pair with Cross-Region Profiles**: Store Cross-Region Inference profile identifiers (e.g., us.anthropic...) in AppConfig rather than single-region IDs to protect against regional quotas and throttling exceptions.
+ * **Decouple Custom Provisioned Models**: Store the Provisioned Throughput ARN for customized fine-tuned models in AppConfig rather than hardcoding endpoint ARNs.
