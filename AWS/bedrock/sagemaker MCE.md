@@ -11,15 +11,15 @@ MCE operates in two distinct execution modes configured via InferenceExecutionCo
    * The caller invokes a specific container on the shared endpoint using the TargetContainerHostname request parameter or header.
    * Enables consolidating multiple unrelated models with low or varying traffic onto a single set of instances without tying them together into a pipeline.
  * **Serial Mode (Serial / Inference Pipelines)**:
-   * Requests flow sequentially through the containers in a chain (e.g., Container 1: Scikit-learn data pre-processing \rightarrow Container 2: PyTorch/XGBoost inference \rightarrow Container 3: Custom post-processing).
+   * Requests flow sequentially through the containers in a chain (e.g., Container 1: Scikit-learn data pre-processing -> Container 2: PyTorch/XGBoost inference -> Container 3: Custom post-processing).
    * SageMaker manages passing intermediate outputs between containers with low-latency inter-process communication on the host.
 
 ## Key Scenarios: When to Use Multi-Container Endpoints
 | Scenario | Why MCE Fits |
 |---|---|
-| Heterogeneous Frameworks / Environments | You have models that cannot share a single container runtime because they depend on different frameworks (e.g., PyTorch vs. TensorFlow) or conflicting Python/CUDA dependencies. |
-| End-to-End Inference Pipelines (Preprocessing & Postprocessing) | You need a sequential pipeline where feature extraction/normalization (e.g., Scikit-learn) feeds directly into an ML model, followed by scoring/formatting logic, without adding external network hops. |
-| Cost Consolidation for Low-Traffic Heterogeneous Models | You have several independent models with different tech stacks, none of which receive enough traffic to justify paying for separate dedicated EC2 instances 24/7. |
+| Heterogeneous Frameworks / Environments | We have models that cannot share a single container runtime because they depend on different frameworks (e.g., PyTorch vs. TensorFlow) or conflicting Python/CUDA dependencies. |
+| End-to-End Inference Pipelines (Preprocessing & Postprocessing) | We need a sequential pipeline where feature extraction/normalization (e.g., Scikit-learn) feeds directly into an ML model, followed by scoring/formatting logic, without adding external network hops. |
+| Cost Consolidation for Low-Traffic Heterogeneous Models | We have several independent models with different tech stacks, none of which receive enough traffic to justify paying for separate dedicated EC2 instances 24/7. |
 | Per-Container Security and Access Controls | In direct mode, IAM policies can restrict which callers or IAM roles can invoke specific containers on the endpoint via the sagemaker:TargetContainerHostname condition key. |
 Multi-Container Endpoints (MCE) vs. Multi-Model Endpoints (MME)
 | Feature | Multi-Container Endpoints (MCE) | Multi-Model Endpoints (MME) |

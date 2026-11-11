@@ -1,12 +1,12 @@
 # Amazon SageMaker Dedicated Single-Model Endpoint
 - Hosts a single, specific machine learning model on one or more dedicated compute instances (such as EC2 ml.m5, ml.c5, or GPU-backed ml.g5/ml.p4d instances) provisioned exclusively for that workload.
-- Unlike Multi-Model Endpoints (MME)—which share instances and dynamically load models from S3—or Multi-Container Endpoints (MCE)—which pack multiple containers onto shared hardware—a dedicated single-model endpoint assigns 100% of the underlying compute, RAM/VRAM, and network bandwidth to a single model artifact and its serving container.
+- Unlike Multi-Model Endpoints (MME) — which share instances and dynamically load models from S3—or Multi-Container Endpoints (MCE)—which pack multiple containers onto shared hardware—a dedicated single-model endpoint assigns 100% of the underlying compute, RAM/VRAM, and network bandwidth to a single model artifact and its serving container.
 
 ## Key Architectural Characteristics
- * 1:1 Resource Allocation: The model stays continuously loaded in memory (RAM or GPU VRAM), ensuring predictable performance without container contention.
- * Zero Cold-Start / Dynamic Caching Latency: Eliminates the latency spikes caused by Least Recently Used (LRU) memory eviction or downloading weights from Amazon S3 at invocation time.
+ * **1:1 Resource Allocation**: The model stays continuously loaded in memory (RAM or GPU VRAM), ensuring predictable performance without container contention.
+ * **Zero Cold-Start / Dynamic Caching Latency**: Eliminates the latency spikes caused by Least Recently Used (LRU) memory eviction or downloading weights from Amazon S3 at invocation time.
  * Dedicated Auto Scaling: Scales horizontally (adding/removing EC2 instances behind the endpoint load balancer) strictly based on that single model’s real-time metrics, such as InvocationsPerInstance or target GPU/CPU utilization.
- * Independent Lifecycle & Canary Deployments: Enables isolated zero-downtime Blue/Green updates, linear or canary traffic shifting, and automatic rollbacks via SageMaker Deployment Guardrails and Model Registry integration without risking other models.
+ * **Independent Lifecycle & Canary Deployments**: Enables isolated zero-downtime Blue/Green updates, linear or canary traffic shifting, and automatic rollbacks via SageMaker Deployment Guardrails and Model Registry integration without risking other models.
 
 ## When to Consider Using Dedicated Single-Model Endpoints
 

@@ -1,10 +1,13 @@
-An Amazon Bedrock model customization job configures serverless compute to update foundation model weights directly using your training corpus in Amazon S3.
-The primary SDK entry point is the control-plane client (bedrock), using the create_model_customization_job API.
-1. Prerequisites & Preparation
-A. IAM Execution Role Policy
+# Bedrock Model Customization Job Using SDK
+- An Amazon Bedrock model customization job configures serverless compute to update foundation model weights directly using your training corpus in Amazon S3.
+- The primary SDK entry point is the control-plane client (bedrock), using the create_model_customization_job API.
+
+## 1. Prerequisites & Preparation
+### A. IAM Execution Role Policy
 Bedrock requires an execution role granting access to read training datasets and write output artifacts to your S3 bucket.
- * Trust Policy: Principal bedrock.amazonaws.com with sts:AssumeRole.
+ * **Trust Policy**: Principal bedrock.amazonaws.com with sts:AssumeRole.
  * Permissions Policy:
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -26,17 +29,21 @@ Bedrock requires an execution role granting access to read training datasets and
     }
   ]
 }
-
-B. Dataset Formatting
+```
+### B. Dataset Formatting
 Datasets must reside in S3 as newline-delimited JSON (.jsonl):
- * Fine-Tuning (FINE_TUNING): Supervised prompt-completion pairs.
+ * **Fine-Tuning (FINE_TUNING)**: Supervised prompt-completion pairs.
+   ```json
    {"prompt": "Summarize policy notice: Employees must give two weeks notice.", "completion": "Notice period: 2 weeks mandatory prior to departure."}
+   ```
+ * **Continued Pre-training (CONTINUED_PRE_TRAINING)**: Unlabeled raw domain text.
+    ```json
+      {"input": "According to Section 4.2 of internal corporate security policies, all databases must use AWS KMS encryption..."}
+    ```
 
- * Continued Pre-training (CONTINUED_PRE_TRAINING): Unlabeled raw domain text.
-   {"input": "According to Section 4.2 of internal corporate security policies, all databases must use AWS KMS encryption..."}
-
-2. Submitting the Customization Job (Python SDK / Boto3)
+## 2. Submitting the Customization Job (Python SDK / Boto3)
 Initialize the bedrock control-plane client and configure training hyperparameters, dataset paths, and target model identifiers:
+```python
 import boto3
 
 bedrock = boto3.client("bedrock", region_name="us-east-1")
@@ -67,9 +74,11 @@ response = bedrock.create_model_customization_job(
 
 job_arn = response["jobArn"]
 print(f"Customization Job Submitted: {job_arn}")
+```
 
-3. Monitoring Job Status & Metrics
+## 3. Monitoring Job Status & Metrics
 Because customization is an asynchronous batch process, use get_model_customization_job to track execution and retrieve loss metrics:
+```python
 import time
 
 def wait_for_customization(job_arn: str, poll_interval: int = 60):
@@ -93,14 +102,16 @@ def wait_for_customization(job_arn: str, poll_interval: int = 60):
         time.sleep(poll_interval)
 
 model_arn = wait_for_customization(job_arn)
+```
 
-4. Serving the Customized Model
+## 4. Serving the Customized Model
 Once the model reaches the Completed state, it is ready for deployment:
- * Deployment Options:
-   * Provisioned Throughput: Custom models generally require dedicated capacity. Purchase one or more Model Units (MUs) with no commitment (hourly billing) or a 1/6-month term using create_provisioned_model_throughput.
-   * On-Demand Deployment: Supported base models (such as Amazon Nova or select Titan variants) can also be deployed to on-demand serverless targets without dedicated capacity reservation.
- * Inference Execution:
+ * **Deployment Options**:
+   * **Provisioned Throughput**: Custom models generally require dedicated capacity. Purchase one or more Model Units (MUs) with no commitment (hourly billing) or a 1/6-month term using create_provisioned_model_throughput.
+   * **On-Demand Deployment**: Supported base models (such as Amazon Nova or select Titan variants) can also be deployed to on-demand serverless targets without dedicated capacity reservation.
+ * **Inference Execution**:
    Call the provisioned model ARN using the runtime client (bedrock-runtime):
+```python
 bedrock_runtime = boto3.client("bedrock-runtime", region_name="us-east-1")
 
 provisioned_model_arn = "arn:aws:bedrock:us-east-1:123456789012:provisioned-model/my-custom-endpoint"
@@ -114,4 +125,4 @@ response = bedrock_runtime.converse(
 )
 
 print(response["output"]["message"]["content"][0]["text"])
-
+```
