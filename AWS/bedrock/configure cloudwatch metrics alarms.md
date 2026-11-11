@@ -1,8 +1,13 @@
-Amazon Bedrock publishes operational telemetry to Amazon CloudWatch under the namespace AWS/Bedrock/Guardrails. The metric InvocationsIntervened tracks the number of times guardrail policies (such as sensitive information filters, word filters, or denied topics) intervene on user prompts or model responses.
-When updating guardrail versions, an unintended surge in InvocationsIntervened typically indicates a high false-positive rate (over-blocking benign user prompts). By configuring a CloudWatch metric alarm on this metric and attaching it to the monitors property of an AWS AppConfig Environment, AppConfig can automatically halt canary deployment progression and roll back the configuration pointer to the last known good guardrail version.
-Step-by-Step Configuration
-1. Configure the CloudWatch Metric Alarm
-You can create an alarm based either on the raw intervention count or on an intervention rate calculated using CloudWatch Metric Math ((InvocationsIntervened / Invocations) * 100).
+# AWS CloudWatch metrics for Amazon Bedrock
+- Bedrock publishes operational telemetry to Amazon CloudWatch under the namespace AWS/Bedrock/Guardrails.
+- The metric InvocationsIntervened tracks the number of times guardrail policies (such as sensitive information filters, word filters, or denied topics) intervene on user prompts or model responses.
+- When updating guardrail versions, an unintended surge in InvocationsIntervened typically indicates a high false-positive rate (over-blocking benign user prompts). 
+- By configuring a CloudWatch metric alarm on this metric and attaching it to the monitors property of an AWS AppConfig Environment, AppConfig can automatically halt canary deployment progression and roll back the configuration pointer to the last known good guardrail version.
+
+## Step-by-Step Configuration
+### 1. Configure the CloudWatch Metric Alarm
+- We can create an alarm based either on the raw intervention count or on an intervention rate calculated using CloudWatch Metric Math ((InvocationsIntervened / Invocations) * 100).
+```python
 import boto3
 
 cloudwatch = boto3.client("cloudwatch", region_name="us-east-1")
@@ -29,9 +34,11 @@ cloudwatch.put_metric_alarm(
 )
 
 print(f"Created CloudWatch Alarm: {ALARM_NAME}")
+```
 
-2. Create the AppConfig IAM Service Role for Alarms
+### 2. Create the AppConfig IAM Service Role for Alarms
 AppConfig requires permissions to poll the alarm state via cloudwatch:DescribeAlarms.
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -44,8 +51,9 @@ AppConfig requires permissions to poll the alarm state via cloudwatch:DescribeAl
     }
   ]
 }
-
+```
 The trust policy must permit AppConfig to assume the role:
+```json
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -58,9 +66,10 @@ The trust policy must permit AppConfig to assume the role:
     }
   ]
 }
-
-3. Link the CloudWatch Alarm to the AppConfig Environment Monitor
-In AWS AppConfig, automated rollbacks are tied to the Environment resource (not the configuration profile or deployment strategy). Add the alarm ARN and execution role ARN to the environment's monitors list:
+```
+### 3. Link the CloudWatch Alarm to the AppConfig Environment Monitor
+- In AWS AppConfig, automated rollbacks are tied to the Environment resource (not the configuration profile or deployment strategy). Add the alarm ARN and execution role ARN to the environment's monitors list:
+```python
 import boto3
 
 appconfig = boto3.client("appconfig", region_name="us-east-1")
@@ -84,9 +93,11 @@ response = appconfig.update_environment(
 )
 
 print(f"Updated Environment {ENVIRONMENT_ID} with CloudWatch Rollback Monitor.")
+```
 
-4. Execute a Deployment with a Canary Strategy and Bake Time
-To give the CloudWatch alarm time to detect regressions, use a deployment strategy with a non-zero Bake Time (e.g., AppConfig.Canary10Percent20Minutes).
+### 4. Execute a Deployment with a Canary Strategy and Bake Time
+- To give the CloudWatch alarm time to detect regressions, use a deployment strategy with a non-zero Bake Time (e.g., AppConfig.Canary10Percent20Minutes).
+```python
 import json
 import boto3
 
@@ -124,9 +135,10 @@ deployment = appconfig.start_deployment(
 )
 
 print(f"Deployment started: Deployment #{deployment['DeploymentNumber']}")
+```
 
-How the Rollback Lifecycle Works at Runtime
- * Traffic Shifting: 10% of traffic begins routing to Guardrail version 3, while 90% stays on version 2.
- * Telemetry Check: If the new guardrail version incorrectly blocks benign queries, Bedrock increments AWS/Bedrock/Guardrails -> InvocationsIntervened.
- * Threshold Breach: When the metric crosses 5 interventions in 1 minute, the CloudWatch alarm transitions to ALARM state.
- * Automated Reversion: AppConfig detects the alarm change during the deployment or bake-time window. It immediately halts traffic progression, reverts the deployed configuration version back to the previous stable state, and updates the deployment status to ROLLED_BACK.
+## How the Rollback Lifecycle Works at Runtime
+ * **Traffic Shifting**: 10% of traffic begins routing to Guardrail version 3, while 90% stays on version 2.
+ * **Telemetry Check**: If the new guardrail version incorrectly blocks benign queries, Bedrock increments AWS/Bedrock/Guardrails -> InvocationsIntervened.
+ * **Threshold Breach**: When the metric crosses 5 interventions in 1 minute, the CloudWatch alarm transitions to ALARM state.
+ * **Automated Reversion**: AppConfig detects the alarm change during the deployment or bake-time window. It immediately halts traffic progression, reverts the deployed configuration version back to the previous stable state, and updates the deployment status to ROLLED_BACK.

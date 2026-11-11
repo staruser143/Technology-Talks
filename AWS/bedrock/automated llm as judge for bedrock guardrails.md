@@ -1,6 +1,9 @@
-An automated LLM-as-a-Judge evaluation pipeline for Amazon Bedrock Guardrails uses AWS Step Functions to orchestrate testing candidate guardrail configurations against an adversarial and benign test suite before promoting them to production.
-The pipeline runs each test prompt through the target guardrail using apply_guardrail, routes ambiguous or boundary responses to a frontier judge model (e.g., Claude 3.5 Sonnet) via bedrock:invokeModel, calculates aggregate metrics (catch rate and false-positive refusal rate), and enforces a deployment gate.
-Pipeline Architecture
+# Automated LLM-as-a-Judge evaluation pipeline for Amazon Bedrock Guardrails 
+- We use AWS Step Functions to orchestrate testing candidate guardrail configurations against an adversarial and benign test suite before promoting them to production.
+- The pipeline runs each test prompt through the target guardrail using apply_guardrail, routes ambiguous or boundary responses to a frontier judge model (e.g., Claude 3.5 Sonnet) via bedrock:invokeModel, calculates aggregate metrics (catch rate and false-positive refusal rate), and enforces a deployment gate.
+
+## Pipeline Architecture
+```
                  [ StartExecution: Golden Dataset S3 URI ]
                                      │
                                      ▼
@@ -40,13 +43,16 @@ Pipeline Architecture
                           [ Choice: Gate Passed? ]
                            ├── YES ──► [ Update AppConfig / Promote Version ]
                            └── NO  ──► [ Fail State: QualityGateRejected ]
+```
 
-Key Design Principles
- * apply_guardrail vs. converse: Testing the guardrail in isolation with bedrock-runtime:applyGuardrail avoids invoking foundation models during test runs, cutting evaluation costs and latency while testing both INPUT and OUTPUT policies directly.
- * Distributed Map State: Using Step Functions Map in DISTRIBUTED mode allows parallel execution across hundreds of test prompts from S3 without hitting the 256 KB state payload ceiling, as items are processed in parallel batches and results are written directly to S3.
- * Enforcing Structured Judge JSON: The judge model system prompt specifies a rigid, unnested schema (passed: boolean, severity_score: integer, justification: string).
- * Automatic Rollout or Failure: If the aggregate adversarial catch rate is below 98% or the benign false-positive refusal rate exceeds 1.5%, the state machine enters a Fail state and blocks deployment. If all gates pass, it proceeds to update AWS AppConfig to start a canary rollout.
-Step Functions State Machine Definition (ASL)
+## Key Design Principles
+ * **apply_guardrail vs. converse**: Testing the guardrail in isolation with bedrock-runtime:applyGuardrail avoids invoking foundation models during test runs, cutting evaluation costs and latency while testing both INPUT and OUTPUT policies directly.
+ * **Distributed Map State**: Using Step Functions Map in DISTRIBUTED mode allows parallel execution across hundreds of test prompts from S3 without hitting the 256 KB state payload ceiling, as items are processed in parallel batches and results are written directly to S3.
+ * **Enforcing Structured Judge JSON**: The judge model system prompt specifies a rigid, unnested schema (passed: boolean, severity_score: integer, justification: string).
+ * **Automatic Rollout or Failure**: If the aggregate adversarial catch rate is below 98% or the benign false-positive refusal rate exceeds 1.5%, the state machine enters a Fail state and blocks deployment. If all gates pass, it proceeds to update AWS AppConfig to start a canary rollout.
+
+## Step Functions State Machine Definition (ASL)
+```json
 {
   "Comment": "Automated LLM-as-a-Judge Pipeline for Bedrock Guardrails",
   "StartAt": "EvaluateTestPromptsMap",
@@ -234,10 +240,14 @@ Step Functions State Machine Definition (ASL)
     }
   }
 }
+```
 
-Supporting Components
-1. Evaluation Summary Lambda (compute-guardrail-metrics)
-Reads the output manifest written by the Step Functions ResultWriter in S3 and computes aggregate metrics across adversarial and benign runs:
+## Supporting Components
+### 1. Evaluation Summary Lambda (compute-guardrail-metrics)
+- Reads the output manifest written by the Step Functions ResultWriter in S3 and computes aggregate metrics across adversarial and benign runs:
+
+
+```python
 import json
 import boto3
 from urllib.parse import urlparse
@@ -328,5 +338,4 @@ def lambda_handler(event, context):
         "status": "DEPLOYMENT_STARTED",
         "deployment_number": deployment["DeploymentNumber"]
     }
-
-Would you like to examine setting up synthetic adversarial prompt generation via Bedrock to continuously refresh your golden evaluation dataset?
+```
