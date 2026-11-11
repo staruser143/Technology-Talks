@@ -1,9 +1,12 @@
-Yes, Ragas can be used directly with Amazon Bedrock.
-You can use Bedrock in two ways with Ragas:
- * As the system under evaluation: Assessing responses, agent traces, and context retrieved from Bedrock Knowledge Bases or Bedrock Converse models.
- * As the evaluation judge and embedding engine: Powering Ragas’s internal scoring calculations using Bedrock-hosted foundation models (e.g., Anthropic Claude, Amazon Nova) and embedding models (e.g., Amazon Titan Embeddings).
-Integration Architecture
-Ragas relies on LangChain wrappers (langchain-aws) to communicate with Bedrock foundation models:
+# Ragas
+- Ragas can be used directly with Amazon Bedrock.
+- We can use Bedrock in two ways with Ragas:
+ * **As the system under evaluation**: Assessing responses, agent traces, and context retrieved from Bedrock Knowledge Bases or Bedrock Converse models.
+ * **As the evaluation judge and embedding engine**: Powering Ragas’s internal scoring calculations using Bedrock-hosted foundation models (e.g., Anthropic Claude, Amazon Nova) and embedding models (e.g., Amazon Titan Embeddings).
+
+## Integration Architecture
+- Ragas relies on LangChain wrappers (langchain-aws) to communicate with Bedrock foundation models:
+```
 ┌────────────────────────────────────────────────────────┐
 │                      Ragas Framework                   │
 │   (Faithfulness, Relevancy, Context Precision/Recall)  │
@@ -22,9 +25,10 @@ Ragas relies on LangChain wrappers (langchain-aws) to communicate with Bedrock f
    │   - LLM: Claude 3.5 Sonnet / Amazon Nova Pro    │
    │   - Embeddings: Amazon Titan Embeddings V2      │
    └─────────────────────────────────────────────────┘
-
-Implementation Example
-To use Bedrock models as both the Judge LLM and the Embedding Model in Ragas:
+```
+## Implementation Example
+- To use Bedrock models as both the Judge LLM and the Embedding Model in Ragas:
+```python
 import boto3
 from datasets import Dataset
 from langchain_aws import ChatBedrock, BedrockEmbeddings
@@ -78,9 +82,11 @@ dataset = Dataset.from_dict(data_samples)
 # 4. Run Ragas evaluation
 results = evaluate(dataset=dataset, metrics=metrics)
 print(results.to_pandas())
+```
 
-Ragas vs. Native Bedrock Model Evaluation
-Amazon Bedrock provides built-in model evaluation, but Ragas serves distinct needs:
+### Ragas vs. Native Bedrock Model Evaluation
+- Amazon Bedrock provides built-in model evaluation, but Ragas serves distinct needs:
+
 | Feature | Amazon Bedrock Model Evaluation | Ragas with Bedrock |
 |---|---|---|
 | Primary Scope | Benchmarking standalone foundation models (FMs) and custom models (SFT/CPT). | Evaluating end-to-end RAG pipelines and multi-step agent traces. |
