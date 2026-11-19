@@ -1,7 +1,7 @@
 # MongoDB vs OpenSearch for AOR-Scoped Identity Matching
 Nov 18, 2026 · @Sridhar
 ## Recommendation
-Since you are on Atlas, use Atlas Search for the fuzzy tier and keep MongoDB as the system of record. This avoids a second datastore and a sync pipeline. Add OpenSearch only if Atlas Search falls short on phonetic matching or scoring control in your bake-off. If matching is mostly exact, MongoDB indexes alone are enough.
+Keep MongoDB as the system of record. Add OpenSearch (or Atlas Search, if you are on Atlas) only if prospect-to-member matching has to tolerate typos, nicknames and variant data. If matching is mostly exact, MongoDB alone is enough.
 The use case: when a lead or quote is captured by a broker or agent, check whether the person is already an enrolled member, searching only within that agent's AOR scope.
 ## Why data volume is not the deciding factor
 A few million documents is small for both systems. With AOR scoping, each query only considers the members tied to one agent or broker, and a compound index on the AOR identifier plus the match attributes keeps that fast in MongoDB.
@@ -12,20 +12,13 @@ MongoDB alone works when prospect data is clean enough to match deterministicall
 - Rules are tiered and exact, for example same DOB, last name and ZIP.
 - You can tolerate misses on typos or variants.
 To do this well, build compound indexes starting with the AOR identifier, normalize data at write time (lowercased names, standardized phone and address), and store hashed or normalized match keys. This avoids a second datastore and any sync lag.
-## Why Atlas Search is the first choice for fuzzy matching
-Prospect data is messy: "Jon" vs "Jonathan", "Smyth" vs "Smith", transposed DOB digits, address variants, shared household phone numbers. MongoDB's regex and plain text search handle this poorly, but Atlas Search is Lucene-based and covers most of it inside the same database.
-- Fuzzy matching with edit distance, plus n-gram and edge-n-gram analyzers.
+## When OpenSearch earns its place
+OpenSearch earns its place when prospect data is messy: "Jon" vs "Jonathan", "Smyth" vs "Smith", transposed DOB digits, address variants, shared household phone numbers. It handles this far better than MongoDB, whose regex and text search are weak for identity matching and tend to bypass indexes.
+- Fuzzy matching with edit distance, phonetic analyzers, and n-gram or edge-n-gram analyzers.
 - Synonym lists for nicknames.
 - Weighted multi-field scoring that returns ranked candidates with a score, not just yes or no.
-- A `compound` query where the AOR scope is a hard `filter` and the identity attributes are scored `should` clauses.
-- No sync pipeline: Atlas maintains the index from the same collection, so there is no change-data-capture lag, no drift, and no extra step when an AOR is reassigned.
-- One system to secure: PHI stays in one place under one access model and one BAA.
-## When OpenSearch would still win
-Check these before committing to Atlas Search. Any one that fails is a reason to add OpenSearch.
-- **Phonetic matching:** confirm the analyzers you need, for example for "Smyth" vs "Smith", are available in Atlas Search. This is the likeliest gap.
-- **Scoring control:** confirm Atlas Search's scoring options can reliably separate your high, middle and low score bands.
-- **Other use cases:** you want one search platform beyond identity matching, such as logs or observability.
-- **Skills and preference:** your team already runs OpenSearch.
+- Boolean queries where the AOR scope is a hard `filter` and the identity attributes are scored `should` clauses.
+- Low latency as you add attributes and complexity.
 ## Options compared
 The hybrid option fits most real payer workloads: exact rules first, fuzzy scoring only when needed.
 | Option | Fits when | Trade-off |
